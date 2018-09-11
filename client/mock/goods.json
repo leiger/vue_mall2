@@ -1,0 +1,24 @@
+{
+  "status": "0",
+  "msg": "",
+  "result": [
+    {
+      "productId": "1001",
+      "productName": "iphone8",
+      "productPrice": 5000,
+      "ProductImg": "1.jpg"
+    },
+    {
+      "productId": "1001",
+      "productName": "iphone8",
+      "productPrice": 5000,
+      "ProductImg": "2.jpg"
+    },
+    {
+      "productId": "1001",
+      "productName": "iphone8",
+      "productPrice": 5000,
+      "ProductImg": "3.jpg"
+    }
+  ]
+}
