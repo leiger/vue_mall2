@@ -47,8 +47,8 @@
               </template>
             </template>
           </b-row>
-          <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-            <img :src="loading.imageUrl" alt="loading..." v-if="loading.imageShow">
+          <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10" v-if="loading.imageShow">
+            <img :src="loading.imageUrl" alt="loading..." >
           </div>
         </b-col>
       </b-row>
@@ -164,11 +164,12 @@
         this.getGoodsList();
       },
       loadMore: function() {
-        this.page++;
         // forbid load frequently
         this.busy = true;
 
         setTimeout(() => {
+          this.page++;
+          console.log(this.page);
           this.getGoodsList(true);
           // this.busy = false;
         }, 1000);
