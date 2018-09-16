@@ -2,33 +2,30 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 let Goods = require('../models/goods');
+let Users = require('../models/users');
 
 // connect mongodb
 mongoose.connect('mongodb://127.0.0.1:27017/vue_mall', {useNewUrlParser: true});
 
-mongoose.connection.on("connected", () => {
-  console.log("MongoDB connected success.")
+let db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log("MongoDB connected success.");
 });
 
-mongoose.connection.on("error", () => {
-  console.log("MongoDB connected error");
-});
-
-mongoose.connection.on("disconnected", () => {
-  console.log("MongoDB disconnected.");
-});
-
+// search goods data
 router.get("/", (req, res, next) => {
-  let page = parseInt(req.param('page'));
-  let pageSize = parseInt(req.param('pageSize'));
-  let sortFlag = parseInt(req.param('sortFlag'));
-  let sortWay = parseInt(req.param('sortWay'));
+  let page = parseInt(req.query.page);
+  let pageSize = parseInt(req.query.pageSize);
+  let sortFlag = parseInt(req.query.sortFlag);
+  let sortWay = parseInt(req.query.sortWay);
 
-  let priceLevel = req.param('priceLevel');
+  let priceLevel = req.query.priceLevel;
   let priceGt = '', priceLte = '';
   let params = {};
   // 0 means all
-  if(priceLevel != 0) {
+  if (priceLevel !== '0') {
     switch (priceLevel) {
       case '1':
         priceGt = 0;
@@ -55,16 +52,16 @@ router.get("/", (req, res, next) => {
     }
   }
 
-  let skip = (page-1) * pageSize;
+  let skip = (page - 1) * pageSize;
   let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
 
   // sort by price
-  if(sortWay === 1) {
+  if (sortWay === 1) {
     goodsModel.sort({'salePrice': sortFlag});
   }
 
   goodsModel.exec((err, doc) => {
-    if(err) {
+    if (err) {
       res.json({
         status: '1',
         msg: err.message
@@ -82,5 +79,87 @@ router.get("/", (req, res, next) => {
     }
   })
 });
+
+// add to cart
+router.post('/addCart', (req, res, next) => {
+  let userId = '100000077';
+  Users.findOne({userId: userId}, (err, userInfo) => {
+    if (err) {
+      res.json({
+        status: "1",
+        msg: err.message
+      })
+    }
+    else {
+      let productId = req.body.productId;
+      // console.log(`userDoc:${userInfo}`);
+      // check whether the goods already exists in the cart
+      if (userInfo) {
+        let goodsItem = '';
+        userInfo.cartList.forEach(function (item) {
+          if (item.productId === productId) {
+            goodsItem = item;
+            item.productNum++;
+          }
+        });
+        // exists
+        if (goodsItem) {
+          userInfo.save((err2, doc2) => {
+            if (err2) {
+              res.json({
+                status: '1',
+                msg: err2.message
+              })
+            }
+            else {
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'suc'
+              });
+              // console.log('success')
+            }
+          });
+        }
+        else {
+          Goods.findOne({productId: productId}, (err1, doc1) => {
+            if (err1) {
+              res.json({
+                status: '1',
+                msg: err1.message
+              })
+            }
+            else {
+              // console.log(doc1);
+              if (doc1) {
+                // console.log(doc1);
+                doc1.productNum = 1;
+                doc1.checked = 1;
+                userInfo.cartList.push(doc1);
+                userInfo.save((err2, doc2) => {
+                  if (err2) {
+                    res.json({
+                      status: '1',
+                      msg: err2.message
+                    })
+                  }
+                  else {
+                    res.json({
+                      status: '0',
+                      msg: '',
+                      result: 'suc'
+                    });
+                    // console.log('success')
+                  }
+                });
+              }
+            }
+          });
+        }
+      }
+    }
+  })
+});
+
 
 module.exports = router;

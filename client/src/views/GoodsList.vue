@@ -38,7 +38,9 @@
                   <p class="card-text">
                     {{ good.salePrice }}
                   </p>
-                  <b-button size="sm" variant="outline-primary" :block=true>add to cart</b-button>
+                  <b-button size="sm" variant="outline-primary" :block=true @click="addCart(good.productId)">
+                    add to cart
+                  </b-button>
                 </b-card>
               </b-col>
               <template v-if="(index+1)%4 === 0 && index!=0">
@@ -47,8 +49,9 @@
               </template>
             </template>
           </b-row>
-          <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10" v-if="loading.imageShow">
-            <img :src="loading.imageUrl" alt="loading..." >
+          <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
+               infinite-scroll-distance="10" v-if="loading.imageShow">
+            <img :src="loading.imageUrl" alt="loading...">
           </div>
         </b-col>
       </b-row>
@@ -105,7 +108,7 @@
           page: this.page,
           pageSize: this.pageSize,
 //          1: asce; -1: desc
-          sortFlag: this.sort.sortFlag?1:-1,
+          sortFlag: this.sort.sortFlag ? 1 : -1,
           // price or default
           sortWay: this.sort.sortWay,
           priceLevel: this.priceLevel
@@ -118,12 +121,12 @@
         })
           .then((res) => {
             // console.log(res);
-            if(res.data.status === "0") {
+            if (res.data.status === "0") {
               // flag means first page or later page
-              if(flag) {
+              if (flag) {
                 this.goods = this.goods.concat(res.data.result.list);
                 // no more data
-                if(res.data.result.count < 8) {
+                if (res.data.result.count < 8) {
                   this.busy = true;
                 }
                 else {
@@ -148,14 +151,14 @@
           });
       },
       sortGoods(name) {
-        if(name === 'Price') {
+        if (name === 'Price') {
           this.sort.sortFlag = !this.sort.sortFlag;
         }
         else {
           this.sort.sortFlag = 1;
         }
         this.page = 1;
-        this.sort.sortWay = name === 'Default'? 0 : 1;
+        this.sort.sortWay = name === 'Default' ? 0 : 1;
         this.getGoodsList();
       },
       setPriceFilter(level) {
@@ -163,7 +166,7 @@
         this.priceLevel = level;
         this.getGoodsList();
       },
-      loadMore: function() {
+      loadMore: function () {
         // forbid load frequently
         this.busy = true;
 
@@ -173,6 +176,19 @@
           this.getGoodsList(true);
           // this.busy = false;
         }, 1000);
+      },
+      addCart(productId) {
+        axios.post("/goods/addCart", {
+          productId: productId
+        }).then(res => {
+          console.log(res);
+          if (res.data.status === '0') {
+            alert("add success");
+          }
+          else {
+            alert(`msg:${res.msg}`);
+          }
+        });
       }
     }
   }
@@ -183,6 +199,7 @@
     padding: 0 1rem;
     font-size: 18px;
   }
+
   .load_more {
     height: 50px;
     line-height: 50px;
