@@ -1,10 +1,10 @@
-const Mock = require('mockjs')
+const Mock = require('mockjs');
 
 // get mock.Random object
 const Random = Mock.Random;
 
 const goodsData = () => {
-  let results = [];
+  let result = [];
 
   for(let i = 0; i < 10; i++) {
     let good = {
@@ -19,7 +19,7 @@ const goodsData = () => {
   let goods = {
     "status": "0",
     "msg": "",
-    results
+    result
   };
 
   return goods;

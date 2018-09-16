@@ -8,18 +8,22 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-require('./../mock/mock.js');
+import infiniteScroll from 'vue-infinite-scroll'
+
+// used for mock data
+// require('./../mock/mock.js');
 
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue);
+Vue.use(infiniteScroll);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
 });
 
 
