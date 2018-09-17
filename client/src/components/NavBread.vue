@@ -1,25 +1,24 @@
 <template>
-    <b-breadcrumb :items="items"/>
+  <Breadcrumb class="breadCrumb">
+    <BreadcrumbItem to="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Goods</BreadcrumbItem>
+  </Breadcrumb>
 </template>
 
 <script>
   export default {
     data() {
-      return {
-        items: [{
-          text: 'Home',
-          href: '#'
-        }, {
-          text: 'Goods',
-          active: true
-        }]
-      }
+      return {}
     }
   }
 </script>
 
 <style>
-
+.breadCrumb {
+  height: 40px;
+  line-height: 40px;
+  margin: 0 30px;
+}
 </style>
 
 

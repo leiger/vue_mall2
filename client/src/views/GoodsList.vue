@@ -1,64 +1,54 @@
 <template>
-  <div>
+  <Layout>
     <nav-header/>
-    <nav-bread/>
+    <!--<nav-bread/>-->
 
-    <b-container fluid>
-      <!--sort-->
-      <b-row>
-        <b-col offset-md="10">
-          <span>Sort by:</span>
-          <template v-for="name in sortNames">
-            <b-button size="sm" variant="link" @click="sortGoods(name)">
-              {{ name }}
-            </b-button>
-          </template>
-        </b-col>
-      </b-row>
-
-      <b-row>
-        <b-col md="2">
-          <h3>Price:</h3>
-          <b-nav vertical>
+    <Content class="layoutBox">
+      <Row :gutter="16">
+        <Col span="4">
+        <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
+          <CellGroup>
             <template v-for="(price, index) in priceRange">
-              <b-nav-item @click="setPriceFilter(index)">{{ price }}</b-nav-item>
+              <Cell :title="price" @click="setPriceFilter(index)"/>
             </template>
-          </b-nav>
-        </b-col>
-        <b-col md="10">
-          <b-row>
-            <template v-for="(good, index) in goods">
-              <b-col md="3">
-                <b-card :img-src="'/static/'+good.productImage"
-                        :img-alt="good.productName"
-                        img-top>
-                  <p class="card-text">
-                    {{ good.productName }}
-                  </p>
-                  <p class="card-text">
-                    {{ good.salePrice }}
-                  </p>
-                  <b-button size="sm" variant="outline-primary" :block=true @click="addCart(good.productId)">
-                    add to cart
-                  </b-button>
-                </b-card>
-              </b-col>
-              <template v-if="(index+1)%4 === 0 && index!=0">
-                <div class="w-100"></div>
-                <br/>
-              </template>
+          </CellGroup>
+        </Card>
+
+        <Card class="cardBox" title="Sort" icon="ios-funnel-outline" :padding="0" shadow>
+          <CellGroup>
+            <template v-for="name in sortNames">
+              <Cell :title="name" @click="sortGoods(name)"/>
             </template>
-          </b-row>
+          </CellGroup>
+        </Card>
+        </Col>
+
+        <Col span="20">
+        <Row :gutter="16">
+          <template v-for="(good, index) in goods">
+            <Col span="6">
+            <Card class="cardBox">
+              <img :src="'/static/'+good.productImage" :alt="good.productName">
+              <p>{{ good.productName }}</p>
+              <p>{{ good.salePrice }}</p>
+              <Button icon="ios-cart" type="primary" ghost long @click="addCart(good.productId)">
+                add to cart
+              </Button>
+            </Card>
+            </Col>
+          </template>
+          <!--load more-->
           <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
                infinite-scroll-distance="10" v-if="loading.imageShow">
             <img :src="loading.imageUrl" alt="loading...">
           </div>
-        </b-col>
-      </b-row>
-    </b-container>
+        </Row>
+        </Col>
+      </Row>
+    </Content>
 
     <nav-footer/>
-  </div>
+  </Layout>
 </template>
 
 <script>
@@ -91,7 +81,8 @@
         loading: {
           imageUrl: loadingSvg,
           imageShow: true
-        }
+        },
+        list1: [1, 2]
       }
     },
     components: {
@@ -195,6 +186,20 @@
 </script>
 
 <style scoped>
+  .layoutBox {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  .cardBox {
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .cardBox img {
+    width: 100%;
+  }
+
   h3 {
     padding: 0 1rem;
     font-size: 18px;
@@ -205,6 +210,7 @@
     line-height: 50px;
     text-align: center;
   }
+
 </style>
 
 

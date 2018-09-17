@@ -1,60 +1,49 @@
 <template>
-  <header>
-    <b-navbar toggleable="md">
+  <header class="headerBox">
+    <div class="headerNav">
+      <h1 class="headerLogo">VUE MALL</h1>
+      <div class="headerRight">
+        <!--not login-->
+        <template v-if="nickName === ''">
+          <Button shape="circle" icon="ios-log-in" @click="loginModel" key="login"></Button>
+        </template>
+        <!--logined-->
+        <template v-else>
+          <Button type="text" v-text="nickName" key="nickName"></Button>
+          <Button shape="circle" icon="ios-log-out" @click="logout" key="logout"></Button>
+        </template>
+        <Divider type="vertical" orientation="center"/>
+        <!--shopping cart-->
+        <Button type="dashed" shape="circle" icon="ios-cart"></Button>
+      </div>
+    </div>
 
-      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
-      <b-navbar-brand href="#">VUE MALL</b-navbar-brand>
-
-      <b-collapse is-nav id="nav_collapse">
-
-        <b-navbar-nav>
-
-          <b-nav-item href="#" disabled>Disabled</b-nav-item>
-        </b-navbar-nav>
-
-        <!-- Right user info -->
-        <b-navbar-nav class="ml-auto">
-
-          <template v-if="nickName === ''">
-            <b-nav-item href="#" @click="loginModel">Login</b-nav-item>
-          </template>
-          <template v-else>
-            <b-nav-item href="#">{{nickName}}</b-nav-item>
-          </template>
-
-          <!--login modal-->
-          <b-modal ref="loginRef" title="LOGIN" centered ok-title="SUBMIT" @ok="handleOk">
-            <div class="d-block">
-              <b-alert :variant="loginInfo.color" dismissible :show="loginInfo.show">{{ loginInfo.msg }}</b-alert>
-              <b-form @submit.stop.prevent="onSubmit">
-                <b-form-group label="Username:" label-for="username">
-                  <b-form-input v-model="login.username" id="username" type="text" required
-                                placeholder="Enter your username"></b-form-input>
-                </b-form-group>
-                <b-form-group label="Password:" label-for="password">
-                  <b-form-input v-model="login.password" id="password" type="password" required
-                                placeholder="Enter password"></b-form-input>
-                </b-form-group>
-              </b-form>
-            </div>
-          </b-modal>
-
-          <b-nav-item-dropdown right>
-            <!-- Using button-content slot -->
-            <template slot="button-content">User</template>
-            <b-dropdown-item href="#">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Signout</b-dropdown-item>
-          </b-nav-item-dropdown>
-        </b-navbar-nav>
-
-      </b-collapse>
-    </b-navbar>
+    <!--login model-->
+    <Modal title="LOGIN FORM" v-model="modalState" width="450">
+      <Form ref="login" :model="login" :rules="loginRule">
+        <!--username-->
+        <FormItem prop="username">
+          <Input type="text" v-model="login.username" placeholder="Username">
+          <Icon type="ios-person-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
+        <!--password-->
+        <FormItem prop="password" style="margin-bottom: 0">
+          <Input type="password" v-model="login.password" placeholder="Password">
+          <Icon type="ios-lock-outline" slot="prepend"></Icon>
+          </Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" @click="resetForm">reset</Button>
+        <Button type="primary" :loading="loginLoading" @click="handleSubmit('login')">Sign In</Button>
+      </div>
+    </Modal>
   </header>
+
 </template>
 
 <script>
-  //  import HeaderComponent from './components/header.vue'
   import axios from 'axios';
 
   export default {
@@ -64,64 +53,114 @@
           username: '',
           password: ''
         },
-        loginInfo: {
-          show: false,
-          msg: '',
-          color: ''
-        },
         nickName: '',
+        modalState: false,
+        loginRule: {
+          username: [
+            {required: true, message: 'Please fill in the user name', trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: 'Please fill in the password.', trigger: 'blur'}
+          ]
+        },
+        loginLoading: false
       }
     },
     methods: {
       loginModel() {
-        this.$refs.loginRef.show();
+        this.modalState = true;
       },
-      handleOk(evt) {
-//        prevent default close
-        evt.preventDefault();
-        console.log('123');
-        if (!this.login.username || !this.login.password) {
-          this.loginInfo.show = true;
-          this.loginInfo.color = 'danger';
-          this.loginInfo.msg = "Please input your username and password";
-        }
-        else {
-          this.loginInfo.show = false;
-          this.onSubmit()
-        }
+      resetForm() {
+        this.login.username = '';
+        this.login.password = '';
       },
-      onSubmit() {
-        axios.post('/users/login', {
-          username: this.login.username,
-          password: this.login.password
-        }).then(res => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.loginInfo.show = true;
-            this.loginInfo.color = 'success';
-            this.loginInfo.msg = 'Login Success';
-            // to-do
-            this.nickName = data.result.username;
-
+      handleSubmit(name) {
+        this.$refs[name].validate((valid => {
+          if (valid) {
+            this.loginLoading = true;
+            // Simulated real environment
             setTimeout(() => {
-              this.$refs.loginRef.hide();
+              this.onSubmit();
+              this.loginLoading = false;
             }, 1000);
           }
+          else {
+            this.$Message.error('Fail');
+          }
+        }));
+      },
+      onSubmit() {
+        axios.post('/users/login', this.login).then(res => {
+          let data = res.data;
+          if (data.status === '0') {
+            this.$Message.success('Login Success!');
+            // to-do
+            this.nickName = data.result.username;
+            this.modalState = false;
+          }
           else if (data.status === '2') {
-            this.loginInfo.show = true;
-            this.loginInfo.color = 'warning';
-            this.loginInfo.msg = "wrong username or password!";
+            this.$Message.error('Wrong Username or Password!');
           }
         });
-//
-//        alert("submit success");
+
+      },
+      logout() {
+        this.$Modal.confirm({
+          title: 'confirm logout?',
+          okText: 'ok',
+          cancelText: 'cancel',
+          width: '300',
+          onOk: () => {
+            axios.post('/users/logout')
+              .then((res) => {
+                let data = res.data;
+                if (data.status === '0') {
+                  this.nickName = '';
+                  this.$Message.success('logout success');
+                }
+                else {
+                  console.log('error');
+                  this.$Message.error('logout fail');
+                }
+              });
+
+          }
+        });
+
       }
     }
   }
 </script>
 
-<style>
+<style scoped>
+  .headerBox {
+    background-color: #fff;
+    height: 60px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .08);
+  }
 
+  h1 {
+    font-size: 18px;
+    display: inline-block;
+  }
+  .headerNav {
+    width: 95%;
+    height: 60px;
+    margin: 0 auto;
+  }
+
+  .headerLogo {
+    line-height: 60px;
+    color: rgba(0, 0, 0, .9);
+  }
+
+  .headerRight {
+    float: right;
+  }
+
+  .headerRight button {
+    margin: 14px 0;
+  }
 </style>
 
 

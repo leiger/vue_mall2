@@ -1,7 +1,7 @@
 <template>
-    <footer>
+    <Footer class="footer">
       2018 &copy; leiger
-    </footer>
+    </Footer>
 </template>
 
 <script>
@@ -13,10 +13,8 @@
 </script>
 
 <style scoped>
-  footer {
+  .footer {
     text-align: center;
-    padding: 10px 0 20px;
-    color: #9ea7b4;
   }
 </style>
 
