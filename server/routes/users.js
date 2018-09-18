@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+// login
 router.post('/login', function(req, res, next) {
   let param = {
     userName: req.body.username,
@@ -28,13 +29,17 @@ router.post('/login', function(req, res, next) {
           path: '/',
           maxAge: 1000*60*60
         });
+        res.cookie("userName", doc.userName, {
+          path: '/',
+          maxAge: 1000*60*60
+        });
         // req.session.user = doc;
 
         res.json({
           status: '0',
           msg: '',
           result: {
-            username: doc.userName
+            userName: doc.userName
           }
         })
       }
@@ -47,6 +52,40 @@ router.post('/login', function(req, res, next) {
       }
     }
   });
+});
+
+// logout
+router.post('/logout', function(req, res, next) {
+  res.cookie('userId', '', {
+    path: '/',
+    maxAge: -1
+  });
+  res.cookie('userName', '', {
+    path: '/',
+    maxAge: -1
+  });
+  res.json({
+    status: '0',
+    msg: '',
+    result: ''
+  })
+});
+
+router.get('/checkLogin', function(req, res, next) {
+  if(req.cookies.userId) {
+    res.json({
+      status: '0',
+      msg: '',
+      result: req.cookies.userName || ''
+    });
+  }
+  else {
+    res.json({
+      status: '1',
+      msg: 'Not Login',
+      result: ''
+    });
+  }
 });
 
 module.exports = router;

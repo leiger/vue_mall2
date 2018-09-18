@@ -15,7 +15,7 @@ db.once('open', function () {
 });
 
 // search goods data
-router.get("/", (req, res, next) => {
+router.get("/list", (req, res, next) => {
   let page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
   let sortFlag = parseInt(req.query.sortFlag);

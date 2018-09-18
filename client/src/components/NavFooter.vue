@@ -1,6 +1,6 @@
 <template>
     <Footer class="footer">
-      2018 &copy; leiger
+      2018 &copy; design & create by leiger
     </Footer>
 </template>
 

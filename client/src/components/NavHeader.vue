@@ -66,6 +66,9 @@
         loginLoading: false
       }
     },
+    mounted() {
+      this.checkLogin();
+    },
     methods: {
       loginModel() {
         this.modalState = true;
@@ -89,13 +92,14 @@
           }
         }));
       },
+//      submmit login info
       onSubmit() {
         axios.post('/users/login', this.login).then(res => {
           let data = res.data;
           if (data.status === '0') {
             this.$Message.success('Login Success!');
             // to-do
-            this.nickName = data.result.username;
+            this.nickName = data.result.userName;
             this.modalState = false;
           }
           else if (data.status === '2') {
@@ -104,6 +108,7 @@
         });
 
       },
+//      logout
       logout() {
         this.$Modal.confirm({
           title: 'confirm logout?',
@@ -127,6 +132,14 @@
           }
         });
 
+      },
+      checkLogin() {
+        axios.get('/users/checkLogin').then((res) => {
+          let data = res.data;
+          if(data.status === '0') {
+            this.nickName = data.result;
+          }
+        });
       }
     }
   }
@@ -143,6 +156,7 @@
     font-size: 18px;
     display: inline-block;
   }
+
   .headerNav {
     width: 95%;
     height: 60px;

@@ -20,9 +20,11 @@
           <CellGroup @on-click="sortGoods">
             <template v-for="(name, index) in sortNames">
               <Cell :name="index" :title="name" :selected="sortSelected[index]">
-                <Icon type="ios-arrow-round-down" v-if="sortArrow[index]"/>
-                <Icon type="ios-arrow-round-up" v-else/>
                 {{name}}
+                <template v-if="index === 1">
+                  <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
+                  <Icon type="ios-arrow-round-down" v-else/>
+                </template>
               </Cell>
             </template>
           </CellGroup>
@@ -34,13 +36,18 @@
         <Row :gutter="16">
           <template v-for="(good, index) in goods">
             <Col span="6">
-            <Card class="cardBox">
+            <Card class="cardBox" :bordered="false" :shadow="true">
               <img :src="'/static/'+good.productImage" :alt="good.productName">
-              <p>{{ good.productName }}</p>
-              <p>{{ good.salePrice }}</p>
-              <Button icon="ios-cart" type="primary" ghost long @click="addCart(good.productId)">
-                add to cart
-              </Button>
+              <Divider class="divider" dashed />
+              <Row type="flex" justify="center" align="bottom">
+                <Col span="18">
+                <h4>{{ good.productName }}</h4>
+                <p class="salePrice">$ {{ good.salePrice }}</p>
+                </Col>
+                <Col span="6">
+                <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed" style="float: right" size="large"></Button>
+                </Col>
+              </Row>
             </Card>
             </Col>
           </template>
@@ -72,7 +79,7 @@
     data() {
       return {
         // priceFilter
-        priceRange: ['All', '0.00 - 100.00', '100.00 - 500.00', '500.00 - 1000.00', '1000.00 - 2000.00'],
+        priceRange: ['All', '$0 - $100', '$100 - $500', '$500 - $1000', '$1000 - $2000'],
         priceLevel: 0,
         priceFilterSelected: [true, false, false, false],
 
@@ -83,9 +90,9 @@
         sortSelected: [true, false],
         sort: {
           sortWay: 0,
-          sortFlag: false
+          sortFlag: true
         },
-        sortArrow: [true, true],
+        sortPriceArrow: true,
 
         goods: [],
         page: 1,
@@ -121,7 +128,7 @@
 
         this.loading.imageShow = true;
 
-        axios.get('/goods', {
+        axios.get('/goods/list', {
           params: param
         })
           .then((res) => {
@@ -132,6 +139,7 @@
                 this.goods = this.goods.concat(res.data.result.list);
                 // no more data
                 if (res.data.result.count < 8) {
+                  console.log(res.data.result.count)
                   this.busy = true;
                 }
                 else {
@@ -159,21 +167,17 @@
         // price sort
         if (name === 1) {
           if(this.sortSelected[1] === true) {
-            this.sortArrow[1] = !this.sortArrow[1];
+            this.sortPriceArrow = !this.sortPriceArrow;
             this.sort.sortFlag = !this.sort.sortFlag;
           }
           this.sortSelected = [false, true];
         }
         // default sort
         else {
-          if(this.sortSelected[0] === true) {
-            this.sortArrow[0] = !this.sortArrow[0];
-            this.sort.sortFlag = !this.sort.sortFlag;
-          }
           this.sortSelected = [true, false];
         }
         this.page = 1;
-        this.sort.sortWay = name === 'Default' ? 0 : 1;
+        this.sort.sortWay = name;
         this.getGoodsList();
       },
       setPriceFilter(level) {
@@ -190,7 +194,7 @@
 
         setTimeout(() => {
           this.page++;
-          console.log(this.page);
+//          console.log(this.page);
           this.getGoodsList(true);
           // this.busy = false;
         }, 1000);
@@ -201,15 +205,15 @@
         }).then(res => {
           console.log(res);
           if (res.data.status === '0') {
-            alert("add success");
+            this.$Message.success('Add Success!');
+          }
+          else if(res.data.status === '10001') {
+            this.$Message.info('Not Login!');
           }
           else {
-            alert(`msg:${res.msg}`);
+            this.$Message.error('Add error!');
           }
         });
-      },
-      onClick(name) {
-        console.log(name);
       }
     }
   }
@@ -240,7 +244,12 @@
     line-height: 50px;
     text-align: center;
   }
+  .salePrice {
 
+  }
+  .divider {
+    margin: 0 0 12px;
+  }
 </style>
 
 
