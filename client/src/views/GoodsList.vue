@@ -4,25 +4,32 @@
     <!--<nav-bread/>-->
 
     <Content class="layoutBox">
+
       <Row :gutter="16">
+        <!--left-->
         <Col span="4">
         <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
-          <CellGroup>
+          <CellGroup @on-click="setPriceFilter">
             <template v-for="(price, index) in priceRange">
-              <Cell :title="price" @click="setPriceFilter(index)"/>
+              <Cell :name="index" :title="price" :selected="priceFilterSelected[index]"/>
             </template>
           </CellGroup>
         </Card>
 
         <Card class="cardBox" title="Sort" icon="ios-funnel-outline" :padding="0" shadow>
-          <CellGroup>
-            <template v-for="name in sortNames">
-              <Cell :title="name" @click="sortGoods(name)"/>
+          <CellGroup @on-click="sortGoods">
+            <template v-for="(name, index) in sortNames">
+              <Cell :name="index" :title="name" :selected="sortSelected[index]">
+                <Icon type="ios-arrow-round-down" v-if="sortArrow[index]"/>
+                <Icon type="ios-arrow-round-up" v-else/>
+                {{name}}
+              </Cell>
             </template>
           </CellGroup>
         </Card>
         </Col>
 
+        <!--right-->
         <Col span="20">
         <Row :gutter="16">
           <template v-for="(good, index) in goods">
@@ -64,25 +71,32 @@
   export default {
     data() {
       return {
-        sortNames: ['Default', 'Price'],
+        // priceFilter
         priceRange: ['All', '0.00 - 100.00', '100.00 - 500.00', '500.00 - 1000.00', '1000.00 - 2000.00'],
-        goods: [],
-//        sortWay default: 0, price: 1
-//        sortFlag asce or desc
+        priceLevel: 0,
+        priceFilterSelected: [true, false, false, false],
+
+        // sort
+        // sortWay default: 0, price: 1
+        // sortFlag asce or desc
+        sortNames: ['Default', 'Price'],
+        sortSelected: [true, false],
         sort: {
           sortWay: 0,
           sortFlag: false
         },
-        priceLevel: 0,
+        sortArrow: [true, true],
+
+        goods: [],
         page: 1,
         pageSize: 8,
+
         // vue-infinite-scroll
         busy: false,
         loading: {
           imageUrl: loadingSvg,
           imageShow: true
-        },
-        list1: [1, 2]
+        }
       }
     },
     components: {
@@ -142,19 +156,32 @@
           });
       },
       sortGoods(name) {
-        if (name === 'Price') {
-          this.sort.sortFlag = !this.sort.sortFlag;
+        // price sort
+        if (name === 1) {
+          if(this.sortSelected[1] === true) {
+            this.sortArrow[1] = !this.sortArrow[1];
+            this.sort.sortFlag = !this.sort.sortFlag;
+          }
+          this.sortSelected = [false, true];
         }
+        // default sort
         else {
-          this.sort.sortFlag = 1;
+          if(this.sortSelected[0] === true) {
+            this.sortArrow[0] = !this.sortArrow[0];
+            this.sort.sortFlag = !this.sort.sortFlag;
+          }
+          this.sortSelected = [true, false];
         }
         this.page = 1;
         this.sort.sortWay = name === 'Default' ? 0 : 1;
         this.getGoodsList();
       },
       setPriceFilter(level) {
+        console.log(level);
         this.page = 1;
         this.priceLevel = level;
+        this.priceFilterSelected = [false, false, false, false];
+        this.priceFilterSelected[level] = true;
         this.getGoodsList();
       },
       loadMore: function () {
@@ -180,6 +207,9 @@
             alert(`msg:${res.msg}`);
           }
         });
+      },
+      onClick(name) {
+        console.log(name);
       }
     }
   }
