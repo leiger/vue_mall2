@@ -15,7 +15,7 @@ router.post('/login', function(req, res, next) {
     userPwd: req.body.password
   };
   Users.findOne(param, function(err, doc) {
-    console.log(doc);
+    // console.log(doc);
     if(err) {
       res.json({
         status: '1',
@@ -88,4 +88,28 @@ router.get('/checkLogin', function(req, res, next) {
   }
 });
 
+router.get('/cartList', function(req, res, next) {
+  let userId =  req.cookies.userId;
+  Users.findOne({userId: userId}, function (err, doc) {
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }
+    else {
+      if(doc) {
+        res.json({
+          status: '0',
+          msg: '',
+          result: doc.cartList
+        });
+      }
+    }
+  })
+});
+
 module.exports = router;
+
+

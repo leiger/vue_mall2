@@ -161,5 +161,35 @@ router.post('/addCart', (req, res, next) => {
   })
 });
 
+// del from cart
+router.post('/delCart', (req, res, next) => {
+  let userId = req.cookies.userId;
+  let productId = req.body.productId;
+
+  Users.update({userId: userId},
+    {
+      $pull: {
+        'cartList': {
+          'productId': productId
+        }
+      }
+    }, function(err, doc) {
+      if(err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }
+      else {
+        res.json({
+          status: '0',
+          msg: '',
+          result: 'suc'
+        });
+      }
+    });
+
+});
 
 module.exports = router;

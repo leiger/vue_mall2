@@ -10,11 +10,13 @@
         <!--logined-->
         <template v-else>
           <Button type="text" v-text="nickName" key="nickName"></Button>
+          <!--shopping cart-->
+          <Badge :dot="cartNum !== 0">
+            <Button type="dashed" shape="circle" icon="ios-cart" @click="openDrawer"></Button>
+          </Badge>
+          <Divider type="vertical" orientation="center"/>
           <Button shape="circle" icon="ios-log-out" @click="logout" key="logout"></Button>
         </template>
-        <Divider type="vertical" orientation="center"/>
-        <!--shopping cart-->
-        <Button type="dashed" shape="circle" icon="ios-cart"></Button>
       </div>
     </div>
 
@@ -29,7 +31,7 @@
         </FormItem>
         <!--password-->
         <FormItem prop="password" style="margin-bottom: 0">
-          <Input type="password" v-model="login.password" placeholder="Password">
+          <Input type="password" v-model="login.password" placeholder="Password" @on-enter="handleSubmit('login')">
           <Icon type="ios-lock-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
@@ -53,7 +55,7 @@
           username: '',
           password: ''
         },
-        nickName: '',
+//        nickName: '',
         modalState: false,
         loginRule: {
           username: [
@@ -64,6 +66,14 @@
           ]
         },
         loginLoading: false
+      }
+    },
+    computed: {
+      nickName() {
+        return this.$store.state.nickName;
+      },
+      cartNum() {
+        return this.$store.state.cartList.length;
       }
     },
     mounted() {
@@ -92,6 +102,15 @@
           }
         }));
       },
+      getCartList() {
+        axios.get('/users/cartList').then((res) => {
+          let data = res.data;
+          if(data.status === '0') {
+            this.$store.commit("updateCartList", data.result);
+//          this.cartList = data.result;
+          }
+        });
+      },
 //      submmit login info
       onSubmit() {
         axios.post('/users/login', this.login).then(res => {
@@ -99,14 +118,15 @@
           if (data.status === '0') {
             this.$Message.success('Login Success!');
             // to-do
-            this.nickName = data.result.userName;
+//            this.nickName = data.result.userName;
+            this.$store.commit('updateUserInfo', data.result.userName);
+            this.getCartList();
             this.modalState = false;
           }
           else if (data.status === '2') {
             this.$Message.error('Wrong Username or Password!');
           }
         });
-
       },
 //      logout
       logout() {
@@ -120,7 +140,8 @@
               .then((res) => {
                 let data = res.data;
                 if (data.status === '0') {
-                  this.nickName = '';
+//                  this.nickName = '';
+                  this.$store.commit('updateUserInfo', '');
                   this.$Message.success('logout success');
                 }
                 else {
@@ -137,9 +158,15 @@
         axios.get('/users/checkLogin').then((res) => {
           let data = res.data;
           if(data.status === '0') {
-            this.nickName = data.result;
+//            this.nickName = data.result;
+            this.$store.commit('updateUserInfo', data.result);
+            this.getCartList();
           }
         });
+      },
+
+      openDrawer() {
+        this.$store.commit("updateDrawerState", true);
       }
     }
   }
@@ -170,11 +197,9 @@
 
   .headerRight {
     float: right;
+    padding: 14px 0;
   }
 
-  .headerRight button {
-    margin: 14px 0;
-  }
 </style>
 
 

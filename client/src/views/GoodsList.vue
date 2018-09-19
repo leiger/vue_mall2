@@ -1,10 +1,8 @@
 <template>
   <Layout>
     <nav-header/>
-    <!--<nav-bread/>-->
-
     <Content class="layoutBox">
-
+      <!--main content-->
       <Row :gutter="16">
         <!--left-->
         <Col span="4">
@@ -59,6 +57,7 @@
         </Row>
         </Col>
       </Row>
+      <Drawer></Drawer>
     </Content>
 
     <nav-footer/>
@@ -67,8 +66,8 @@
 
 <script>
   import NavHeader from './../components/NavHeader.vue';
-  import NavBread from './../components/NavBread.vue';
   import NavFooter from './../components/NavFooter.vue';
+  import Drawer from './../components/drawer.vue';
   import axios from 'axios';
   import loadingSvg from './../../static/loading-svg/loading-spin.svg';
 
@@ -108,8 +107,8 @@
     },
     components: {
       NavHeader,
-      NavBread,
-      NavFooter
+      NavFooter,
+      Drawer
     },
     mounted: function () {
       this.getGoodsList();
@@ -203,12 +202,21 @@
         axios.post("/goods/addCart", {
           productId: productId
         }).then(res => {
-          console.log(res);
+//          console.log(res);
           if (res.data.status === '0') {
             this.$Message.success('Add Success!');
+            axios.get('/users/cartList').then((res) => {
+              let data = res.data;
+              this.$store.commit("updateCartList", data.result);
+//          this.cartList = data.result;
+            });
           }
           else if(res.data.status === '10001') {
-            this.$Message.info('Not Login!');
+//            this.$Message.info('Not Login!');
+            this.$Notice.info({
+              title: 'Not Login',
+              desc: 'Please Login first. '
+            });
           }
           else {
             this.$Message.error('Add error!');
