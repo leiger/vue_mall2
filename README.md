@@ -1,5 +1,8 @@
 # vue_mall
 a mall written by vue
+
+old repository address: [newMall](https://github.com/leiger/newMall)
+
 ### client
 using vue.js, vuex, vue-router, axios, iview, yarn and some other technologies
 ```
