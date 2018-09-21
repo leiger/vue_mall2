@@ -189,7 +189,6 @@ router.post('/delCart', (req, res, next) => {
         });
       }
     });
-
 });
 
 module.exports = router;

@@ -71,6 +71,7 @@ router.post('/logout', function(req, res, next) {
   })
 });
 
+// check wheather the user is login in
 router.get('/checkLogin', function(req, res, next) {
   if(req.cookies.userId) {
     res.json({
@@ -88,6 +89,7 @@ router.get('/checkLogin', function(req, res, next) {
   }
 });
 
+// show cart list
 router.get('/cartList', function(req, res, next) {
   let userId =  req.cookies.userId;
   Users.findOne({userId: userId}, function (err, doc) {
@@ -108,6 +110,35 @@ router.get('/cartList', function(req, res, next) {
       }
     }
   })
+});
+
+// edit the number of goods in cart
+router.post('/cartEdit', function(req, res, next) {
+  let userId = req.cookies.userId;
+  let productId = req.body.productId;
+  let productNum = req.body.productNum;
+  let checked = req.body.checked;
+
+  Users.update({'userId': userId, "cartList.productId": productId}, {
+    'cartList.$.productNum': productNum,
+    'cartList.$.checked': checked
+  }, function (err, doc) {
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }
+    else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: 'suc'
+      });
+    }
+  })
+
 });
 
 module.exports = router;

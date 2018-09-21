@@ -4,7 +4,6 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuex from 'vuex'
-import axios from 'axios'
 
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
@@ -24,7 +23,7 @@ const store = new Vuex.Store({
   state: {
     nickName: '',
     drawerState: false,
-    cartList: []
+    // cartList: []
   },
   mutations: {
     updateUserInfo(state, nickName) {
@@ -33,13 +32,14 @@ const store = new Vuex.Store({
 
     updateDrawerState(state, drawerState) {
       state.drawerState = drawerState;
-    },
-    updateCartList(state, cartList) {
-      state.cartList = cartList;
-    },
-    updateCartListOne(state, tem) {
-      state.cartList[tem.index].productNum = tem.newValue;
     }
+    // },
+    // updateCartList(state, cartList) {
+    //   state.cartList = cartList;
+    // },
+    // updateCartListOne(state, tem) {
+    //   state.cartList[tem.index].productNum = tem.newValue;
+    // }
   }
 });
 

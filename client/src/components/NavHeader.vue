@@ -51,6 +51,7 @@
   export default {
     data() {
       return {
+        cartList: [],
         login: {
           username: '',
           password: ''
@@ -73,7 +74,7 @@
         return this.$store.state.nickName;
       },
       cartNum() {
-        return this.$store.state.cartList.length;
+        return this.cartList.length;
       }
     },
     mounted() {
@@ -105,9 +106,8 @@
       getCartList() {
         axios.get('/users/cartList').then((res) => {
           let data = res.data;
-          if(data.status === '0') {
-            this.$store.commit("updateCartList", data.result);
-//          this.cartList = data.result;
+          if (data.status === '0') {
+            this.cartList = data.result;
           }
         });
       },
@@ -157,7 +157,7 @@
       checkLogin() {
         axios.get('/users/checkLogin').then((res) => {
           let data = res.data;
-          if(data.status === '0') {
+          if (data.status === '0') {
 //            this.nickName = data.result;
             this.$store.commit('updateUserInfo', data.result);
             this.getCartList();

@@ -36,14 +36,15 @@
             <Col span="6">
             <Card class="cardBox" :bordered="false" :shadow="true">
               <img :src="'/static/'+good.productImage" :alt="good.productName">
-              <Divider class="divider" dashed />
+              <Divider class="divider" dashed/>
               <Row type="flex" justify="center" align="bottom">
                 <Col span="18">
                 <h4>{{ good.productName }}</h4>
                 <p class="salePrice">$ {{ good.salePrice }}</p>
                 </Col>
                 <Col span="6">
-                <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed" style="float: right" size="large"></Button>
+                <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed"
+                        style="float: right" size="large"></Button>
                 </Col>
               </Row>
             </Card>
@@ -165,7 +166,7 @@
       sortGoods(name) {
         // price sort
         if (name === 1) {
-          if(this.sortSelected[1] === true) {
+          if (this.sortSelected[1] === true) {
             this.sortPriceArrow = !this.sortPriceArrow;
             this.sort.sortFlag = !this.sort.sortFlag;
           }
@@ -198,6 +199,7 @@
           // this.busy = false;
         }, 1000);
       },
+
       addCart(productId) {
         axios.post("/goods/addCart", {
           productId: productId
@@ -208,10 +210,10 @@
             axios.get('/users/cartList').then((res) => {
               let data = res.data;
               this.$store.commit("updateCartList", data.result);
-//          this.cartList = data.result;
+              this.cartList = data.result;
             });
           }
-          else if(res.data.status === '10001') {
+          else if (res.data.status === '10001') {
 //            this.$Message.info('Not Login!');
             this.$Notice.info({
               title: 'Not Login',
@@ -252,9 +254,11 @@
     line-height: 50px;
     text-align: center;
   }
+
   .salePrice {
 
   }
+
   .divider {
     margin: 0 0 12px;
   }

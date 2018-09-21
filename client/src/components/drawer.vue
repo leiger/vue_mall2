@@ -1,7 +1,14 @@
 <template>
-  <Drawer width="700" v-model="drawerState">
+  <Drawer width="700" v-model="drawerState" @on-visible-change="openCart">
     <Divider orientation="left">Cart List</Divider>
-    <Table border ref="selection" _checked :columns="cartTitle" :data="cartList"></Table>
+    <Table ref="selection" :columns="cartTitle" :data="cartList" @on-select-cancel="cancelOne"
+           @on-select="selectOne"></Table>
+    <Divider/>
+    <div class="checkoutConfirm">
+      <span>TOTAL:</span>
+      <span class="price" v-text="totalMoney"></span>
+      <Button type="primary" ghost>CHECKOUT</Button>
+    </div>
   </Drawer>
 </template>
 
@@ -11,11 +18,12 @@
   export default {
     data() {
       return {
+        cart: [],
         cartTitle: [
           {
             type: 'selection',
             width: 50,
-            align: 'center'
+            align: 'center',
           },
           {
             title: 'IMAGES',
@@ -51,15 +59,28 @@
                 props: {
                   size: 'small',
                   value: params.row.productNum,
-                  min: 0
+                  min: 1
                 },
                 style: {
                   width: '50px'
                 },
                 on: {
                   'on-change': function (newValue) {
-                    console.log(newValue);
-                    self.$store.commit("updateCartListOne", {index: params.index, newValue: newValue})
+//                    console.log(newValue);
+                    axios.post('/users/cartEdit', {
+                      productId: params.row.productId,
+                      productNum: newValue,
+                      checked: params.row.checked
+                    }).then((res) => {
+                      let data = res.data;
+                      if (data.status === '0') {
+                        self.init();
+                      }
+                      else {
+                        self.init();
+                        this.$Message.error('Modify fail');
+                      }
+                    });
                   }
                 }
               });
@@ -119,7 +140,22 @@
         }
       },
       cartList() {
-        return this.$store.state.cartList;
+        let data = this.cart;
+        data.forEach((tem) => {
+          if (tem.checked === '1') {
+            tem['_checked'] = true;
+          }
+        });
+        return data;
+      },
+      totalMoney() {
+        let tempMoney = 0;
+        this.cart.forEach((temp) => {
+          if (temp.checked === '1') {
+            tempMoney += (temp.productNum * parseInt(temp.salePrice));
+          }
+        });
+        return `$${tempMoney}`;
       }
     },
     mounted() {
@@ -129,9 +165,8 @@
       init() {
         axios.get('/users/cartList').then((res) => {
           let data = res.data;
-          if(data.status === '0') {
-            this.$store.commit("updateCartList", data.result);
-//          this.cartList = data.result;
+          if (data.status === '0') {
+            this.cart = data.result;
           }
         });
       },
@@ -140,7 +175,7 @@
           productId: id
         }).then((res) => {
           let data = res.data;
-          if(data.status === '0') {
+          if (data.status === '0') {
             this.init();
             this.$Message.success('Delete success');
           }
@@ -148,6 +183,41 @@
             this.$Message.error('Delete fail');
           }
         });
+      },
+      cancelOne(List, row) {
+        axios.post('/users/cartEdit', {
+          productId: row.productId,
+          productNum: row.productNum,
+          checked: '0'
+        }).then((res) => {
+          let data = res.data;
+          if (data.status === '0') {
+            this.init();
+          }
+          else {
+            this.$Message.error('Handle Fail');
+          }
+        });
+      },
+      selectOne(List, row) {
+        axios.post('/users/cartEdit', {
+          productId: row.productId,
+          productNum: row.productNum,
+          checked: '1'
+        }).then((res) => {
+          let data = res.data;
+          if (data.status === '0') {
+            this.init();
+          }
+          else {
+            this.$Message.error('Handle fail');
+          }
+        });
+      },
+      openCart(state) {
+        if (state === true) {
+          this.init();
+        }
       }
     }
   }
@@ -156,6 +226,18 @@
 <style>
   table img {
     width: 100%;
+  }
+
+  .checkoutConfirm {
+    float: right;
+  }
+
+  .checkoutConfirm .price {
+    font-size: 16px;
+    padding-right: 10px;
+  }
+  .ivu-table-header .ivu-checkbox{
+    display: none;
   }
 </style>
 
