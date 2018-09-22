@@ -68,7 +68,7 @@
 <script>
   import NavHeader from './../components/NavHeader.vue';
   import NavFooter from './../components/NavFooter.vue';
-  import Drawer from './../components/drawer.vue';
+  import Drawer from '../components/Drawer.vue';
   import axios from 'axios';
   import loadingSvg from './../../static/loading-svg/loading-spin.svg';
 

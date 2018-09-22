@@ -177,6 +177,7 @@
     background-color: #fff;
     height: 60px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, .08);
+    border-bottom: 1px dashed #e8eaec;
   }
 
   h1 {

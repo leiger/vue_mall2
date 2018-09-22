@@ -2,18 +2,19 @@
   <Drawer width="700" v-model="drawerState" @on-visible-change="openCart">
     <Divider orientation="left">Cart List</Divider>
     <Table ref="selection" :columns="cartTitle" :data="cartList" @on-select-cancel="cancelOne"
-           @on-select="selectOne"></Table>
+           @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="cancelAll"></Table>
     <Divider/>
     <div class="checkoutConfirm">
       <span>TOTAL:</span>
-      <span class="price" v-text="totalMoney"></span>
-      <Button type="primary" ghost>CHECKOUT</Button>
+      <span class="price">{{totalMoney | currency}}</span>
+      <Button type="primary" ghost :disabled="totalMoney === 0?true:false" @click="checkout">CHECKOUT</Button>
     </div>
   </Drawer>
 </template>
 
 <script>
   import axios from 'axios';
+  import {currency} from './../utils/currency';
 
   export default {
     data() {
@@ -155,11 +156,14 @@
             tempMoney += (temp.productNum * parseInt(temp.salePrice));
           }
         });
-        return `$${tempMoney}`;
+        return tempMoney;
       }
     },
     mounted() {
       this.init();
+    },
+    filters: {
+      currency: currency
     },
     methods: {
       init() {
@@ -214,9 +218,39 @@
           }
         });
       },
+      selectAll(row) {
+        this.modifyAll(true);
+      },
+      cancelAll(row) {
+        if (row.length === 0) {
+          this.modifyAll(false);
+        }
+      },
+      modifyAll(temp) {
+        axios.post('/users/editCheckAll', {
+          checkAll: temp ? '1' : '0'
+        }).then((res) => {
+          let data = res.data;
+          if (data.status === '0') {
+            this.init();
+          }
+          else {
+            this.$Message.error('Handle fail');
+          }
+        })
+      },
       openCart(state) {
         if (state === true) {
           this.init();
+        }
+      },
+      checkout() {
+        if(this.totalMoney > 0) {
+          this.$router.push({
+            path: '/address'
+          });
+
+          this.$store.commit('updateDrawerState', false);
         }
       }
     }
@@ -235,9 +269,6 @@
   .checkoutConfirm .price {
     font-size: 16px;
     padding-right: 10px;
-  }
-  .ivu-table-header .ivu-checkbox{
-    display: none;
   }
 </style>
 

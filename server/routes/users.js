@@ -141,6 +141,147 @@ router.post('/cartEdit', function(req, res, next) {
 
 });
 
+router.post('/editCheckAll', function(req, res, next) {
+  let userId = req.cookies.userId,
+    checkAll = req.body.checkAll;
+
+  Users.findOne({userId: userId}, function(err, user) {
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }
+    else {
+      if(user) {
+        user.cartList.forEach((item) => {
+          item.checked = checkAll;
+        });
+        user.save(function(err1, doc) {
+          if(err1) {
+            res.json({
+              status: '1',
+              msg: err.message,
+              result: ''
+            });
+          }
+          else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            });
+          }
+        })
+      }
+    }
+  });
+});
+
+router.get('/addressList', function(req, res, next) {
+  let userId = req.cookies.userId;
+
+  Users.findOne({userId: userId}, function(err, doc) {
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }
+    else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: doc.addressList
+      })
+    }
+  })
+});
+
+router.post('/setDefault', (req, res, next) => {
+  let userId = req.cookies.userId,
+    addressId = req.body.addressId;
+
+  if(!addressId) {
+    res.json({
+      status: '1003',
+      msg: 'addressId is null',
+      result: ''
+    });
+  }
+  else {
+    Users.findOne({userId: userId}, function(err, doc) {
+      if(err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        });
+      }
+      else {
+        let addressList = doc.addressList;
+        addressList.forEach((item) => {
+          if(item.addressId === addressId) {
+            item.isDefault = true;
+          }
+          else {
+            item.isDefault = false;
+          }
+        });
+      }
+      doc.save(function(err1, doc1) {
+        if(err1) {
+          res.json({
+            status: '1',
+            msg: err.message,
+            result: ''
+          });
+        }
+        else {
+          res.json({
+            status: '0',
+            msg: '',
+            result: ''
+          })
+        }
+      });
+    });
+  }
+});
+
+// delete address
+router.post('/delAddress', function(req, res, next) {
+  let userId = req.cookies.userId,
+    addressId = req.body.addressId;
+
+  Users.update({
+    userId: userId
+  }, {
+    $pull: {
+      'addressList': {
+        'addressId': addressId
+      }
+    }
+  }, function(err, doc) {
+    if(err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      });
+    }
+    else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: ''
+      });
+    }
+  });
+});
+
 module.exports = router;
 
 
