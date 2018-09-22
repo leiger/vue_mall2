@@ -241,7 +241,9 @@
   }
 
   .cardBox img {
-    width: 100%;
+    width: 80%;
+    margin: auto;
+    display: block;
   }
 
   h3 {
@@ -256,7 +258,7 @@
   }
 
   .salePrice {
-
+    color: #2d8cf0;
   }
 
   .divider {

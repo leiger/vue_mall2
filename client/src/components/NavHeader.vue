@@ -1,7 +1,8 @@
 <template>
   <header class="headerBox">
     <div class="headerNav">
-      <h1 class="headerLogo">VUE MALL</h1>
+      <router-link to="/"><h1 class="headerLogo">VUE MALL</h1></router-link>
+
       <div class="headerRight">
         <!--not login-->
         <template v-if="nickName === ''">
@@ -166,7 +167,14 @@
       },
 
       openDrawer() {
-        this.$store.commit("updateDrawerState", true);
+        if(this.$route.path === '/') {
+          this.$store.commit("updateDrawerState", true);
+        }
+        else {
+          this.$router.push({
+            path: '/'
+          });
+        }
       }
     }
   }
@@ -176,7 +184,6 @@
   .headerBox {
     background-color: #fff;
     height: 60px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .08);
     border-bottom: 1px dashed #e8eaec;
   }
 

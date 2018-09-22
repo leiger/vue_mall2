@@ -33,7 +33,8 @@
               // console.log(params);
               return h('img', {
                 attrs: {
-                  src: '/static/' + params.row.productImage
+                  src: '/static/' + params.row.productImage,
+                  width: '100%'
                 }
               });
             }
@@ -257,7 +258,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   table img {
     width: 100%;
   }

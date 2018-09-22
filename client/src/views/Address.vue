@@ -13,8 +13,9 @@
     </div>
 
     <div class="layoutBox">
+      <Divider orientation="left">SHIPPING ADDRESS</Divider>
+
       <div class="shippingAddress">
-        <Divider orientation="left">SHIPPING ADDRESS</Divider>
         <Row :gutter="32" type="flex" align="middle">
           <template v-for="(item,index) in addressListFilter">
             <Col span="6">
@@ -49,7 +50,6 @@
           <Button v-else icon="ios-arrow-up" shape="circle" type="dashed" class="more" @click="loadMore"></Button>
         </template>
       </div>
-
 
       <Divider orientation="left">SHIPPING METHOD</Divider>
 
@@ -164,7 +164,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .layoutBox {
     width: 95%;
     margin: 10px auto 20px;
