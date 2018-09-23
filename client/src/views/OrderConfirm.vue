@@ -198,7 +198,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .layoutBox {
     width: 95%;
     margin: 20px auto;
