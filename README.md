@@ -1,5 +1,6 @@
 # vue_mall
 a mall written by vue
+function: add to cart, sort, filter, login, logout...
 
 old repository address: [newMall](https://github.com/leiger/newMall)
 
