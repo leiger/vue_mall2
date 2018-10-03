@@ -8,6 +8,16 @@
 /client/yarn-debug.log*
 /client/yarn-error.log*
 
+/angular-client/dist
+/angular-client/tmp
+/angular-client/out-tsc
+
+/angular-client/node_modules
+
+/angular-client/e2e/*.js
+/angular-client/e2e/*.map
+
+
 # server
 /server/node_modules
 
