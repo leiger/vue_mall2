@@ -44,8 +44,8 @@
           </template>
         </Row>
         <!--more-->
-        <template v-if="addressList.length > 3">
-          <Button v-if="limit===3" icon="ios-arrow-down" shape="circle" type="dashed" class="more"
+        <template v-if="addressList.length > 4">
+          <Button v-if="limit===4" icon="ios-arrow-down" shape="circle" type="dashed" class="more"
                   @click="loadMore"></Button>
           <Button v-else icon="ios-arrow-up" shape="circle" type="dashed" class="more" @click="loadMore"></Button>
         </template>
@@ -82,7 +82,7 @@
   export default {
     data() {
       return {
-        limit: 3,
+        limit: 4,
         addressList: [],
         selected: 0
       }
@@ -107,11 +107,11 @@
         });
       },
       loadMore() {
-        if (this.limit === 3) {
+        if (this.limit === 4) {
           this.limit = this.addressList.length;
         }
         else {
-          this.limit = 3;
+          this.limit = 4;
         }
       },
       selectCard(index) {

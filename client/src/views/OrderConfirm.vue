@@ -18,12 +18,12 @@
 
           <!--order content-->
           <Divider orientation="left">ORDER CONTENT</Divider>
-          <Table size="large" ref="selection" :width="800" :columns="cartTitle" :data="cartConfirm"></Table>
+          <Table ref="selection" :stripe	="true" :columns="cartTitle" :data="cartConfirm"></Table>
 
           <!--shipping address-->
           <Divider orientation="left">SHIPPING ADDRESS</Divider>
           <Row>
-            <Col :span="8">
+            <Col :lg="6" :md="8" :sm="12" :xs="24">
             <Card class="cardBox selected" :dis-hover="true">
               <p class="username">{{ address.userName }}</p>
               <p class="address">{{ address.streetName }}</p>
@@ -36,7 +36,7 @@
           <!--shipping method-->
           <Divider orientation="left">SHIPPING METHOD</Divider>
           <Row>
-            <Col :span="8">
+            <Col :lg="6" :md="8" :sm="12" :xs="24">
             <Card class="cardBox selected" :dis-hover="true">
               <p class="shipMethod">Standard Shipping</p>
               <p class="shipFee">FREE!</p>
@@ -89,8 +89,8 @@
               // console.log(params);
               return h('img', {
                 attrs: {
-                  src: '/static/' + params.row.productImage,
-                  width: '35%'
+                  src: '/static/images/' + params.row.productImage,
+                  height: '30px'
                 }
               });
             }
@@ -199,7 +199,7 @@
   }
 </script>
 
-<style scoped>
+<style>
   .layoutBox {
     width: 95%;
     margin: 20px auto;
@@ -213,10 +213,6 @@
     padding: 17px;
     width: 95%;
     margin: auto;
-  }
-
-  table img {
-    width: 30%;
   }
 
   .username {

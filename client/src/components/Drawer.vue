@@ -1,5 +1,5 @@
 <template>
-  <Drawer width="700" v-model="drawerState" @on-visible-change="openCart">
+  <Drawer :width="drawerWidth" v-model="drawerState" @on-visible-change="openCart">
     <Divider orientation="left">Cart List</Divider>
     <Table ref="selection" :columns="cartTitle" :data="cartList" @on-select-cancel="cancelOne"
            @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="cancelAll"></Table>
@@ -19,6 +19,7 @@
   export default {
     data() {
       return {
+        drawerWidth: '480',
         cart: [],
         cartTitle: [
           {
@@ -26,19 +27,19 @@
             width: 50,
             align: 'center',
           },
-          {
-            title: 'IMAGES',
-            key: 'productImage',
-            render: (h, params) => {
-              // console.log(params);
-              return h('img', {
-                attrs: {
-                  src: '/static/' + params.row.productImage,
-                  width: '100%'
-                }
-              });
-            }
-          },
+//          {
+//            title: 'IMAGES',
+//            key: 'productImage',
+//            render: (h, params) => {
+//              // console.log(params);
+//              return h('img', {
+//                attrs: {
+//                  src: '/static/images/' + params.row.productImage,
+//                  height: '50px'
+//                }
+//              });
+//            }
+//          },
           {
             title: 'ITEMS',
             key: 'productName'
@@ -88,13 +89,13 @@
               });
             }
           },
-          {
-            title: 'SUBTOTAL',
-            key: 'subtotal',
-            render: (h, params) => {
-              return h('span', {}, '$' + params.row.salePrice * params.row.productNum);
-            }
-          },
+//          {
+//            title: 'SUBTOTAL',
+//            key: 'subtotal',
+//            render: (h, params) => {
+//              return h('span', {}, '$' + params.row.salePrice * params.row.productNum);
+//            }
+//          },
           {
             title: 'ACTIONS',
             key: 'action',
@@ -161,6 +162,13 @@
       }
     },
     mounted() {
+      let screen = window.matchMedia("(max-width: 768px)");
+      if (screen.matches) { // If media query matches
+        this.drawerWidth = '100%';
+      } else {
+        this.drawerWidth = '480';
+      }
+
       this.init();
     },
     filters: {

@@ -10,22 +10,24 @@
         <Step title="Order Confirmation"></Step>
       </Steps>
     </div>
-    <Row class="mainBox">
-      <Col :span="8" :push="8">
-      <Card class="cardBox" :dis-hover="true">
-        <Icon class="suc" type="ios-checkmark-circle-outline" size="70"/>
-        <div class="info">
-          <p>CONGRATULATIONS!</p>
-          <p>Your order is under processing!</p>
-        </div>
-        <Divider :dashed="true"/>
-        <div class="detail">
-          <p>ORDER ID: {{ orderId }}</p>
-          <p>ORDER TOTAL: {{ orderTotal | currency }}</p>
-        </div>
-      </Card>
-      </Col>
-    </Row>
+    <div class="layoutBox">
+      <Row class="mainBox" type="flex" justify="center">
+        <Col :lg="8" :sm="12" :xs="24">
+        <Card class="cardBox" :dis-hover="true">
+          <Icon class="suc" type="ios-checkmark-circle-outline" size="70"/>
+          <div class="info">
+            <p>CONGRATULATIONS!</p>
+            <p>Your order is under processing!</p>
+          </div>
+          <Divider :dashed="true"/>
+          <div class="detail">
+            <p>ORDER ID: {{ orderId }}</p>
+            <p>ORDER TOTAL: {{ orderTotal | currency }}</p>
+          </div>
+        </Card>
+        </Col>
+      </Row>
+    </div>
     <NavFooter/>
   </Layout>
 </template>
@@ -72,10 +74,13 @@
 </script>
 
 <style scoped>
+  .layoutBox {
+    width: 95%;
+    margin: 20px auto;
+  }
 
   .stepsBox {
     background-color: #fff;
-    margin-bottom: 100px;
   }
 
   .steps {
@@ -105,7 +110,7 @@
   }
 
   .mainBox {
-    margin-bottom: 100px;
+    margin: 80px 0;
   }
 </style>
 

@@ -34,8 +34,8 @@
         <Row :gutter="16">
           <template v-for="(good, index) in goods">
             <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Card class="cardBox" :bordered="false" :shadow="true">
-              <img :src="'/static/'+good.productImage" :alt="good.productName">
+            <Card class="cardBox">
+              <img :src="'/static/images/'+good.productImage" :alt="good.productName">
               <Divider class="divider" dashed/>
               <Row type="flex" justify="center" align="bottom">
                 <Col span="18">
@@ -242,11 +242,16 @@
   }
 
   .cardBox img {
-    width: 80%;
+    /*width: 80%;*/
     margin: auto;
     display: block;
+    height: 150px;
   }
-
+  h4 {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
   h3 {
     padding: 0 1rem;
     font-size: 18px;
