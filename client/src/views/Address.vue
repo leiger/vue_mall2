@@ -18,7 +18,7 @@
       <div class="shippingAddress">
         <Row :gutter="32" type="flex" align="middle">
           <template v-for="(item,index) in addressListFilter">
-            <Col span="6">
+            <Col :lg="6" :md="8" :sm="12" :xs="24">
             <div @click.stop.prevent="selectCard(index)">
               <Card v-bind:class="{'selected': selected===index}" class="cardBox" :dis-hover="true">
                 <p class="username">{{ item.userName }}</p>
@@ -54,7 +54,7 @@
       <Divider orientation="left">SHIPPING METHOD</Divider>
 
       <Row :gutter="32" type="flex" align="middle">
-        <Col span="6">
+        <Col :lg="6" :md="8" :sm="12" :xs="24">
         <Card class="cardBox selected" :dis-hover="true">
           <p class="shipMethod">Standard Shipping</p>
           <p class="shipFee">FREE!</p>

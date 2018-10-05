@@ -5,7 +5,7 @@
       <!--main content-->
       <Row :gutter="16">
         <!--left-->
-        <Col span="4">
+        <Col :xs="0" :sm="6" :md="4">
         <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
           <CellGroup @on-click="setPriceFilter">
             <template v-for="(price, index) in priceRange">
@@ -30,10 +30,10 @@
         </Col>
 
         <!--right-->
-        <Col span="20">
+        <Col :xs="24" :sm="18" :md="20">
         <Row :gutter="16">
           <template v-for="(good, index) in goods">
-            <Col span="6">
+            <Col :xs="24" :sm="12" :md="8" :lg="6">
             <Card class="cardBox" :bordered="false" :shadow="true">
               <img :src="'/static/'+good.productImage" :alt="good.productName">
               <Divider class="divider" dashed/>
@@ -62,6 +62,7 @@
     </Content>
 
     <nav-footer/>
+    <BackTop/>
   </Layout>
 </template>
 
@@ -96,7 +97,7 @@
 
         goods: [],
         page: 1,
-        pageSize: 8,
+        pageSize: 12,
 
         // vue-infinite-scroll
         busy: false,
@@ -209,7 +210,7 @@
             this.$Message.success('Add Success!');
             axios.get('/users/cartList').then((res) => {
               let data = res.data;
-              this.$store.commit("updateCartList", data.result);
+
               this.cartList = data.result;
             });
           }

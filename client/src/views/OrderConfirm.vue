@@ -13,7 +13,7 @@
     <div class="layoutBox">
       <Row :gutter="32">
 
-        <Col span="18">
+        <Col :lg="18" :xs="24">
         <Card :dis-hover="true" :bordered="false">
 
           <!--order content-->
@@ -47,7 +47,7 @@
         </Card>
         </Col>
         <!--total-->
-        <Col span="6">
+        <Col :lg="6" :xs="24">
         <Divider orientation="center">TOTAL</Divider>
         <Card class="cardBox selected" :dis-hover="true" :padding="0">
           <CellGroup>
@@ -89,7 +89,8 @@
               // console.log(params);
               return h('img', {
                 attrs: {
-                  src: '/static/' + params.row.productImage
+                  src: '/static/' + params.row.productImage,
+                  width: '35%'
                 }
               });
             }
@@ -177,12 +178,12 @@
         });
       },
       payment() {
-        axios.post('/users/payment',{
+        axios.post('/users/payment', {
           addressId: this.address.addressId,
           orderTotal: this.orderTotal
-        }).then((res)=> {
+        }).then((res) => {
           let data = res.data;
-          if(data.status ==='0') {
+          if (data.status === '0') {
             this.disableButton = true;
             console.log('order created suc.');
             this.$router.push({

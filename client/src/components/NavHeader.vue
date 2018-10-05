@@ -4,6 +4,9 @@
       <router-link to="/"><h1 class="headerLogo">VUE MALL</h1></router-link>
 
       <div class="headerRight">
+        <!--github link-->
+        <Button shape="circle" icon="logo-github" @click="github"></Button>
+        <Divider type="vertical" orientation="center"/>
         <!--not login-->
         <template v-if="nickName === ''">
           <Button shape="circle" icon="ios-log-in" @click="loginModel" key="login"></Button>
@@ -23,6 +26,8 @@
 
     <!--login model-->
     <Modal title="LOGIN FORM" v-model="modalState" width="450">
+      <!--info-->
+      <Alert>Username: admin; Password: 123456</Alert>
       <Form ref="login" :model="login" :rules="loginRule">
         <!--username-->
         <FormItem prop="username">
@@ -93,11 +98,9 @@
         this.$refs[name].validate((valid => {
           if (valid) {
             this.loginLoading = true;
-            // Simulated real environment
-            setTimeout(() => {
-              this.onSubmit();
-              this.loginLoading = false;
-            }, 1000);
+            this.onSubmit();
+            this.loginLoading = false;
+
           }
           else {
             this.$Message.error('Fail');
@@ -167,7 +170,7 @@
       },
 
       openDrawer() {
-        if(this.$route.path === '/') {
+        if (this.$route.path === '/') {
           this.$store.commit("updateDrawerState", true);
         }
         else {
@@ -175,6 +178,10 @@
             path: '/'
           });
         }
+      },
+
+      github() {
+        window.open(`https://github.com/leiger/vue_mall`, '_blank');
       }
     }
   }
