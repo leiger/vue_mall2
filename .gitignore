@@ -8,17 +8,19 @@
 /client/yarn-debug.log*
 /client/yarn-error.log*
 
-/angular-client
-/angular-client/dist
-/angular-client/tmp
-/angular-client/out-tsc
+# react-mall
+/react-mall/node_modules
+/react-mall/coverage
+/react-mall/build
+/react-mall/.DS_Store
+/react-mall/.env.local
+/react-mall/.env.development.local
+/react-mall/.env.test.local
+/react-mall/.env.production.local
 
-/angular-client/node_modules
-
-/angular-client/e2e/*.js
-/angular-client/e2e/*.map
-
-/react-mall
+/react-mall/npm-debug.log*
+/react-mall/yarn-debug.log*
+/react-mall/yarn-error.log*
 
 # server
 /server/node_modules
