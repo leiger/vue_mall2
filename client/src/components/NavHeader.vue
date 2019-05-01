@@ -40,7 +40,7 @@
           <Input type="password" v-model="login.password" placeholder="Password" @on-enter="handleSubmit('login')">
           <Icon type="ios-lock-outline" slot="prepend"></Icon>
           </Input>
-        </FormItem>
+      </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" @click="resetForm">reset</Button>
