@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 
-class OrderSuccess extends Component {
+class confirm extends Component {
   render() {
     return (
       <div>
-        ordersuccess
+        orderconfirm
       </div>
     );
   }
 }
 
-export default OrderSuccess;
+export default confirm;

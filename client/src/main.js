@@ -23,7 +23,7 @@ const store = new Vuex.Store({
   state: {
     nickName: '',
     drawerState: false,
-    // cartList: []
+    cartList: []
   },
   mutations: {
     updateUserInfo(state, nickName) {
@@ -32,14 +32,13 @@ const store = new Vuex.Store({
 
     updateDrawerState(state, drawerState) {
       state.drawerState = drawerState;
+    },
+    updateCartList(state, cartList) {
+      state.cartList = cartList;
+    },
+    updateCartListOne(state, tem) {
+      state.cartList[tem.index].productNum = tem.newValue;
     }
-    // },
-    // updateCartList(state, cartList) {
-    //   state.cartList = cartList;
-    // },
-    // updateCartListOne(state, tem) {
-    //   state.cartList[tem.index].productNum = tem.newValue;
-    // }
   }
 });
 

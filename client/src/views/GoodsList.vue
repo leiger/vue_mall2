@@ -1,63 +1,66 @@
 <template>
   <Layout>
+    <!--header-->
     <nav-header/>
+
     <Content class="layoutBox">
       <!--main content-->
       <Row :gutter="16">
         <!--left-->
         <Col :xs="0" :sm="6" :md="4">
-        <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
-          <CellGroup @on-click="setPriceFilter">
-            <template v-for="(price, index) in priceRange">
-              <Cell :name="index" :title="price" :selected="priceFilterSelected[index]"/>
-            </template>
-          </CellGroup>
-        </Card>
+          <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
+            <CellGroup @on-click="setPriceFilter">
+              <template v-for="(price, index) in priceRange">
+                <Cell :name="index" :title="price" :selected="priceFilterSelected[index]"/>
+              </template>
+            </CellGroup>
+          </Card>
 
-        <Card class="cardBox" title="Sort" icon="ios-funnel-outline" :padding="0" shadow>
-          <CellGroup @on-click="sortGoods">
-            <template v-for="(name, index) in sortNames">
-              <Cell :name="index" :title="name" :selected="sortSelected[index]">
-                {{name}}
-                <template v-if="index === 1">
-                  <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
-                  <Icon type="ios-arrow-round-down" v-else/>
-                </template>
-              </Cell>
-            </template>
-          </CellGroup>
-        </Card>
+          <Card class="cardBox" title="Sort" icon="ios-funnel-outline" :padding="0" shadow>
+            <CellGroup @on-click="sortGoods">
+              <template v-for="(name, index) in sortNames">
+                <Cell :name="index" :title="name" :selected="sortSelected[index]">
+                  {{name}}
+                  <template v-if="index === 1">
+                    <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
+                    <Icon type="ios-arrow-round-down" v-else/>
+                  </template>
+                </Cell>
+              </template>
+            </CellGroup>
+          </Card>
         </Col>
 
         <!--right-->
         <Col :xs="24" :sm="18" :md="20">
-        <Row :gutter="16">
-          <template v-for="(good, index) in goods">
-            <Col :xs="24" :sm="12" :md="8" :lg="6">
-            <Card class="cardBox">
-              <img :src="'/static/images/'+good.productImage" :alt="good.productName">
-              <Divider class="divider" dashed/>
-              <Row type="flex" justify="center" align="bottom">
-                <Col span="18">
-                <h4>{{ good.productName }}</h4>
-                <p class="salePrice">$ {{ good.salePrice }}</p>
-                </Col>
-                <Col span="6">
-                <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed"
-                        style="float: right" size="large"></Button>
-                </Col>
-              </Row>
-            </Card>
-            </Col>
-          </template>
-          <!--load more-->
-          <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
-               infinite-scroll-distance="10" v-if="loading.imageShow">
-            <img :src="loading.imageUrl" alt="loading...">
-          </div>
-        </Row>
+          <Row :gutter="16">
+            <template v-for="(good, index) in goods">
+              <Col :xs="24" :sm="12" :md="8" :lg="6">
+              <Card class="cardBox">
+                <img :src="'/static/images/'+good.productImage" :alt="good.productName">
+                <Divider class="divider" dashed/>
+                <Row type="flex" justify="center" align="bottom">
+                  <Col span="18">
+                  <h4>{{ good.productName }}</h4>
+                  <p class="salePrice">$ {{ good.salePrice }}</p>
+                  </Col>
+                  <Col span="6">
+                  <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed"
+                          style="float: right" size="large"></Button>
+                  </Col>
+                </Row>
+              </Card>
+              </Col>
+            </template>
+            <!--load more-->
+            <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
+                 infinite-scroll-distance="10" v-if="loading.imageShow">
+              <img :src="loading.imageUrl" alt="loading...">
+            </div>
+          </Row>
         </Col>
       </Row>
+      <!--drawer-->
       <Drawer></Drawer>
     </Content>
 
