@@ -5,11 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    loginModalState: false,
     nickName: '',
     drawerState: false,
     cartList: []
   },
   mutations: {
+    openLoginModal(state) {
+      state.loginModalState = true;
+    },
+    closeLoginModal(state) {
+      state.loginModalState = false;
+    },
+
     updateUserInfo(state, nickName) {
       state.nickName = nickName;
     },

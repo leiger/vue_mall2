@@ -18,10 +18,20 @@ Vue.config.productionTip = false;
 Vue.use(iView);
 Vue.use(infiniteScroll);
 
+// global loading bar
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start();
+  next();
+});
+
+router.afterEach(route => {
+  iView.LoadingBar.finish();
+});
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  vuex,
+  store: vuex,
   router,
   components: { App },
   template: '<App/>',

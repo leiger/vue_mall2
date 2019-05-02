@@ -3,6 +3,8 @@ import Router from 'vue-router'
 
 import Index from '../views/Index.vue'
 import GoodsList from '../views/GoodsList.vue'
+import About from '../views/About.vue'
+import Blog from '../views/Blog.vue'
 import Address from '../views/Address.vue'
 import OrderConfirm from '../views/OrderConfirm.vue'
 import OrderSuccess from '../views/OrderSuccess.vue'
@@ -19,6 +21,15 @@ export default new Router({
       path: '/all',
       component: GoodsList
     },
+    {
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/blog',
+      component: Blog
+    },
+
     {
       path: '/address',
       name: 'Address',
