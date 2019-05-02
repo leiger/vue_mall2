@@ -11,5 +11,7 @@ export default {
 </script>
 
 <style>
-
+a {
+  transition: .5s all;
+}
 </style>

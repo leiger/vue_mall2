@@ -1,56 +1,30 @@
 <template>
-  <div class="carousel">
-    <Carousel autoplay :autoplay-speed="5000">
-      <CarouselItem>
-        <div class="imgBox">
-          <a>
-            <img :src="carouselItem[0]" alt="carouselImg1">
-          </a>
-          <div class="carouselIntro">
-            <h4>LED Desk Lamp</h4>
-            <div class="desc">
-              <p>Flicker-free</p>
-              <p>Intuitive brightness and color temperature adjustment</p>
-              <p>Works with the Google Assistant</p>
+  <transition appear appear-class appear-active-class="animated fadeIn" :duration="1000">
+    <div class="carousel">
+      <Carousel autoplay :autoplay-speed="5000" @on-change="carouselChange">
+        <CarouselItem v-for="(item,index) in carouselItems" :key="index">
+          <div class="imgBox">
+            <a>
+              <transition appear name="scaleUp">
+                <img v-if="currentCarouselIndex === index" :src="item.src" alt="carouselImg1">
+              </transition>
+            </a>
+            <div class="carouselIntro">
+              <transition appear enter-active-class="animated fadeInDown">
+                <h4 v-if="currentCarouselIndex === index">{{item.title}}</h4>
+              </transition>
+              <transition appear enter-active-class="animated fadeInLeft">
+                <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
+              </transition>
+              <transition appear enter-active-class="animated fadeInUp">
+                <button class="learnMore" v-if="currentCarouselIndex === index">LEARN MORE</button>
+              </transition>
             </div>
-            <button>Learn More</button>
           </div>
-        </div>
-      </CarouselItem>
-      <CarouselItem>
-        <div class="imgBox">
-          <a>
-            <img :src="carouselItem[1]" alt="carouselImg1">
-          </a>
-          <div class="carouselIntro">
-            <h4>Laser Projector</h4>
-            <div class="desc">
-              <p>Ultra-short throw distance</p>
-              <p>A massive screen for your home</p>
-            </div>
-            <button>Learn More</button>
-          </div>
-        </div>
-      </CarouselItem>
-      <CarouselItem>
-        <div class="imgBox">
-          <a>
-            <img :src="carouselItem[2]" alt="carouselImg1">
-          </a>
-          <div class="carouselIntro">
-            <h4>Electric Scooter</h4>
-            <div class="desc">
-              <p>Intuitive and easy-to-learn</p>
-              <p>18.6 miles long-range battery life</p>
-              <p>Double braking system</p>
-              <p>Portable folding design</p>
-            </div>
-            <button>Learn More</button>
-          </div>
-        </div>
-      </CarouselItem>
-    </Carousel>
-  </div>
+        </CarouselItem>
+      </Carousel>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -61,45 +35,88 @@ import bg4 from "./../../static/carousel/bg_4.jpg";
 export default {
   data() {
     return {
-      carouselItem: [bg1, bg2, bg4]
+      carouselItems: [
+        {
+          src: bg1,
+          title: "LED Desk Lamp",
+          desc: `<p>Flicker-free</p>
+                  <p>Intuitive brightness and color temperature adjustment</p>
+                  <p>Works with the Google Assistant</p>`
+        },
+        {
+          src: bg2,
+          title: "Laser Projector",
+          desc: `<p>Ultra-short throw distance</p>
+                  <p>A massive screen for your home</p>`
+        },
+        {
+          src: bg4,
+          title: "Electric Scooter",
+          desc: `<p>Intuitive and easy-to-learn</p>
+                  <p>18.6 miles long-range battery life</p>
+                  <p>Double braking system</p>
+                  <p>Portable folding design</p>`
+        }
+      ],
+      currentCarouselIndex: 0
     };
+  },
+  methods: {
+    carouselChange(oldIndex, newIndex) {
+      this.currentCarouselIndex = newIndex;
+    }
   }
 };
 </script>
 
-<style scoped>
-.imgBox {
+<style>
+.carousel .imgBox {
   position: relative;
 }
-.imgBox a {
+.carousel .imgBox a {
   position: relative;
   display: block;
   width: 100%;
   text-align: center;
 }
 
-img {
+.carousel img {
   width: 100%;
   height: auto;
+  min-height: 550px;
 }
-.carouselIntro {
+.scaleUp-enter-active {
+  animation: scaleUp 5s;
+}
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.carousel .carouselIntro {
   position: absolute;
   z-index: 10;
   top: 30%;
   left: 20%;
 }
-h4 {
+.carousel h4 {
   font-size: 54px;
+  margin-bottom: 10px;
+  color: #212121;
 }
-.desc {
-  margin-bottom: 40px;
+.carousel .desc {
+  margin-bottom: 30px;
 }
-.desc p {
+.carousel p {
   font-size: 16px;
 }
-button {
+.carousel .learnMore {
   background-color: transparent;
-  width:200px;
+  width: 200px;
   height: 38px;
   line-height: 38px;
   font-size: 14px;
@@ -107,9 +124,10 @@ button {
   text-align: center;
   outline: none;
   cursor: pointer;
+  transition: 0.5s;
 }
-button:hover {
+.carousel button:hover {
   color: #fff;
-  background-color: #757575;
+  background-color: #212121;
 }
 </style>

@@ -1,28 +1,35 @@
 <template>
   <header class="headerBox">
     <div class="headerNav">
-      <div class="headerLeft">
-        <router-link to="/">
-          <h1 class="headerLogo">VUE MALL</h1>
-        </router-link>
-      </div>
-      <div class="headerRight">
-        <ul>
-          <li>
-            <router-link to="/">HOME</router-link>
-          </li>
-          <li>
-            <router-link to="/all">STORE</router-link>
-          </li>
-          <li>
-            <router-link to="/about">ABOUT</router-link>
-          </li>
-          <li>
-            <router-link to="/blog">BLOG</router-link>
-          </li>
-
-        </ul>
-      </div>
+      <transition
+        appear
+        appear-class
+        appear-active-class="animated fadeInDown"
+      >
+        <div class="headerLeft">
+          <router-link to="/">
+            <h1 class="headerLogo">VUE MALL</h1>
+          </router-link>
+        </div>
+      </transition>
+        <div class="headerRight">
+          <transition-group appear appear-class
+        appear-active-class="animated fadeInDown" tag="ul">
+            <li key="0" data-index="0">
+              <router-link to="/">HOME</router-link>
+            </li>
+            <li key="1" data-index="1">
+              <router-link to="/all">STORE</router-link>
+            </li>
+            <li key="2" data-index="2">
+              <router-link to="/about">ABOUT</router-link>
+            </li>
+            <li key="3" data-index="3">
+              <router-link to="/blog">BLOG</router-link>
+            </li>
+          </transition-group>
+        </div>
+      </transition>
       <!--
       <div class="headerRight">
         <div class="links">
@@ -48,6 +55,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      showAnimated: false,
       cartList: []
     };
   },
@@ -56,7 +64,9 @@ export default {
       return this.cartList.length;
     }
   },
-
+  mounted() {
+    this.showAnimated = true;
+  },
   methods: {
     openDrawer() {
       if (this.$route.path === "/") {
@@ -101,17 +111,33 @@ ul li {
   height: 24px;
 }
 ul li a {
+  position: relative;
   color: #616161;
   vertical-align: middle;
   font-size: 14px;
   font-weight: 600;
+  transition: all 0.5s;
 }
-ul li a:hover {
+ul li a:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #515a6e;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition-duration: 0.2s;
+  transition-delay: 0;
+  clear: both;
+}
+ul li a:hover{
   color: #808695;
-  border-bottom: 2px solid #515a6e;
 }
-.links {
-  float: right;
+ul li a:hover::before {
+  visibility: visible;
+  transform: scaleX(1);
 }
 </style>
 

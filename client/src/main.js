@@ -6,7 +6,9 @@ import router from './router'
 import vuex from './vuex'
 
 import iView from 'iview';
+import locale from 'iview/dist/locale/en-US';
 import 'iview/dist/styles/iview.css';
+import 'animate.css/animate.min.css';
 
 import infiniteScroll from 'vue-infinite-scroll'
 
@@ -15,7 +17,9 @@ import infiniteScroll from 'vue-infinite-scroll'
 
 Vue.config.productionTip = false;
 
-Vue.use(iView);
+Vue.use(iView, {
+  locale
+});
 Vue.use(infiniteScroll);
 
 // global loading bar
@@ -33,8 +37,8 @@ new Vue({
   el: '#app',
   store: vuex,
   router,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>',
 });
-
-
