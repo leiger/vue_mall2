@@ -21,3 +21,12 @@ node /bin/www
 ```
 ### service
 #### getCartList
+
+### components
+#### LoginModal
+- login form
+- login check
+- third part login(icon)
+- username and password
+- after login
+  - send ajax request: get nickName, cartList
