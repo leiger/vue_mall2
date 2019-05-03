@@ -23,10 +23,23 @@ node /bin/www
 #### getCartList
 
 ### components
+#### EntryBoard
+- jump to the my github
+- toggle between signin/nickName+signOut btn
+  - sign in btn
+    - click open form modal
+
 #### LoginModal
 - login form
 - login check
 - third part login(icon)
 - username and password
 - after login
-  - send ajax request: get nickName, cartList
+  - send ajax request: get nickName, cartList, close modal
+
+#### NavHeader
+- logo
+- navbar
+- cart 
+  - login depend on the nickName === '' or not 
+  - login ? show nums: hide

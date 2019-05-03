@@ -11,20 +11,21 @@ export default new Vuex.Store({
     cartList: []
   },
   mutations: {
-    openLoginModal(state) {
-      state.loginModalState = true;
-    },
-    closeLoginModal(state) {
-      state.loginModalState = false;
+    updateLoginModal(state, payload) {
+      state.loginModalState = payload;
     },
 
     updateUserInfo(state, nickName) {
       state.nickName = nickName;
+      if(nickName === "") {
+        state.cartList = [];
+      }
     },
-
+    // drawer
     updateDrawerState(state, drawerState) {
       state.drawerState = drawerState;
     },
+    // cartlist
     updateCartList(state, cartList) {
       state.cartList = cartList;
     },

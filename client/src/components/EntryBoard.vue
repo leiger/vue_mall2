@@ -3,8 +3,7 @@
     <div class="entry">
       <div class="entryLeft">
         <a @click="toGithubAddress">
-          <Icon class="entryLeftIcon" type="logo-github" size="15"/>
-          FIND ME ON GITHUB
+          <Icon class="entryLeftIcon" type="logo-github" size="15"/>FIND ME ON GITHUB
         </a>
       </div>
       <div class="entryRight">
@@ -57,7 +56,7 @@ export default {
     },
 
     openLoginModel() {
-      this.$store.commit("openLoginModal", true);
+      this.$store.commit("updateLoginModal", true);
     },
 
     logOut() {

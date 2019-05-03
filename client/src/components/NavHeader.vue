@@ -13,55 +13,45 @@
         </div>
       </transition>
         <div class="headerRight">
-          <transition-group appear appear-class
-        appear-active-class="animated fadeInDown" tag="ul">
-            <li key="0" data-index="0">
+          <transition-group appear appear-class appear-active-class="animated fadeInDown" tag="ul">
+            <li key="0">
               <router-link to="/">HOME</router-link>
             </li>
-            <li key="1" data-index="1">
+            <li key="1">
               <router-link to="/all">STORE</router-link>
             </li>
-            <li key="2" data-index="2">
+            <li key="2">
               <router-link to="/about">ABOUT</router-link>
             </li>
-            <li key="3" data-index="3">
+            <li key="3">
               <router-link to="/blog">BLOG</router-link>
+            </li>
+            <li key="4">
+              <a @click="openDrawer">CART <span v-if="nickName">({{cartNum}})</span></a>
             </li>
           </transition-group>
         </div>
       </transition>
-      <!--
-      <div class="headerRight">
-        <div class="links">
-
-          <template v-else>
-
-            <Badge :dot="cartNum !== 0">
-              <Button type="dashed" shape="circle" icon="ios-cart" @click="openDrawer"></Button>
-            </Badge>
-
-            <Button shape="circle" icon="ios-log-out" @click="logout" key="logout"></Button>
-          </template>
-        </div>
-      </div>
-      -->
     </div>
   </header>
 </template>
 
 <script>
 import axios from "axios";
+import getCartList from "./../services/getCartList.js";
 
 export default {
   data() {
     return {
       showAnimated: false,
-      cartList: []
     };
   },
   computed: {
     cartNum() {
-      return this.cartList.length;
+      return this.$store.state.cartList.length;
+    },
+    nickName() {
+      return this.$store.state.nickName;
     }
   },
   mounted() {
@@ -69,13 +59,16 @@ export default {
   },
   methods: {
     openDrawer() {
-      if (this.$route.path === "/") {
-        this.$store.commit("updateDrawerState", true);
-      } else {
-        this.$router.push({
-          path: "/"
-        });
+      if(this.nickName === '') {
+        this.$Message.error("Login First!");
+        setTimeout(() => {
+          this.$store.commit('updateLoginModal', true);
+        }, 2000);
       }
+      else {
+        this.$store.commit('updateDrawerState',true);
+      }
+
     }
   }
 };

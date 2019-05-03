@@ -3,6 +3,7 @@
     <EntryBoard/>
     <LoginModal/>
     <NavHeader class="header"/>
+    <Drawer/>
     <CarouselShow class="carousel"/>
     <StarProducts class="starProducts"/>
     <NavFooter/>

@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-let getCartList = async () => {
+let getCartList = async that => {
   try {
     let {
       data
     } = await axios.get("/users/cartList");
     if (data.status === "0") {
-      this.cartList = data.result;
+      that.$store.commit('updateCartList', data.result);
     }
   } catch (err) {
     console.log(err);

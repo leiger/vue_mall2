@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     closeModal() {
-      this.$store.commit("closeLoginModal");
+      this.$store.commit("updateLoginModal", false);
     },
     // check input data valid or not
     handleSubmit(name) {
@@ -121,9 +121,10 @@ export default {
         if (data.status === "0") {
           this.$Message.success("Login Success!");
           this.$store.commit("updateUserInfo", data.result.userName);
-          // get cart list
-          getCartList();
+          // close modal
           this.closeModal();
+          // get cart list
+          getCartList(this);
         } else if (data.status === "2") {
           this.$Message.error("Wrong Username or Password!");
         }
