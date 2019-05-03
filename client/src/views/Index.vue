@@ -1,7 +1,6 @@
 <template>
   <div class="main">
     <EntryBoard/>
-    <LoginModal/>
     <NavHeader class="header"/>
     <Drawer/>
     <CarouselShow class="carousel"/>
@@ -12,7 +11,6 @@
 
 <script>
 import EntryBoard from "./../components/EntryBoard.vue";
-import LoginModal from "./../components/LoginModal.vue";
 import NavHeader from "./../components/NavHeader.vue";
 import CarouselShow from "./../components/CarouselShow.vue";
 import StarProducts from "./../components/StarProducts.vue";
@@ -26,7 +24,6 @@ export default {
   },
   components: {
     EntryBoard,
-    LoginModal,
     NavHeader,
     CarouselShow,
     StarProducts,

@@ -1,9 +1,9 @@
 <template>
   <div class="article">
     <transition appear appear-class appear-active-class="animated fadeInUp">
-    <div class="title">
-      <h2>{{postTitle}}</h2>
-    </div>
+      <div class="title">
+        <h2>{{postTitle}}</h2>
+      </div>
     </transition>
     <div class="content">
       <slot></slot>
@@ -23,7 +23,8 @@ export default {
 <style scoped>
 .article {
   max-width: 740px;
-  margin: auto;
+  margin: 30px auto 66px;
+  overflow: hidden;
 }
 .title {
   margin-bottom: 42px;
@@ -53,5 +54,16 @@ p {
 }
 img {
   width: 100%;
+}
+img:hover {
+  animation: scaleUp 4s;
+}
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1)
+  }
 }
 </style>

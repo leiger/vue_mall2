@@ -32,6 +32,8 @@ node /bin/www
 #### LoginModal
 - login form
 - login check
+  - exist?
+  - info
 - third part login(icon)
 - username and password
 - after login
@@ -43,3 +45,4 @@ node /bin/www
 - cart 
   - login depend on the nickName === '' or not 
   - login ? show nums: hide
+- contain LoginModal components: reduce reuse in other pages
