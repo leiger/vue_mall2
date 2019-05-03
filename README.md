@@ -12,6 +12,12 @@ npm install
 npm start
 ```
 
+### Plan
+#### goods details
+#### modify database
+#### animation
+#### store rewrite
+
 ### server
 using express and mongondb
 ```

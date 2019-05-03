@@ -40,7 +40,6 @@
 <script>
 import LoginModal from "./../components/LoginModal.vue";
 import axios from "axios";
-import getCartList from "./../services/getCartList.js";
 
 export default {
   data() {

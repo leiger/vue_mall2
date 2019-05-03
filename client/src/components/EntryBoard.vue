@@ -44,7 +44,7 @@ export default {
         if (data.status === "0") {
           // this.nickName = data.result;
           this.$store.commit("updateUserInfo", data.result);
-          getCartList();
+          getCartList(this);
         }
       } catch (err) {
         console.log(err);

@@ -1,67 +1,93 @@
 <template>
   <Layout>
-    <!--header-->
-    <nav-header/>
+    <EntryBoard/>
+    <NavHeader/>
+    <!-- banner -->
+    <div class="banner">
+      <!-- <img :src="bannerImgSrc" alt="bannerImg"> -->
+    </div>
+    <!-- intro -->
+    <Article :postTitle="mainTitle">
+      <p>Choose well and buy less. We believe in owning fewer, quality things and making them last a long time. That’s why if any of our product ever breaks down, you can send it back to us and we’ll repair it.</p>
+    </Article>
 
     <Content class="layoutBox">
       <!--main content-->
-      <Row :gutter="16">
-        <!--left-->
-        <Col :xs="0" :sm="6" :md="4">
-          <Card class="cardBox" title="Price Filter" icon="ios-options" :padding="0" shadow>
-            <CellGroup @on-click="setPriceFilter">
-              <template v-for="(price, index) in priceRange">
-                <Cell :name="index" :title="price" :selected="priceFilterSelected[index]"/>
-              </template>
-            </CellGroup>
-          </Card>
+      <!--left-->
+      <div class="leftBox">
+        <div class="cardBox">
+          <h4>FILTER BY PRICE RANGE</h4>
+          <ul>
+            <li v-for="(price, index) in priceRange">
+              <a
+                @click="setPriceFilter(index)"
+                :class="{tagSelected: priceFilterSelected[index]}"
+              >{{price}}</a>
+            </li>
+          </ul>
+        </div>
 
-          <Card class="cardBox" title="Sort" icon="ios-funnel-outline" :padding="0" shadow>
-            <CellGroup @on-click="sortGoods">
-              <template v-for="(name, index) in sortNames">
-                <Cell :name="index" :title="name" :selected="sortSelected[index]">
-                  {{name}}
-                  <template v-if="index === 1">
-                    <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
-                    <Icon type="ios-arrow-round-down" v-else/>
-                  </template>
-                </Cell>
-              </template>
-            </CellGroup>
-          </Card>
-        </Col>
+        <div class="cardBox">
+          <h4>SORT</h4>
+          <ul>
+            <li v-for="(name, index) in sortNames">
+              <a @click="sortGoods(index)" :class="{tagSelected: sortSelected[index]}">
+                {{name}}
+                <template v-if="index === 1">
+                  <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
+                  <Icon type="ios-arrow-round-down" v-else/>
+                </template>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-        <!--right-->
-        <Col :xs="24" :sm="18" :md="20">
-          <Row :gutter="16">
-            <template v-for="(good, index) in goods">
-              <Col :xs="24" :sm="12" :md="8" :lg="6">
-              <Card class="cardBox">
-                <img :src="'/static/images/'+good.productImage" :alt="good.productName">
-                <Divider class="divider" dashed/>
-                <Row type="flex" justify="center" align="bottom">
-                  <Col span="18">
-                  <h4>{{ good.productName }}</h4>
-                  <p class="salePrice">$ {{ good.salePrice }}</p>
-                  </Col>
-                  <Col span="6">
-                  <Button icon="ios-cart-outline" shape="circle" @click="addCart(good.productId)" type="dashed"
-                          style="float: right" size="large"></Button>
-                  </Col>
-                </Row>
-              </Card>
+      <!--right-->
+      <div class="rightBox">
+        <template v-for="(good, index) in goods">
+          <!-- <Card class="cardBox">
+            <img :src="'/static/images/'+good.productImage" :alt="good.productName">
+            <Divider class="divider" dashed/>
+            <Row type="flex" justify="center" align="bottom">
+              <Col span="18">
+                <h4>{{ good.productName }}</h4>
+                <p class="salePrice">$ {{ good.salePrice }}</p>
               </Col>
-            </template>
-            <!--load more-->
-            <div class="load_more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy"
-                 infinite-scroll-distance="10" v-if="loading.imageShow">
-              <img :src="loading.imageUrl" alt="loading...">
+              <Col span="6">
+                <Button
+                  icon="ios-cart-outline"
+                  shape="circle"
+                  @click="addCart(good.productId)"
+                  type="dashed"
+                  style="float: right"
+                  size="large"
+                ></Button>
+              </Col>
+            </Row>
+          </Card>-->
+          <div class="goodsBox">
+            <div class="imgBox">
+              <img :src="'/static/images/'+good.productImage" :alt="good.productName">
+              <div class="goodsDetail">
+                <h4>{{ good.productName }}</h4>
+                <span>$ {{ good.salePrice }}</span>
+                <button @click="addCart(good.productId)" class="addToCart">ADD TO CART</button>
+              </div>
             </div>
-          </Row>
-        </Col>
-      </Row>
-      <!--drawer-->
-      <Drawer></Drawer>
+          </div>
+        </template>
+        <!--load more-->
+        <div
+          class="load_more"
+          v-infinite-scroll="loadMore"
+          infinite-scroll-disabled="busy"
+          infinite-scroll-distance="10"
+          v-if="loading.imageShow"
+        >
+          <img :src="loading.imageUrl" alt="loading...">
+        </div>
+      </div>
     </Content>
 
     <nav-footer/>
@@ -70,209 +96,294 @@
 </template>
 
 <script>
-  import NavHeader from './../components/NavHeader.vue';
-  import NavFooter from './../components/NavFooter.vue';
-  import Drawer from '../components/Drawer.vue';
-  import axios from 'axios';
-  import loadingSvg from './../../static/loading-svg/loading-spin.svg';
+import EntryBoard from "./../components/EntryBoard.vue";
+import NavHeader from "./../components/NavHeader.vue";
+import Article from "./../components/Article.vue";
+import NavFooter from "./../components/NavFooter.vue";
 
-  //  import mock data
-  //  import './../../mock/mock';
+import axios from "axios";
+import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
 
-  export default {
-    data() {
-      return {
-        // priceFilter
-        priceRange: ['All', '$0 - $100', '$100 - $500', '$500 - $1000', '$1000 - $2000'],
-        priceLevel: 0,
-        priceFilterSelected: [true, false, false, false],
+export default {
+  data() {
+    return {
+      mainTitle: "All Products",
+      // priceFilter
+      priceRange: [
+        "All",
+        "$0 to $100",
+        "$100 to $500",
+        "$500 to $1000",
+        "$1000 to $2000"
+      ],
+      priceLevel: 0,
+      priceFilterSelected: [true, false, false, false],
 
-        // sort
-        // sortWay default: 0, price: 1
-        // sortFlag asce or desc
-        sortNames: ['Default', 'Price'],
-        sortSelected: [true, false],
-        sort: {
-          sortWay: 0,
-          sortFlag: true
-        },
-        sortPriceArrow: true,
+      // sort
+      // sortWay default: 0, price: 1
+      // sortFlag asce or desc
+      sortNames: ["Default", "Price"],
+      sortSelected: [true, false],
+      sort: {
+        sortWay: 0,
+        sortFlag: true
+      },
+      sortPriceArrow: true,
 
-        goods: [],
-        page: 1,
-        pageSize: 12,
+      goods: [],
+      page: 1,
+      pageSize: 12,
 
-        // vue-infinite-scroll
-        busy: false,
-        loading: {
-          imageUrl: loadingSvg,
-          imageShow: true
+      // vue-infinite-scroll
+      busy: false,
+      loading: {
+        imageUrl: loadingSvg,
+        imageShow: true
+      }
+    };
+  },
+  components: {
+    NavHeader,
+    EntryBoard,
+    Article,
+    NavFooter
+  },
+  mounted: function() {
+    this.getGoodsList();
+  },
+  methods: {
+    async getGoodsList(flag) {
+      let params = {
+        page: this.page,
+        pageSize: this.pageSize,
+        // 1: asce; -1: desc
+        sortFlag: this.sort.sortFlag ? 1 : -1,
+        // price or default
+        sortWay: this.sort.sortWay,
+        priceLevel: this.priceLevel
+      };
+
+      this.loading.imageShow = true;
+
+      try {
+        let { data } = await axios.get("/goods/list", {
+          params
+        });
+        // console.log(res);
+        if (data.status === "0") {
+          // flag means first page or later page
+          if (flag) {
+            this.goods = this.goods.concat(data.result.list);
+            // no more data
+            if (data.result.count < 8) {
+              this.busy = true;
+            } else {
+              this.busy = false;
+            }
+          } else {
+            this.goods = data.result.list;
+            this.busy = false;
+          }
         }
+        // request false
+        else {
+          this.goods = [];
+          console.log("request false");
+        }
+        this.loading.imageShow = false;
+      } catch (err) {
+        console.log(err);
       }
     },
-    components: {
-      NavHeader,
-      NavFooter,
-      Drawer
-    },
-    mounted: function () {
+    sortGoods(name) {
+      // price sort
+      if (name === 1) {
+        if (this.sortSelected[1] === true) {
+          this.sortPriceArrow = !this.sortPriceArrow;
+          this.sort.sortFlag = !this.sort.sortFlag;
+        }
+        this.sortSelected = [false, true];
+      }
+      // default sort
+      else {
+        this.sortSelected = [true, false];
+      }
+      this.page = 1;
+      this.sort.sortWay = name;
       this.getGoodsList();
     },
-    methods: {
-      getGoodsList(flag) {
-        let param = {
-          page: this.page,
-          pageSize: this.pageSize,
-//          1: asce; -1: desc
-          sortFlag: this.sort.sortFlag ? 1 : -1,
-          // price or default
-          sortWay: this.sort.sortWay,
-          priceLevel: this.priceLevel
-        };
+    setPriceFilter(level) {
+      this.page = 1;
+      this.priceLevel = level;
+      this.priceFilterSelected = [false, false, false, false];
+      this.priceFilterSelected[level] = true;
+      this.mainTitle = this.priceRange[level];
+      this.getGoodsList();
+    },
+    loadMore: function() {
+      // forbid load frequently
+      this.busy = true;
 
-        this.loading.imageShow = true;
+      setTimeout(() => {
+        this.page++;
+        //          console.log(this.page);
+        this.getGoodsList(true);
+        // this.busy = false;
+      }, 1000);
+    },
 
-        axios.get('/goods/list', {
-          params: param
-        })
-          .then((res) => {
-            // console.log(res);
-            if (res.data.status === "0") {
-              // flag means first page or later page
-              if (flag) {
-                this.goods = this.goods.concat(res.data.result.list);
-                // no more data
-                if (res.data.result.count < 8) {
-                  console.log(res.data.result.count)
-                  this.busy = true;
-                }
-                else {
-                  this.busy = false;
-                }
-              }
-              else {
-                this.goods = res.data.result.list;
-                this.busy = false;
-              }
-            }
-            // request false
-            else {
-              this.goods = [];
-              console.log('request false')
-            }
-            this.loading.imageShow = false;
-            // console.log(this.goods)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      },
-      sortGoods(name) {
-        // price sort
-        if (name === 1) {
-          if (this.sortSelected[1] === true) {
-            this.sortPriceArrow = !this.sortPriceArrow;
-            this.sort.sortFlag = !this.sort.sortFlag;
-          }
-          this.sortSelected = [false, true];
-        }
-        // default sort
-        else {
-          this.sortSelected = [true, false];
-        }
-        this.page = 1;
-        this.sort.sortWay = name;
-        this.getGoodsList();
-      },
-      setPriceFilter(level) {
-        console.log(level);
-        this.page = 1;
-        this.priceLevel = level;
-        this.priceFilterSelected = [false, false, false, false];
-        this.priceFilterSelected[level] = true;
-        this.getGoodsList();
-      },
-      loadMore: function () {
-        // forbid load frequently
-        this.busy = true;
-
-        setTimeout(() => {
-          this.page++;
-//          console.log(this.page);
-          this.getGoodsList(true);
-          // this.busy = false;
-        }, 1000);
-      },
-
-      addCart(productId) {
-        axios.post("/goods/addCart", {
+    async addCart(productId) {
+      try {
+        let { data } = await axios.post("/goods/addCart", {
           productId: productId
-        }).then(res => {
-//          console.log(res);
-          if (res.data.status === '0') {
-            this.$Message.success('Add Success!');
-            axios.get('/users/cartList').then((res) => {
-              let data = res.data;
-
-              this.cartList = data.result;
-            });
-          }
-          else if (res.data.status === '10001') {
-//            this.$Message.info('Not Login!');
-            this.$Notice.info({
-              title: 'Not Login',
-              desc: 'Please Login first. '
-            });
-          }
-          else {
-            this.$Message.error('Add error!');
-          }
         });
+        if (data.status === "0") {
+          // login already
+          this.$Message.success("Add Success!");
+          let { data } = await axios.get("/users/cartList");
+          this.cartList = data;
+        } else if (data.status === "10001") {
+          // not login
+          this.$Message.error("Login First!");
+          setTimeout(() => {
+            this.$store.commit("updateLoginModal", true);
+          }, 2000);
+        } else {
+          // err
+          this.$Message.error("Add error!");
+        }
+      } catch (err) {
+        console.log(err);
       }
     }
   }
+};
 </script>
 
 <style scoped>
-  .layoutBox {
-    width: 95%;
-    margin: 20px auto;
-  }
+.banner {
+  width: 100%;
+  min-height: 420px;
+  overflow: hidden;
+  background-position: center center;
+  background-image: url(./../../static/goodsList/goodsList1.jpg);
+}
 
-  .cardBox {
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
+.layoutBox {
+  padding: 0 30px;
+  max-width: 1600px;
+  width: 100%;
+  margin: 30px auto;
+  display: flex;
+}
+/* left part */
+.leftBox {
+  flex: 1;
+}
+.cardBox {
+  margin-bottom: 24px;
+}
+.cardBox h4 {
+  font-weight: 300;
+  font-size: 16px;
+}
+.cardBox ul {
+  list-style: none;
+}
+.cardBox li {
+  display: inline-block;
+  padding: 6px 6px 0 0;
+}
+.cardBox a {
+  display: inline-block;
+  border: 1px solid #e4e4e4;
+  border-radius: 2px;
+  padding: 1px 12px;
+  width: auto;
+  font-size: 0.9rem;
+  color: rgba(33, 33, 33, 0.8);
+  line-height: 30px;
+  transition: 0.5s;
+}
+.cardBox a:hover {
+  color: 666;
+  border: 1px solid #666;
+}
+.cardBox a.tagSelected {
+  font-weight: 600;
+}
+/* right part */
+.rightBox {
+  flex: 3;
+  display: flex;
+  flex-wrap: wrap;
+}
+.goodsBox {
+  position: relative;
+  width: 50%;
+  overflow: hidden;
+}
+.imgBox {
+  position: relative;
+  text-align: center;
+  background-color: #fff;
+  margin: 0 20px 40px;
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 0;
+}
+.imgBox img {
+  height: 400px;
+  padding: 60px 0;
+}
+/* mask */
+.goodsDetail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  opacity: 0;
+}
+.goodsDetail:hover {
+  opacity: 1;
+}
+.goodsBox .goodsDetail h4 {
+  text-align: center;
+  margin-top: 100px;
+  color: #333;
+  font-weight: 300;
+  line-height: 1.8;
+  font-size: 36px;
+}
+.goodsBox .goodsDetail span {
+  display: block;
+  text-align: center;
+  font-size: 30px;
+  color: #212121;
+}
+.goodsBox .addToCart {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #212121;
+  width: 100%;
+  height: 60px;
+  border: 1px solid #212121;
+  color: #fff;
+  font-size: 14px;
+  padding: 9px 30px;
+  text-align: center;
+  cursor: pointer;
+}
 
-  .cardBox img {
-    /*width: 80%;*/
-    margin: auto;
-    display: block;
-    height: 150px;
-  }
-  h4 {
-    color: #333;
-    font-weight: 500;
-    margin-bottom: 5px;
-  }
-  h3 {
-    padding: 0 1rem;
-    font-size: 18px;
-  }
-
-  .load_more {
-    height: 50px;
-    line-height: 50px;
-    text-align: center;
-  }
-
-  .salePrice {
-    color: #2d8cf0;
-  }
-
-  .divider {
-    margin: 0 0 12px;
-  }
+.load_more {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
 </style>
 
 

@@ -1,30 +1,28 @@
 <template>
-  <transition appear appear-class appear-active-class="animated fadeIn" :duration="1000">
-    <div class="carousel">
-      <Carousel autoplay :autoplay-speed="5000" @on-change="carouselChange">
-        <CarouselItem v-for="(item,index) in carouselItems" :key="index">
-          <div class="imgBox">
-            <a>
-              <transition appear name="scaleUp">
-                <img v-if="currentCarouselIndex === index" :src="item.src" alt="carouselImg1">
-              </transition>
-            </a>
-            <div class="carouselIntro">
-              <transition appear enter-active-class="animated fadeInDown">
-                <h4 v-if="currentCarouselIndex === index">{{item.title}}</h4>
-              </transition>
-              <transition appear enter-active-class="animated fadeInLeft">
-                <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
-              </transition>
-              <transition appear enter-active-class="animated fadeInUp">
-                <button class="learnMore" v-if="currentCarouselIndex === index">LEARN MORE</button>
-              </transition>
-            </div>
+  <div class="carousel">
+    <Carousel autoplay :autoplay-speed="5000" @on-change="carouselChange">
+      <CarouselItem v-for="(item,index) in carouselItems" :key="index">
+        <div class="imgBox">
+          <a>
+            <transition appear name="scaleUp">
+              <img v-if="currentCarouselIndex === index" :src="item.src" alt="carouselImg1">
+            </transition>
+          </a>
+          <div class="carouselIntro">
+            <transition appear enter-active-class="animated fadeInDown">
+              <h4 v-if="currentCarouselIndex === index">{{item.title}}</h4>
+            </transition>
+            <transition appear enter-active-class="animated fadeInLeft">
+              <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
+            </transition>
+            <transition appear enter-active-class="animated fadeInUp">
+              <button class="learnMore" v-if="currentCarouselIndex === index">LEARN MORE</button>
+            </transition>
           </div>
-        </CarouselItem>
-      </Carousel>
-    </div>
-  </transition>
+        </div>
+      </CarouselItem>
+    </Carousel>
+  </div>
 </template>
 
 <script>
