@@ -105,9 +105,11 @@ export default {
   font-size: 54px;
   margin-bottom: 10px;
   color: #212121;
+  letter-spacing: 2px;
 }
 .carousel .desc {
   margin-bottom: 30px;
+  letter-spacing: 1px;
 }
 .carousel p {
   font-size: 16px;

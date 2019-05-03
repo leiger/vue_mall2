@@ -20,9 +20,12 @@
             <router-link to="/about">ABOUT</router-link>
           </li>
           <li key="3">
-            <router-link to="/blog">BLOG</router-link>
+            <router-link to="/faq">FAQ</router-link>
           </li>
           <li key="4">
+            <router-link to="/contact">CONTACT</router-link>
+          </li>
+          <li key="5">
             <a @click="openDrawer">
               CART
               <span v-if="nickName">({{cartNum}})</span>

@@ -60,26 +60,41 @@ export default {
     },
 
     logOut() {
-      this.$Modal.confirm({
-        title: "confirm logout?",
-        okText: "ok",
-        cancelText: "cancel",
-        width: "300",
-        onOk: async () => {
-          try {
-            let { data } = await axios.post("/users/logout");
-
-            if (data.status === "0") {
-              this.$store.commit("updateUserInfo", "");
-              this.$Message.success("logout success");
-            } else {
-              this.$Message.error("logout fail");
-            }
-          } catch (err) {
-            console.log(err);
-          }
+      this.$Notice.warning({
+        title: "Warning",
+        duration: 0,
+        name: "logout",
+        render: h => {
+          return h("span", [
+            "Confirm Logout?",
+            h(
+              "a",
+              {
+                style: { display: "inline-block", paddingLeft: "10px" },
+                on: {
+                  click: this.confirmLogout
+                }
+              },
+              "OK"
+            )
+          ]);
         }
       });
+    },
+    async confirmLogout() {
+      try {
+        let { data } = await axios.post("/users/logout");
+
+        if (data.status === "0") {
+          this.$store.commit("updateUserInfo", "");
+        } else {
+          this.$Message.error("logout fail");
+        }
+
+        this.$Notice.close("logout");
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 };

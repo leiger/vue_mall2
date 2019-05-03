@@ -34,6 +34,8 @@ node /bin/www
 - toggle between signin/nickName+signOut btn
   - sign in btn
     - click open form modal
+  logout
+    - confirm logout
 
 #### LoginModal
 - login form

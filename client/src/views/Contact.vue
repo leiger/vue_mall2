@@ -1,26 +1,25 @@
 <template>
   <div>
+    <EntryBoard/>
     <NavHeader/>
   </div>
 </template>
 
 <script>
 import NavHeader from "./../components/NavHeader.vue";
+import EntryBoard from "./../components/EntryBoard.vue";
 import NavFooter from "./../components/NavFooter.vue";
-import Drawer from "../components/Drawer.vue";
-import axios from "axios";
 
+import axios from "axios";
 
 export default {
   data() {
-    return {
-
-    }
+    return {};
   },
   components: {
     NavHeader,
-    NavFooter,
-    Drawer
+    EntryBoard,
+    NavFooter
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <Drawer width="700" v-model="drawerState">
+  <Drawer width="700" v-model="drawerState" :scrollable="true">
     <Divider>SHOPPING CART</Divider>
 
     <div class="cartListBox">
@@ -24,7 +24,7 @@
         <span class="totalPrice">SUBTOTAL {{totalMoney | currency}}</span>
       </div>
       <div class="buttonGroup">
-        <button class="continue">CONTINUE SHOPPING</button>
+        <button class="continue" @click="closeCart">CONTINUE SHOPPING</button>
         <button class="checkout" :disabled="totalMoney === 0?true:false" @click="checkout">CHECK OUT ></button>
       </div>
     </div>
@@ -104,6 +104,9 @@ export default {
           console.log(err);
         }
       }
+    },
+    closeCart() {
+      this.$store.commit("updateDrawerState", false);
     },
     checkout() {
       if (this.totalMoney > 0) {
