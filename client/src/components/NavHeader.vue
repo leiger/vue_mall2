@@ -1,54 +1,55 @@
 <template>
   <header class="headerBox">
     <div class="headerNav">
-      <transition
-        appear
-        appear-class
-        appear-active-class="animated fadeInDown"
-      >
+      <transition appear appear-class appear-active-class="animated fadeInDown">
         <div class="headerLeft">
           <router-link to="/">
             <h1 class="headerLogo">VUE MALL</h1>
           </router-link>
         </div>
       </transition>
-        <div class="headerRight">
-          <transition-group appear appear-class appear-active-class="animated fadeInDown" tag="ul">
-            <li key="0">
-              <router-link to="/">HOME</router-link>
-            </li>
-            <li key="1">
-              <router-link to="/all">STORE</router-link>
-            </li>
-            <li key="2">
-              <router-link to="/about">ABOUT</router-link>
-            </li>
-            <li key="3">
-              <router-link to="/blog">BLOG</router-link>
-            </li>
-            <li key="4">
-              <a @click="openDrawer">CART <span v-if="nickName">({{cartNum}})</span></a>
-            </li>
-          </transition-group>
-        </div>
-      </transition>
+      <div class="headerRight">
+        <transition-group appear appear-class appear-active-class="animated fadeInDown" tag="ul">
+          <li key="0">
+            <router-link to="/">HOME</router-link>
+          </li>
+          <li key="1">
+            <router-link to="/all">STORE</router-link>
+          </li>
+          <li key="2">
+            <router-link to="/about">ABOUT</router-link>
+          </li>
+          <li key="3">
+            <router-link to="/blog">BLOG</router-link>
+          </li>
+          <li key="4">
+            <a @click="openDrawer">
+              CART
+              <span v-if="nickName">({{cartNum}})</span>
+            </a>
+          </li>
+        </transition-group>
+      </div>
     </div>
     <LoginModal/>
+    <Drawer/>
   </header>
 </template>
 
 <script>
 import LoginModal from "./../components/LoginModal.vue";
+import Drawer from "./../components/Drawer.vue";
 import axios from "axios";
 
 export default {
   data() {
     return {
-      showAnimated: false,
+      showAnimated: false
     };
   },
   components: {
-    LoginModal
+    LoginModal,
+    Drawer
   },
   computed: {
     cartNum() {
@@ -63,16 +64,14 @@ export default {
   },
   methods: {
     openDrawer() {
-      if(this.nickName === '') {
+      if (this.nickName === "") {
         this.$Message.error("Login First!");
         setTimeout(() => {
-          this.$store.commit('updateLoginModal', true);
+          this.$store.commit("updateLoginModal", true);
         }, 2000);
+      } else {
+        this.$store.commit("updateDrawerState", true);
       }
-      else {
-        this.$store.commit('updateDrawerState',true);
-      }
-
     }
   }
 };
@@ -116,7 +115,7 @@ ul li a {
   transition: all 0.5s;
 }
 ul li a:before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -129,7 +128,7 @@ ul li a:before {
   transition-delay: 0;
   clear: both;
 }
-ul li a:hover{
+ul li a:hover {
   color: #808695;
 }
 ul li a:hover::before {

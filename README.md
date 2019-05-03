@@ -51,4 +51,14 @@ node /bin/www
 - cart 
   - login depend on the nickName === '' or not 
   - login ? show nums: hide
-- contain LoginModal components: reduce reuse in other pages
+- contain LoginModal&Drawer components: reduce reuse in other pages
+
+#### Drawer
+- change quantity
+  - two parameters: id, quantity
+    - quantity need > 0
+  - post to server. If num===0, delete it. get cart list from vuex -> change total money
+  - fail: 
+    - error: alert(reflesh page)
+    - not login: session expired
+- delete checked in database

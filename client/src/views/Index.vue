@@ -2,7 +2,6 @@
   <div class="main">
     <EntryBoard/>
     <NavHeader class="header"/>
-    <Drawer/>
     <CarouselShow class="carousel"/>
     <StarProducts class="starProducts"/>
     <NavFooter/>
@@ -15,7 +14,6 @@ import NavHeader from "./../components/NavHeader.vue";
 import CarouselShow from "./../components/CarouselShow.vue";
 import StarProducts from "./../components/StarProducts.vue";
 import NavFooter from "./../components/NavFooter.vue";
-import Drawer from "../components/Drawer.vue";
 import axios from "axios";
 
 export default {
@@ -27,8 +25,7 @@ export default {
     NavHeader,
     CarouselShow,
     StarProducts,
-    NavFooter,
-    Drawer
+    NavFooter
   }
 };
 </script>

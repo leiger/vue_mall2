@@ -26,7 +26,6 @@ import EntryBoard from "./../components/EntryBoard.vue";
 import NavHeader from "./../components/NavHeader.vue";
 import Article from "./../components/Article.vue";
 import NavFooter from "./../components/NavFooter.vue";
-import Drawer from "../components/Drawer.vue";
 import axios from "axios";
 
 import article1Src from "./../../static/about/article1.jpg";
@@ -49,8 +48,7 @@ export default {
     EntryBoard,
     NavHeader,
     Article,
-    NavFooter,
-    Drawer
+    NavFooter
   }
 };
 </script>

@@ -1,284 +1,234 @@
 <template>
-  <Drawer :width="drawerWidth" v-model="drawerState" @on-visible-change="openCart">
-    <Divider orientation="left">Cart List</Divider>
-    <Table ref="selection" :columns="cartTitle" :data="cartList" @on-select-cancel="cancelOne"
-           @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="cancelAll"></Table>
-    <Divider/>
+  <Drawer width="700" v-model="drawerState">
+    <Divider>SHOPPING CART</Divider>
+
+    <div class="cartListBox">
+      <div class="itemBox" v-for="item in cartList">
+        <div class="imgBox">
+          <img :src="'/static/images/'+item.productImage" alt="img">
+        </div>
+        <h5 class="itemName">{{item.productName}}</h5>
+        <div class="quantity">
+          <button class="minus" @click="changeQuantity(item.productId, item.productNum-1)">-</button>
+          <span>{{item.productNum}}</span>
+          <button @click="changeQuantity(item.productId, item.productNum+1)" class="plus">+</button>
+        </div>
+        <div class="price">{{item.salePrice * item.productNum | currency}}</div>
+      </div>
+    </div>
+
     <div class="checkoutConfirm">
-      <span>TOTAL:</span>
-      <span class="price">{{totalMoney | currency}}</span>
-      <Button type="primary" ghost :disabled="totalMoney === 0?true:false" @click="checkout">CHECKOUT</Button>
+      <Divider/>
+      <div class="subTotal">
+        <span class="info">Shipping & taxes calculated at checkout</span>
+        <span class="totalPrice">SUBTOTAL {{totalMoney | currency}}</span>
+      </div>
+      <div class="buttonGroup">
+        <button class="continue">CONTINUE SHOPPING</button>
+        <button class="checkout" :disabled="totalMoney === 0?true:false" @click="checkout">CHECK OUT ></button>
+      </div>
     </div>
   </Drawer>
 </template>
 
 <script>
-  import axios from 'axios';
-  import {currency} from './../utils/currency';
+import axios from "axios";
+import { currency } from "./../utils/currency";
+import getCartList from "./../services/getCartList.js";
 
-  export default {
-    data() {
-      return {
-        drawerWidth: '480',
-        cart: [],
-        cartTitle: [
-          {
-            type: 'selection',
-            width: 50,
-            align: 'center',
-          },
-//          {
-//            title: 'IMAGES',
-//            key: 'productImage',
-//            render: (h, params) => {
-//              // console.log(params);
-//              return h('img', {
-//                attrs: {
-//                  src: '/static/images/' + params.row.productImage,
-//                  height: '50px'
-//                }
-//              });
-//            }
-//          },
-          {
-            title: 'ITEMS',
-            key: 'productName'
-          },
-          {
-            title: 'PRICE',
-            key: 'salePrice',
-            render: (h, params) => {
-              return h('span', {}, '$' + params.row.salePrice);
-            }
-          },
-          {
-            title: 'QUANTITY',
-            key: 'productNum',
-            align: 'center',
-//          <InputNumber v-model="value3" size="small"></InputNumber>
-            render: (h, params) => {
-              let self = this;
-              return h('InputNumber', {
-                props: {
-                  size: 'small',
-                  value: params.row.productNum,
-                  min: 1
-                },
-                style: {
-                  width: '50px'
-                },
-                on: {
-                  'on-change': function (newValue) {
-//                    console.log(newValue);
-                    axios.post('/users/cartEdit', {
-                      productId: params.row.productId,
-                      productNum: newValue,
-                      checked: params.row.checked
-                    }).then((res) => {
-                      let data = res.data;
-                      if (data.status === '0') {
-                        self.init();
-                      }
-                      else {
-                        self.init();
-                        this.$Message.error('Modify fail');
-                      }
-                    });
-                  }
-                }
-              });
-            }
-          },
-//          {
-//            title: 'SUBTOTAL',
-//            key: 'subtotal',
-//            render: (h, params) => {
-//              return h('span', {}, '$' + params.row.salePrice * params.row.productNum);
-//            }
-//          },
-          {
-            title: 'ACTIONS',
-            key: 'action',
-            align: 'center',
-            dashed: true,
-            render: (h, params) => {
-              return (
-                h('Button', {
-                  props: {
-                    type: 'error',
-                    size: 'small',
-                    shape: 'circle',
-                    icon: 'ios-trash-outline',
-                    ghost: true
-                  },
-                  on: {
-                    click: () => {
-                      this.$Modal.confirm({
-                        title: 'REMOVE FROM CART',
-                        content: `Remove ${params.row.productName} from cart?`,
-                        okText: 'OK',
-                        cancelText: 'Cancel',
-                        onOk: () => {
-                          console.log('ok');
-                          this.delCart(params.row.productId);
-                        }
-                      });
-                    }
-                  }
-                })
-              )
-            }
-          }
-        ],
-        tableList: []
+export default {
+  computed: {
+    drawerState: {
+      get() {
+        return this.$store.state.drawerState;
+      },
+      set(drawerState) {
+        this.$store.commit("updateDrawerState", drawerState);
       }
     },
-    computed: {
-      drawerState: {
-        get() {
-          return this.$store.state.drawerState;
-        },
-        set(drawerState) {
-          this.$store.commit("updateDrawerState", drawerState);
-        }
-      },
-      cartList() {
-        let data = this.cart;
-        data.forEach((tem) => {
-          if (tem.checked === '1') {
-            tem['_checked'] = true;
-          }
-        });
-        return data;
-      },
-      totalMoney() {
-        let tempMoney = 0;
-        this.cart.forEach((temp) => {
-          if (temp.checked === '1') {
-            tempMoney += (temp.productNum * parseInt(temp.salePrice));
-          }
-        });
-        return tempMoney;
-      }
+    cartList() {
+      return this.$store.state.cartList;
     },
-    mounted() {
-      let screen = window.matchMedia("(max-width: 768px)");
-      if (screen.matches) { // If media query matches
-        this.drawerWidth = '100%';
-      } else {
-        this.drawerWidth = '480';
-      }
-
-      this.init();
-    },
-    filters: {
-      currency: currency
-    },
-    methods: {
-      init() {
-        axios.get('/users/cartList').then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.cart = data.result;
+    totalMoney() {
+      let tempMoney = 0;
+      this.cartList.forEach(temp => {
+        tempMoney += temp.productNum * parseInt(temp.salePrice);
+      });
+      return tempMoney;
+    }
+  },
+  filters: {
+    currency: currency
+  },
+  methods: {
+    async changeQuantity(id, newQuantity) {
+      // valid quantity
+      if (newQuantity > 0) {
+        try {
+          if (newQuantity > 0) {
           }
-        });
-      },
-      delCart(id) {
-        axios.post('goods/delCart', {
-          productId: id
-        }).then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.init();
-            this.$Message.success('Delete success');
-          }
-          else {
-            this.$Message.error('Delete fail');
-          }
-        });
-      },
-      cancelOne(List, row) {
-        axios.post('/users/cartEdit', {
-          productId: row.productId,
-          productNum: row.productNum,
-          checked: '0'
-        }).then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.init();
-          }
-          else {
-            this.$Message.error('Handle Fail');
-          }
-        });
-      },
-      selectOne(List, row) {
-        axios.post('/users/cartEdit', {
-          productId: row.productId,
-          productNum: row.productNum,
-          checked: '1'
-        }).then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.init();
-          }
-          else {
-            this.$Message.error('Handle fail');
-          }
-        });
-      },
-      selectAll(row) {
-        this.modifyAll(true);
-      },
-      cancelAll(row) {
-        if (row.length === 0) {
-          this.modifyAll(false);
-        }
-      },
-      modifyAll(temp) {
-        axios.post('/users/editCheckAll', {
-          checkAll: temp ? '1' : '0'
-        }).then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-            this.init();
-          }
-          else {
-            this.$Message.error('Handle fail');
-          }
-        })
-      },
-      openCart(state) {
-        if (state === true) {
-          this.init();
-        }
-      },
-      checkout() {
-        if(this.totalMoney > 0) {
-          this.$router.push({
-            path: '/address'
+          let { data } = await axios.post("users/cartEdit", {
+            productId: id,
+            productNum: newQuantity
           });
-
-          this.$store.commit('updateDrawerState', false);
+          if (data.status === "0") {
+            console.log("success");
+            // update cart list data in vuex
+            getCartList(this);
+          } else if (data.status === "10001") {
+            this.$Message.error("Session Expired!");
+            setTimeout(() => {
+              this.$store.commit("updateLoginModal", true);
+            }, 2000);
+          }
+        } catch (err) {
+          console.log(err);
         }
+      }
+      // quantity <= 0, delete the item
+      else {
+        try {
+          let { data } = await axios.post("goods/delCart", {
+            productId: id
+          });
+          // success
+          if (data.status === "0") {
+            getCartList(this);
+          } else if (data.status === "10001") {
+            this.$Message.error("Session Expired!");
+            setTimeout(() => {
+              this.$store.commit("updateLoginModal", true);
+            }, 2000);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    },
+    checkout() {
+      if (this.totalMoney > 0) {
+        this.$router.push({
+          path: "/address"
+        });
+
+        this.$store.commit("updateDrawerState", false);
       }
     }
   }
+};
 </script>
 
 <style scoped>
-  table img {
-    width: 100%;
-  }
-
-  .checkoutConfirm {
-    float: right;
-  }
-
-  .checkoutConfirm .price {
-    font-size: 16px;
-    padding-right: 10px;
-  }
+.itemBox {
+  display: flex;
+  padding: 14px;
+}
+.itemBox img {
+  width: 90px;
+  height: 90px;
+}
+.itemBox .itemName {
+  font-size: 15px;
+  line-height: 90px;
+  font-weight: 400;
+  padding-left: 10px;
+  width: 260px;
+}
+.quantity {
+  margin-top: 30px;
+}
+.quantity button {
+  font-size: 15px;
+  height: 36px;
+  width: 36px;
+  line-height: 34px;
+  text-align: center;
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  float: left;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color: #111;
+  background-color: #fff;
+}
+.quantity span {
+  font-size: 15px;
+  height: 36px;
+  width: 36px;
+  line-height: 34px;
+  text-align: center;
+  border: 1px solid rgba(17, 17, 17, 0.2);
+  float: left;
+  margin: 0 0 0 -1px;
+  padding: 0;
+  cursor: pointer;
+  color: #111;
+  background-color: #f5f5f5;
+}
+.quantity button.plus {
+  margin-left: -1px;
+}
+.itemBox .price {
+  color: #212121;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 1px;
+  font-size: 15px;
+  line-height: 95px;
+  margin-left: 70px;
+}
+.checkoutConfirm {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 10px 30px;
+  text-align: right;
+  background: #fff;
+}
+.subTotal {
+  display: flex;
+  justify-content: space-between;
+  margin: 24px 0;
+}
+.subTotal .info {
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 2rem;
+}
+.subTotal .totalPrice {
+  font-size: 1.1rem;
+  color: #212121;
+  line-height: 2rem;
+  letter-spacing: 1px;
+}
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+}
+.buttonGroup button {
+  width: 300px;
+  height: 48px;
+  padding: 9px 30px;
+  line-height: 30px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  border: none;
+}
+.buttonGroup .continue {
+  color: #111;
+  background-color: #e4e4e4;
+}
+.buttonGroup .continue:hover {
+  background-color: #bbb;
+}
+.buttonGroup .checkout {
+  color: #fff;
+  background-color: #212121;
+}
+.buttonGroup .checkout:hover {
+  background-color: #141414;
+}
 </style>
 
 

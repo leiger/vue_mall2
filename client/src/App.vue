@@ -11,7 +11,8 @@ export default {
 </script>
 
 <style>
-a {
+a, button {
   transition: .5s all;
+  cursor: pointer;
 }
 </style>

@@ -46,26 +46,6 @@
       <!--right-->
       <div class="rightBox">
         <template v-for="(good, index) in goods">
-          <!-- <Card class="cardBox">
-            <img :src="'/static/images/'+good.productImage" :alt="good.productName">
-            <Divider class="divider" dashed/>
-            <Row type="flex" justify="center" align="bottom">
-              <Col span="18">
-                <h4>{{ good.productName }}</h4>
-                <p class="salePrice">$ {{ good.salePrice }}</p>
-              </Col>
-              <Col span="6">
-                <Button
-                  icon="ios-cart-outline"
-                  shape="circle"
-                  @click="addCart(good.productId)"
-                  type="dashed"
-                  style="float: right"
-                  size="large"
-                ></Button>
-              </Col>
-            </Row>
-          </Card>-->
           <div class="goodsBox">
             <div class="imgBox">
               <img :src="'/static/images/'+good.productImage" :alt="good.productName">
@@ -89,7 +69,6 @@
         </div>
       </div>
     </Content>
-
     <nav-footer/>
     <BackTop/>
   </Layout>
@@ -103,6 +82,9 @@ import NavFooter from "./../components/NavFooter.vue";
 
 import axios from "axios";
 import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
+
+import getCartList from "./../services/getCartList.js";
+import {currency} from './../utils/currency';
 
 export default {
   data() {
@@ -241,7 +223,7 @@ export default {
           // login already
           this.$Message.success("Add Success!");
           let { data } = await axios.get("/users/cartList");
-          this.cartList = data;
+          getCartList(this);
         } else if (data.status === "10001") {
           // not login
           this.$Message.error("Login First!");
