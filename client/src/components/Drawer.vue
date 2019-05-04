@@ -8,11 +8,11 @@
           <img :src="'/static/images/'+item.productImage" alt="img">
         </div>
         <h5 class="itemName">{{item.productName}}</h5>
-        <div class="quantity">
-          <button class="minus" @click="changeQuantity(item.productId, item.productNum-1)">-</button>
-          <span>{{item.productNum}}</span>
-          <button @click="changeQuantity(item.productId, item.productNum+1)" class="plus">+</button>
-        </div>
+        <QuantitySelector
+          :value="item.productNum"
+          :min="0"
+          @changeValue="changeQuantity(item.productId, arguments)"
+        />
         <div class="price">{{item.salePrice * item.productNum | currency}}</div>
       </div>
     </div>
@@ -24,8 +24,12 @@
         <span class="totalPrice">SUBTOTAL {{totalMoney | currency}}</span>
       </div>
       <div class="buttonGroup">
-        <button class="continue" @click="closeCart">CONTINUE SHOPPING</button>
-        <button class="checkout" :disabled="totalMoney === 0?true:false" @click="checkout">CHECK OUT ></button>
+        <MainBtn @click="closeCart">CONTINUE SHOPPING</MainBtn>
+        <MainBtn
+          type="primary"
+          :disabled="totalMoney === 0?true:false"
+          @click="checkout"
+        >CHECK OUT ></MainBtn>
       </div>
     </div>
   </Drawer>
@@ -33,10 +37,16 @@
 
 <script>
 import axios from "axios";
+import MainBtn from "./../components/MainBtn.vue";
+import QuantitySelector from "./../components/QuantitySelector.vue";
 import { currency } from "./../utils/currency";
 import getCartList from "./../services/getCartList.js";
 
 export default {
+  components: {
+    MainBtn,
+    QuantitySelector
+  },
   computed: {
     drawerState: {
       get() {
@@ -61,7 +71,8 @@ export default {
     currency: currency
   },
   methods: {
-    async changeQuantity(id, newQuantity) {
+    async changeQuantity(id, arg) {
+      let newQuantity = arg[0];
       // valid quantity
       if (newQuantity > 0) {
         try {
@@ -113,7 +124,6 @@ export default {
         this.$router.push({
           path: "/address"
         });
-
         this.$store.commit("updateDrawerState", false);
       }
     }
@@ -140,37 +150,7 @@ export default {
 .quantity {
   margin-top: 30px;
 }
-.quantity button {
-  font-size: 15px;
-  height: 36px;
-  width: 36px;
-  line-height: 34px;
-  text-align: center;
-  border: 1px solid rgba(17, 17, 17, 0.2);
-  float: left;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  color: #111;
-  background-color: #fff;
-}
-.quantity span {
-  font-size: 15px;
-  height: 36px;
-  width: 36px;
-  line-height: 34px;
-  text-align: center;
-  border: 1px solid rgba(17, 17, 17, 0.2);
-  float: left;
-  margin: 0 0 0 -1px;
-  padding: 0;
-  cursor: pointer;
-  color: #111;
-  background-color: #f5f5f5;
-}
-.quantity button.plus {
-  margin-left: -1px;
-}
+
 .itemBox .price {
   color: #212121;
   font-weight: 400;
@@ -208,29 +188,6 @@ export default {
 .buttonGroup {
   display: flex;
   justify-content: space-between;
-}
-.buttonGroup button {
-  width: 300px;
-  height: 48px;
-  padding: 9px 30px;
-  line-height: 30px;
-  border-radius: 3px;
-  letter-spacing: 1px;
-  border: none;
-}
-.buttonGroup .continue {
-  color: #111;
-  background-color: #e4e4e4;
-}
-.buttonGroup .continue:hover {
-  background-color: #bbb;
-}
-.buttonGroup .checkout {
-  color: #fff;
-  background-color: #212121;
-}
-.buttonGroup .checkout:hover {
-  background-color: #141414;
 }
 </style>
 

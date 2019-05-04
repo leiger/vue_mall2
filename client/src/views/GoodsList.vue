@@ -47,14 +47,14 @@
       <div class="rightBox">
         <template v-for="(good, index) in goods">
           <div class="goodsBox">
-            <div class="imgBox">
+            <router-link :to="'/products/'+good.productId" class="imgBox">
               <img :src="'/static/images/'+good.productImage" :alt="good.productName">
               <div class="goodsDetail">
                 <h4>{{ good.productName }}</h4>
                 <span>$ {{ good.salePrice }}</span>
                 <button @click="addCart(good.productId)" class="addToCart">ADD TO CART</button>
               </div>
-            </div>
+            </router-link>
           </div>
         </template>
         <!--load more-->
@@ -84,7 +84,7 @@ import axios from "axios";
 import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
 
 import getCartList from "./../services/getCartList.js";
-import {currency} from './../utils/currency';
+import { currency } from "./../utils/currency";
 
 export default {
   data() {
@@ -307,6 +307,9 @@ export default {
 }
 .imgBox {
   position: relative;
+  display: block;
+  width: 100%;
+  height: 400px;
   text-align: center;
   background-color: #fff;
   margin: 0 20px 40px;

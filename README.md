@@ -17,6 +17,9 @@ npm start
 #### modify database
 #### animation
 #### store rewrite
+---
+### filter by category
+#### animation
 
 ### server
 using express and mongondb
