@@ -25,7 +25,7 @@ app.use(function(req, res, next) {
     next();
   }
   else {
-    if(req.originalUrl === '/users/login' || req.originalUrl === '/users/logout' || req.path === '/goods/list') {
+    if(req.originalUrl === '/users/login' || req.originalUrl === '/users/logout' || req.path === '/goods/list' || req.path === '/goods/product') {
       next();
     }
     else {

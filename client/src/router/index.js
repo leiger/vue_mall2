@@ -6,6 +6,7 @@ import GoodsList from '../views/GoodsList.vue'
 import About from '../views/About.vue'
 import Faq from '../views/Faq.vue'
 import Contact from '../views/Contact.vue'
+import Product from '../views/Product.vue'
 import Address from '../views/Address.vue'
 import OrderConfirm from '../views/OrderConfirm.vue'
 import OrderSuccess from '../views/OrderSuccess.vue'
@@ -33,7 +34,10 @@ export default new Router({
       path: '/contact',
       component: Contact
     },
-
+    {
+      path: '/products/:id',
+      component: Product
+    },
     {
       path: '/address',
       name: 'Address',

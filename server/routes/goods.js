@@ -3,6 +3,7 @@ let router = express.Router();
 let mongoose = require('mongoose');
 let Goods = require('../models/goods');
 let Users = require('../models/users');
+let Categories = require('../models/categories');
 
 // connect mongodb
 mongoose.connect('mongodb://127.0.0.1:27017/vue_mall', {useNewUrlParser: true});
@@ -12,6 +13,28 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log("MongoDB connected success.");
+});
+
+// find one goods
+router.get("/product", (req, res, next) => {
+  let productId = req.query.productId;
+  Goods.findOne({productId}).populate('categoryId').exec((err, result) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message
+      });
+    }
+    else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          productDetail: result
+        }
+      });
+    }
+  });
 });
 
 // search goods data

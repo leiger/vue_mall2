@@ -64,3 +64,20 @@ node /bin/www
     - error: alert(reflesh page)
     - not login: session expired
 - delete checked in database
+
+
+
+### Server
+#### database
+- goods
+  - productId
+  - category
+    - 01: Smart Devices
+    - 02: Outdoor
+    - 03: Steam TV
+    - 04: Mobile Phone Accessories
+    - 05: Laptop
+  - productName
+  - salePrice
+  - productImage
+  - 
