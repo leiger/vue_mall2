@@ -52,7 +52,7 @@
               <div class="goodsDetail">
                 <h4>{{ good.productName }}</h4>
                 <span>$ {{ good.salePrice }}</span>
-                <button @click="addCart(good.productId)" class="addToCart">ADD TO CART</button>
+                <button @click.stop.prevent="addCart(good.productId)" class="addToCart">ADD TO CART</button>
               </div>
             </router-link>
           </div>
@@ -148,7 +148,7 @@ export default {
       this.loading.imageShow = true;
 
       try {
-        let { data } = await axios.get("/goods/list", {
+        let { data } = await axios.get("/good/list", {
           params
         });
         // console.log(res);
@@ -157,7 +157,7 @@ export default {
           if (flag) {
             this.goods = this.goods.concat(data.result.list);
             // no more data
-            if (data.result.count < 8) {
+            if (data.result.count < this.pageSize) {
               this.busy = true;
             } else {
               this.busy = false;
@@ -170,7 +170,7 @@ export default {
         // request false
         else {
           this.goods = [];
-          console.log("request false");
+          this.$Message.error("Request Fail, Please reload the page");
         }
         this.loading.imageShow = false;
       } catch (err) {
@@ -216,15 +216,14 @@ export default {
 
     async addCart(productId) {
       try {
-        let { data } = await axios.post("/goods/addCart", {
+        let { data } = await axios.post("/cart/addCart", {
           productId: productId
         });
         if (data.status === "0") {
           // login already
           this.$Message.success("Add Success!");
-          let { data } = await axios.get("/users/cartList");
           getCartList(this);
-        } else if (data.status === "10001") {
+        } else if (data.status === "3") {
           // not login
           this.$Message.error("Login First!");
           setTimeout(() => {

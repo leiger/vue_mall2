@@ -1,7 +1,7 @@
 <template>
   <div class="quantity">
     <button class="minus" @click="minus">-</button>
-    <span>{{num}}</span>
+    <span>{{value}}</span>
     <button @click="plus" class="plus">+</button>
   </div>
 </template>
@@ -12,6 +12,11 @@ export default {
     return {
       num: this.value
     };
+  },
+  computed: {
+    num1() {
+      this.num = this.value;
+    }
   },
   props: {
     value: {

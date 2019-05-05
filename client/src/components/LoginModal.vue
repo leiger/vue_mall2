@@ -12,11 +12,12 @@
         <transition appear name="scaleUp">
           <h2>VUE MALL</h2>
         </transition>
-        <Divider>Sign in to your Account</Divider>
+        <Divider v-if="modalType">Sign up a new Account</Divider>
+        <Divider v-else>Sign in to your Account</Divider>
       </div>
       <div class="loginBox">
         <div class="modalLeft">
-          <Form ref="login" :model="login" :rules="loginRule">
+          <Form v-if="!this.modalType" ref="login" :model="login" :rules="loginRule">
             <!--username-->
             <FormItem prop="username">
               <Input type="text" size="large" v-model="login.username" placeholder="Username">
@@ -45,11 +46,40 @@
               <Icon @click="unAvailableInfo()" type="logo-github" size="28"/>
             </div>
           </Form>
+          <Form v-else ref="signUp" :model="signUp" :rules="signUpRule">
+            <!--username-->
+            <FormItem prop="username">
+              <Input type="text" size="large" v-model="signUp.username" placeholder="Username">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <!--password-->
+            <FormItem prop="password">
+              <Input type="password" v-model="signUp.password" placeholder="Password" size="large">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <!--password-->
+            <FormItem prop="rePassword">
+              <Input
+                type="password"
+                v-model="signUp.rePassword"
+                placeholder="Confirm Password"
+                @on-enter="handleSubmit('register')"
+                size="large"
+              >
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+              </Input>
+            </FormItem>
+            <!-- button -->
+            <button class="submitBtn" @click="handleSubmit('signUp')">Sign Up</button>
+          </Form>
         </div>
         <div class="modalRight">
-          <Divider>
-            <Icon type="md-bulb" size="24" color="#ff9900"/>
-          </Divider>
+          <a v-if="!this.modalType" @click="changeLoginModalType">Create a account</a>
+          <a v-else @click="changeLoginModalType">Sign in</a>
+          <Divider/>
+          <p class="test">create one OR using this:</p>
           <p>
             Username:
             <span>admin</span>
@@ -70,12 +100,42 @@ import getCartList from "./../services/getCartList.js";
 
 export default {
   data() {
+    const validatePassCheck = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Please enter your password again"));
+      } else if (value !== this.signUp.password) {
+        callback(new Error("The two input passwords do not match!"));
+      } else {
+        callback();
+      }
+    };
     return {
       login: {
         username: "",
         password: ""
       },
       loginRule: {
+        username: [
+          {
+            required: true,
+            message: "Please enter your username",
+            trigger: "blur"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: "Please enter your password again.",
+            trigger: "blur"
+          }
+        ]
+      },
+      signUp: {
+        username: "",
+        password: "",
+        rePassword: ""
+      },
+      signUpRule: {
         username: [
           {
             required: true,
@@ -89,6 +149,12 @@ export default {
             message: "Please fill in the password.",
             trigger: "blur"
           }
+        ],
+        rePassword: [
+          {
+            trigger: "blur",
+            validator: validatePassCheck
+          }
         ]
       }
     };
@@ -96,6 +162,9 @@ export default {
   computed: {
     modalState() {
       return this.$store.state.loginModalState;
+    },
+    modalType() {
+      return this.$store.state.loginModalType;
     }
   },
   methods: {
@@ -107,26 +176,43 @@ export default {
       this.$refs[name].validate(valid => {
         if (valid) {
           this.loginLoading = true;
-          this.onSubmit();
+          this.onSubmit(name);
           this.loginLoading = false;
         } else {
           this.$Message.error("Fail");
         }
       });
     },
-    async onSubmit() {
+
+    async onSubmit(name) {
       try {
-        let { data } = await axios.post("/users/login", this.login);
-        // login success
-        if (data.status === "0") {
-          this.$Message.success("Login Success!");
-          this.$store.commit("updateUserInfo", data.result.userName);
-          // close modal
-          this.closeModal();
-          // get cart list
-          getCartList(this);
-        } else if (data.status === "2") {
-          this.$Message.error("Wrong Username or Password!");
+        if (name === "login") {
+          let { data } = await axios.post("/user/login", this.login);
+          // login success
+          if (data.status === "0") {
+            this.$Message.success("Login Success!");
+            this.$store.commit("updateUserInfo", data.result.userName);
+            // close modal
+            this.closeModal();
+            // get cart list
+            getCartList(this);
+          } else if (data.status === "2") {
+            this.$Message.error("Wrong Username or Password!");
+          }
+        }
+        // sign up
+        else {
+          let { data } = await axios.post("/user/signup", this.signUp);
+          if (data.status === "0") {
+            this.$Message.success("Sign up Success!");
+            setTimeout(() => {
+              this.$store.commit("updateLoginModal", {action: true, type: 0});
+            }, 1000);
+          } else if (data.status === "7") {
+            this.$Message.info("Username is already exist!");
+          } else {
+            this.$Message.error("Fail!");
+          }
         }
       } catch (err) {
         console.log(err);
@@ -137,6 +223,12 @@ export default {
       this.$Notice.warning({
         title: "Sorry",
         desc: "Third Part Login is not supported Now!"
+      });
+    },
+    changeLoginModalType() {
+      this.$store.commit("updateLoginModal", {
+        action: true,
+        type: this.modalType === 1 ? 0 : 1
       });
     }
   }
@@ -207,16 +299,21 @@ export default {
 /* modalRight */
 .modalRight {
   flex: 1;
-  padding: 0 20px 0 38px;
+  padding: 20px 20px 0 38px;
 }
-.modalRight p {
+.modalRight a {
+  font-size: 14px;
+}
+.modalRight .test {
   color: #b0b0b0;
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 10px;
 }
-.modalRight p span {
+.modalRight p {
   color: #515a6e;
   font-size: 14px;
+}
+.modalRight span {
   float: right;
 }
 </style>

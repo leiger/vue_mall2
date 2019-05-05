@@ -5,8 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var goodsRouter = require('./routes/goods');
+var userRouter = require('./routes/user');
+var goodRouter = require('./routes/good');
+var orderRouter = require('./routes/order');
+var cartRouter = require('./routes/cart');
+var addressRouter = require('./routes/address');
+var paymentRouter = require('./routes/payment');
+
+let Response = require('./public/javascripts/response');
 
 var app = express();
 
@@ -25,22 +31,29 @@ app.use(function(req, res, next) {
     next();
   }
   else {
-    if(req.originalUrl === '/users/login' || req.originalUrl === '/users/logout' || req.path === '/goods/list' || req.path === '/goods/product') {
+    let legalUrl = [
+      '/user/login',
+      '/user/logout',
+      '/good/list',
+      '/good/product',
+      '/user/signup'
+    ]
+    if(legalUrl.indexOf(req.originalUrl) !== -1) {
       next();
     }
     else {
-      res.json({
-        status: '10001',
-        msg: 'Not Login',
-        result: ''
-      });
+     Response(res, '3');
     }
   }
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/goods', goodsRouter);
+app.use('/user', userRouter);
+app.use('/good', goodRouter);
+app.use('/order', orderRouter);
+app.use('/cart', cartRouter);
+app.use('/address', addressRouter);
+app.use('/payment', paymentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -11,13 +11,22 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/goods': {
+      '/user/*': {
         target: 'http://localhost:3000'
       },
-      '/goods/*': {
+      '/good/*': {
         target: 'http://localhost:3000'
       },
-      '/users/*': {
+      '/cart/*': {
+        target: 'http://localhost:3000'
+      },
+      '/address/*': {
+        target: 'http://localhost:3000'
+      },
+      '/payment/*': {
+        target: 'http://localhost:3000'
+      },
+      '/orders/*': {
         target: 'http://localhost:3000'
       }
     },

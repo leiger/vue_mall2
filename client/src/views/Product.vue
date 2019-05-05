@@ -108,7 +108,7 @@ export default {
         productId: id
       };
       try {
-        let { data } = await axios.get("/goods/product", {
+        let { data } = await axios.get("/good/product", {
           params
         });
         if (data.status === "0") {

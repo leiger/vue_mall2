@@ -58,7 +58,7 @@
       if (!orderId) {
         return;
       }
-      axios.get('/users/orderDetail', {
+      axios.get('/order/orderDetail', {
         params: {
           orderId: orderId
         }

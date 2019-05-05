@@ -155,7 +155,7 @@
     },
     methods: {
       init() {
-        axios.get('/users/cartList').then((res) => {
+        axios.get('/cart/cartList').then((res) => {
           let data = res.data;
 //          console.log(data);
           this.cartList = data.result;
@@ -168,7 +168,7 @@
           this.tax = parseFloat(this.subTotal * 0.13);
         });
 
-        axios.post('/users/getAddress', {
+        axios.post('/address/getAddress', {
           addressId: this.$route.query.addressId
         }).then((res) => {
           let data = res.data;
@@ -178,7 +178,7 @@
         });
       },
       payment() {
-        axios.post('/users/payment', {
+        axios.post('/payment/payment', {
           addressId: this.address.addressId,
           orderTotal: this.orderTotal
         }).then((res) => {

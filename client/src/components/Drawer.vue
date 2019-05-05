@@ -73,47 +73,39 @@ export default {
   methods: {
     async changeQuantity(id, arg) {
       let newQuantity = arg[0];
-      // valid quantity
+      let params = {},
+        postAddress = "";
+
+      // modify
       if (newQuantity > 0) {
-        try {
-          if (newQuantity > 0) {
-          }
-          let { data } = await axios.post("users/cartEdit", {
-            productId: id,
-            productNum: newQuantity
-          });
-          if (data.status === "0") {
-            console.log("success");
-            // update cart list data in vuex
-            getCartList(this);
-          } else if (data.status === "10001") {
-            this.$Message.error("Session Expired!");
-            setTimeout(() => {
-              this.$store.commit("updateLoginModal", true);
-            }, 2000);
-          }
-        } catch (err) {
-          console.log(err);
-        }
+        params = {
+          productId: id,
+          productNum: newQuantity
+        };
+        postAddress = "cart/cartEdit";
+      } else {
+        // delete
+        params = {
+          productId: id
+        };
+        postAddress = "cart/delCart";
       }
-      // quantity <= 0, delete the item
-      else {
-        try {
-          let { data } = await axios.post("goods/delCart", {
-            productId: id
-          });
-          // success
-          if (data.status === "0") {
-            getCartList(this);
-          } else if (data.status === "10001") {
-            this.$Message.error("Session Expired!");
-            setTimeout(() => {
-              this.$store.commit("updateLoginModal", true);
-            }, 2000);
-          }
-        } catch (err) {
-          console.log(err);
+      try {
+        let { data } = await axios.post(postAddress, params);
+        if (data.status === "0") {
+          console.log("success");
+          // update cart list data in vuex
+          getCartList(this);
+        } else if (data.status === "6") {
+          this.$Message.error("Session Expired!");
+          setTimeout(() => {
+            this.$store.commit("updateLoginModal", true);
+          }, 2000);
+        } else {
+          this.$Error.error("Error!");
         }
+      } catch (err) {
+        console.log(err);
       }
     },
     closeCart() {

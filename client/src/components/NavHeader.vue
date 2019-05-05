@@ -42,7 +42,6 @@
 <script>
 import LoginModal from "./../components/LoginModal.vue";
 import Drawer from "./../components/Drawer.vue";
-import axios from "axios";
 
 export default {
   data() {
@@ -70,7 +69,7 @@ export default {
       if (this.nickName === "") {
         this.$Message.error("Login First!");
         setTimeout(() => {
-          this.$store.commit("updateLoginModal", true);
+          this.$store.commit("updateLoginModal", { action: true, type: 1 });
         }, 2000);
       } else {
         this.$store.commit("updateDrawerState", true);

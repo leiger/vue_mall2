@@ -25,6 +25,7 @@ npm start
 #### large image
 #### register
 #### logo design
+#### error log collection
 
 ### server
 using express and mongondb
@@ -38,12 +39,19 @@ node /bin/www
 
 ### components
 #### EntryBoard
-- jump to the my github
-- toggle between signin/nickName+signOut btn
-  - sign in btn
-    - click open form modal
-  logout
-    - confirm logout
+- functions 
+  - jump to the my github
+  - toggle between signin+signup/nickName+signOut btn
+    - sign in btn
+      - click open form modal
+    - sign up
+      - action: true
+      - type: 0->sign in; 1-> sign up
+    - logout
+      - confirm logout
+- requests
+  - /user/checkLogin
+  - /user/logout
 
 #### LoginModal
 - login form
@@ -64,15 +72,19 @@ node /bin/www
 - contain LoginModal&Drawer components: reduce reuse in other pages
 
 #### Drawer
-- change quantity
-  - two parameters: id, quantity
-    - quantity need > 0
-  - post to server. If num===0, delete it. get cart list from vuex -> change total money
-  - fail: 
-    - error: alert(reflesh page)
-    - not login: session expired
-- delete checked in database
-
+- functions
+  - change quantity
+    - two parameters: id, quantity
+      - quantity need > 0
+    - post to server. If num===0, delete it. get cart list from vuex -> change total money
+    - fail: 
+      - error: alert(reflesh page)
+      - not login: session expired
+  - delete checked in database
+- request
+  - /cart/cartEdit
+  - /cart/delCart
+  - /cart/getCartList - getCartList.js
 
 
 ### Server
@@ -93,4 +105,38 @@ node /bin/www
 - status
   - 0: success
   - 1: fatal error
-  - 2: can't find the user
+  - 2: Wrong Username or Password!
+  - 3: not login
+  - 4: cart edit error
+  - 5: not have this order
+  - 6: session expired
+  - 7: User exist
+  - 8: invalid data
+  - 9: hash error
+  - 10: save new user error
+
+### backend API
+- /user
+  - /login: params: {username, password}
+  - /logout
+  - /checkLogin
+  - /signup
+    - hash password
+- /good
+  - /product: find one product
+  - /list: params: {page, pageSize, sortFlag, sortWay, priceLevel}
+    - return a list of products
+- /cart
+  - /cartList: return user's cart list
+  - /cartEdit: edit the number of goods in cart
+  - /addCart: add product to cart
+  - /delCart: delete product from cart
+- /address
+  - /addressList: return addressList
+  - /setDefault: set Default address
+  - /delAddress: delete address
+  - /getAddress: return one address 
+- /payment
+  - /payment: 
+- /order
+  - /orderDetail

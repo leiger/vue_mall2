@@ -8,7 +8,9 @@
       </div>
       <div class="entryRight">
         <template v-if="nickName === ''">
-          <a @click="openLoginModel">
+          <a @click="openLoginModel(1)">SIGN UP</a>
+          <Divider type="vertical"/>
+          <a @click="openLoginModel(0)">
             <Icon type="ios-log-in" size="15"/>SIGN IN
           </a>
         </template>
@@ -29,8 +31,17 @@ import axios from "axios";
 import getCartList from "./../services/getCartList.js";
 
 export default {
-  mounted() {
-    this.checkLogin();
+  async mounted() {
+    try {
+      let { data } = await axios.get("/user/checkLogin");
+      if (data.status === "0") {
+        // this.nickName = data.result;
+        this.$store.commit("updateUserInfo", data.result);
+        getCartList(this);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   },
   computed: {
     nickName() {
@@ -38,25 +49,12 @@ export default {
     }
   },
   methods: {
-    async checkLogin() {
-      try {
-        let { data } = await axios.get("/users/checkLogin");
-        if (data.status === "0") {
-          // this.nickName = data.result;
-          this.$store.commit("updateUserInfo", data.result);
-          getCartList(this);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-
     toGithubAddress() {
       window.open(`https://github.com/leiger/vue_mall2`, "_blank");
     },
 
-    openLoginModel() {
-      this.$store.commit("updateLoginModal", true);
+    openLoginModel(type) {
+      this.$store.commit("updateLoginModal", { action: true, type });
     },
 
     logOut() {
@@ -83,7 +81,7 @@ export default {
     },
     async confirmLogout() {
       try {
-        let { data } = await axios.post("/users/logout");
+        let { data } = await axios.post("/user/logout");
 
         if (data.status === "0") {
           this.$store.commit("updateUserInfo", "");

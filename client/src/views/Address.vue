@@ -101,7 +101,7 @@
     },
     methods: {
       init() {
-        axios.get('/users/addressList').then((res) => {
+        axios.get('/address/addressList').then((res) => {
           let data = res.data;
           this.addressList = data.result;
         });
@@ -118,7 +118,7 @@
         this.selected = index;
       },
       setDefault(id) {
-        axios.post('/users/setDefault', {
+        axios.post('/address/setDefault', {
           addressId: id
         }).then((res) => {
           let data = res.data;
@@ -139,7 +139,7 @@
           okText: 'OK',
           cancelText: 'CANCEL',
           onOk: () => {
-            axios.post('/users/delAddress', {
+            axios.post('/address/delAddress', {
               addressId: id
             }).then((res) => {
               let data = res.data;
