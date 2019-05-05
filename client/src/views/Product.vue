@@ -38,6 +38,18 @@
         </div>
       </div>
     </div>
+    <div class="detail">
+      <div class="productIntro">
+        <div class="productLeft">
+          <div v-if="product.desc" class="descBox" v-for="detail in product.desc">
+            <p class="descTitle">{{detail.title}}</p>
+            <p class="descDetail">{{detail.detail}}</p>
+          </div>
+        </div>
+        <div class="productRight"/>
+      </div>
+    </div>
+    <NavFooter/>
   </Layout>
 </template>
 
@@ -181,5 +193,22 @@ export default {
 }
 .guarantee i {
   margin-right: 5px;
+}
+
+/* detail */
+.detail {
+  background-color: #fff;
+  margin: 50px 0 0;
+  padding: 60px 0;
+}
+.descBox {
+  margin-bottom: 20px;
+}
+.detail .descTitle {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+.detail .descDetail {
+  font-size: 15px;
 }
 </style>

@@ -3,11 +3,11 @@
     <Carousel autoplay :autoplay-speed="5000" @on-change="carouselChange">
       <CarouselItem v-for="(item,index) in carouselItems" :key="index">
         <div class="imgBox">
-          <a>
+          <router-link :to="'/products/'+item.id">
             <transition appear name="scaleUp">
               <img v-if="currentCarouselIndex === index" :src="item.src" alt="carouselImg1">
             </transition>
-          </a>
+          </router-link>
           <div class="carouselIntro">
             <transition appear enter-active-class="animated fadeInDown">
               <h4 v-if="currentCarouselIndex === index">{{item.title}}</h4>
@@ -16,7 +16,11 @@
               <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
             </transition>
             <transition appear enter-active-class="animated fadeInUp">
-              <button class="learnMore" v-if="currentCarouselIndex === index">LEARN MORE</button>
+              <router-link
+                :to="'/products/'+item.id"
+                class="learnMore"
+                v-if="currentCarouselIndex === index"
+              >LEARN MORE</router-link>
             </transition>
           </div>
         </div>
@@ -39,13 +43,15 @@ export default {
           title: "LED Desk Lamp",
           desc: `<p>Flicker-free</p>
                   <p>Intuitive brightness and color temperature adjustment</p>
-                  <p>Works with the Google Assistant</p>`
+                  <p>Works with the Google Assistant</p>`,
+          id: "201905008"
         },
         {
           src: bg2,
           title: "Laser Projector",
           desc: `<p>Ultra-short throw distance</p>
-                  <p>A massive screen for your home</p>`
+                  <p>A massive screen for your home</p>`,
+          id: "201905010"
         },
         {
           src: bg4,
@@ -53,7 +59,8 @@ export default {
           desc: `<p>Intuitive and easy-to-learn</p>
                   <p>18.6 miles long-range battery life</p>
                   <p>Double braking system</p>
-                  <p>Portable folding design</p>`
+                  <p>Portable folding design</p>`,
+          id: "201905009"
         }
       ],
       currentCarouselIndex: 0
@@ -114,9 +121,11 @@ export default {
 .carousel p {
   font-size: 16px;
 }
-.carousel .learnMore {
+.carousel a.learnMore {
+  display: inline-block;
   background-color: transparent;
-  width: 200px;
+  color: #212121;
+  width: 250px;
   height: 38px;
   line-height: 38px;
   font-size: 14px;
@@ -126,7 +135,7 @@ export default {
   cursor: pointer;
   transition: 0.5s;
 }
-.carousel button:hover {
+.carousel a:hover {
   color: #fff;
   background-color: #212121;
 }

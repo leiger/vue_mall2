@@ -18,8 +18,13 @@ npm start
 #### animation
 #### store rewrite
 ---
-### filter by category
+### 05-04
+#### filter by category
 #### animation
+#### delay load
+#### large image
+#### register
+#### logo design
 
 ### server
 using express and mongondb
@@ -83,4 +88,9 @@ node /bin/www
   - productName
   - salePrice
   - productImage
-  - 
+
+### Error code
+- status
+  - 0: success
+  - 1: fatal error
+  - 2: can't find the user

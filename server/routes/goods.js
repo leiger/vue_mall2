@@ -3,7 +3,6 @@ let router = express.Router();
 let mongoose = require('mongoose');
 let Goods = require('../models/goods');
 let Users = require('../models/users');
-let Categories = require('../models/categories');
 
 // connect mongodb
 mongoose.connect('mongodb://127.0.0.1:27017/vue_mall', {useNewUrlParser: true});
