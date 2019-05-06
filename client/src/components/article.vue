@@ -35,15 +35,4 @@ p {
 img {
   width: 100%;
 }
-img:hover {
-  animation: scaleUp 4s;
-}
-@keyframes scaleUp {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.1)
-  }
-}
 </style>

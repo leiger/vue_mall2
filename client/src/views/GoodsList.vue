@@ -67,7 +67,6 @@
       </div>
     </Content>
     <nav-footer/>
-    <BackTop/>
   </Layout>
 </template>
 

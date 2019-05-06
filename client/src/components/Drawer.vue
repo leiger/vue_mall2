@@ -1,13 +1,17 @@
 <template>
   <Drawer width="700" v-model="drawerState" :scrollable="true">
     <Divider>SHOPPING CART</Divider>
-
-    <div class="cartListBox">
+    <div v-if="cartList.length === 0" class="emptyBox">
+      <p>YOUR CART IS CURRENTLY EMPTY.</p>
+    </div>
+    <div v-else class="cartListBox">
       <div class="itemBox" v-for="item in cartList">
         <div class="imgBox">
           <img :src="'/static/images/'+item.productImage" alt="img">
         </div>
-        <h5 class="itemName">{{item.productName}}</h5>
+        <a @click="selectItem(item.productId)">
+          <h5 class="itemName">{{item.productName}}</h5>
+        </a>
         <QuantitySelector
           :value="item.productNum"
           :min="0"
@@ -24,8 +28,11 @@
         <span class="totalPrice">SUBTOTAL {{totalMoney | currency}}</span>
       </div>
       <div class="buttonGroup">
-        <MainBtn @click="closeCart">CONTINUE SHOPPING</MainBtn>
+        <MainBtn long @click="closeCart">CONTINUE SHOPPING</MainBtn>
         <MainBtn
+          class="checkoutBtn"
+          long
+          v-if="cartList.length !== 0"
           type="primary"
           :disabled="totalMoney === 0?true:false"
           @click="checkout"
@@ -118,6 +125,10 @@ export default {
         });
         this.$store.commit("updateDrawerState", false);
       }
+    },
+    selectItem(id) {
+      this.$store.commit("updateDrawerState", false);
+      this.$router.push("/products/"+id);
     }
   }
 };
@@ -136,11 +147,16 @@ export default {
   height: 90px;
 }
 .itemBox .itemName {
+  display: inline-block;
   font-size: 15px;
   line-height: 90px;
   font-weight: 400;
   padding-left: 10px;
   width: 260px;
+  color: #212121;
+}
+.itemBox .itemName:hover {
+  color: #666;
 }
 .quantity {
   margin-top: 30px;
@@ -183,6 +199,9 @@ export default {
 .buttonGroup {
   display: flex;
   justify-content: space-between;
+}
+.checkoutBtn {
+  margin-left: 15px;
 }
 </style>
 

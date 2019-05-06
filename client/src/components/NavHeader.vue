@@ -69,7 +69,7 @@ export default {
       if (this.nickName === "") {
         this.$Message.info("Login First!");
         setTimeout(() => {
-          this.$store.commit("updateLoginModal", { action: true, type: 1 });
+          this.$store.commit("updateLoginModal", { action: true, type: 0 });
         }, 2000);
       } else {
         this.$store.commit("updateDrawerState", true);

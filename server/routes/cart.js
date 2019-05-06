@@ -31,14 +31,14 @@ router.post('/cartEdit', async (req, res) => {
     let userId = req.cookies.userId || '';
     let productId = req.body.productId;
     let productNum = req.body.productNum;
-    let checked = req.body.checked;
+
+    console.log(productNum);
 
     let doc = await Users.update({
       _id: userId,
       "cartList.productId": productId
     }, {
       'cartList.$.productNum': productNum,
-      'cartList.$.checked': checked
     });
     if (doc) {
       Response(res, '0');

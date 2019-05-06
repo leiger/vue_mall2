@@ -13,7 +13,7 @@
         <div class="productLeft">
           <img :src="'./static/images/'+product.productImage" :alt="product.productName">
         </div>
-        <div class="productRight">
+        <Affix class="productRight" :offset-top="100">
           <div class="infoBox">
             <div class="productName">{{product.productName}}</div>
             <div class="productPrice">
@@ -21,10 +21,14 @@
             </div>
             <div class="productQuantity">
               <span>Quantity</span>
-              <QuantitySelector :min="0" @changeValue="handleChangeValue"/>
+              <QuantitySelector
+                :value="selectedNum"
+                :min="1"
+                @changeValue="handleChangeValue(product.productId, arguments)"
+              />
             </div>
             <div class="addToCart">
-              <MainBtn type="primary" long>ADD TO CART +</MainBtn>
+              <MainBtn @click="addToCart()" type="primary" long>ADD TO CART +</MainBtn>
             </div>
             <div class="guarantee">
               <span>
@@ -35,7 +39,7 @@
               </span>
             </div>
           </div>
-        </div>
+        </Affix>
       </div>
     </div>
     <div class="detail">
@@ -63,12 +67,13 @@ import QuantitySelector from "./../components/QuantitySelector.vue";
 
 import { currency } from "./../utils/currency";
 import axios from "axios";
+import getCartList from "../services/getCartList";
 
 export default {
   data() {
     return {
-      productDetail: {},
-      selectedNum: 0
+      product: {},
+      selectedNum: 1
     };
   },
   components: {
@@ -82,12 +87,9 @@ export default {
   computed: {
     // avoid render error before get data
     categoryName() {
-      return Object.keys(this.productDetail).length === 0
+      return Object.keys(this.product).length === 0
         ? ""
-        : this.productDetail.categoryId[0].categoryName;
-    },
-    product() {
-      return this.productDetail;
+        : this.product.categoryId[0].categoryName;
     }
   },
   created() {
@@ -112,14 +114,48 @@ export default {
           params
         });
         if (data.status === "0") {
-          this.productDetail = data.result.productDetail;
+          this.product = data.result.productDetail;
         }
       } catch (err) {
         console.log(err);
       }
     },
-    handleChangeValue(value) {
-      this.selectedNum = value;
+    handleChangeValue(id, arg) {
+      this.selectedNum = this.selectedNum + arg[0];
+    },
+    async addToCart() {
+      let { productId } = this.product;
+
+      if (this.selectedNum > 0) {
+        try {
+          let cartList = this.$store.state.cartList;
+          let numIncart = 0;
+          cartList.forEach(item => {
+            if (item.productId === productId) {
+              numIncart = item.productNum;
+            }
+          });
+          let { data } = await axios.post("/cart/cartEdit", {
+            productId,
+            productNum: this.selectedNum + numIncart
+          });
+          if (data.status === "0") {
+            this.$Message.success("Add Success!");
+            getCartList(this);
+          } else if (data.status === "3") {
+            this.$Message.info("Login First!");
+            setTimeout(() => {
+              this.$store.commit("updateLoginModal", { action: true, type: 0 });
+            }, 2000);
+          } else {
+            this.$Message.error("Add Fail!");
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        this.$$Message.error("Invalid!");
+      }
     }
   }
 };
@@ -144,8 +180,8 @@ export default {
   display: flex;
 }
 .productLeft {
-  flex: 3;
-  margin-right: 60px;
+  flex: 4;
+  margin-right: 30px;
   padding: 0 50px 0;
   background-color: #fff;
 }
@@ -153,18 +189,17 @@ export default {
   width: 100%;
 }
 .productRight {
-  flex: 2;
+  flex: 3;
 }
 .productRight .infoBox {
   width: 100%;
   height: 350px;
-  border: 1px solid #e4e4e4;
   background-color: #fff;
   padding: 24px;
 }
 .productName {
   color: #212121;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 600;
   text-align: left;
   margin: 10px 0 20px;
@@ -179,10 +214,12 @@ export default {
   font-size: 15px;
 }
 .productPrice {
+  font-weight: lighter;
   margin-bottom: 20px;
+  color: #ff6700;
 }
 .productPrice span.price {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
 }
 .addToCart {

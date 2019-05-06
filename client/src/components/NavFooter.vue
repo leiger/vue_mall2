@@ -36,6 +36,7 @@
       </dl>
     </div>
     <div class="footerRight">2019 &copy; Design & Create by leiger</div>
+    <BackTop/>
   </footer>
 </template>
 

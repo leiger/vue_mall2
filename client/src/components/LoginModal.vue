@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     closeModal() {
-      this.$store.commit("updateLoginModal", false);
+      this.$store.commit("updateLoginModal", { action: false });
     },
     // check input data valid or not
     handleSubmit(name) {
@@ -206,7 +206,7 @@ export default {
           if (data.status === "0") {
             this.$Message.success("Sign up Success!");
             setTimeout(() => {
-              this.$store.commit("updateLoginModal", {action: true, type: 0});
+              this.$store.commit("updateLoginModal", { action: true, type: 0 });
             }, 1000);
           } else if (data.status === "7") {
             this.$Message.info("Username is already exist!");

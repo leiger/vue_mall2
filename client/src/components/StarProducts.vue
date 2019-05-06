@@ -59,11 +59,11 @@ export default {
   flex: 1;
   cursor: pointer;
   padding: 20px;
+  transition: all 0.2s linear;
 }
 .starProductsCard:hover {
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   transform: translate3d(0, -5px, 0);
-  transition: all .2s linear;
 }
 .cardContent {
   padding: 20px 0 0px;
@@ -90,6 +90,6 @@ p {
 }
 .sub {
   font-size: 14px;
-  color: rgba(51,51,51,0.7)
+  color: rgba(51, 51, 51, 0.7);
 }
 </style>
