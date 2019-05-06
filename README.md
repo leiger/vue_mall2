@@ -86,6 +86,8 @@ node /bin/www
   - /cart/delCart
   - /cart/getCartList - getCartList.js
 
+#### Article
+- props: postTitle
 
 ### Server
 #### database

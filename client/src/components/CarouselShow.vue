@@ -106,13 +106,13 @@ export default {
   position: absolute;
   z-index: 10;
   top: 30%;
-  left: 20%;
+  left: 18%;
 }
 .carousel h4 {
-  font-size: 54px;
+  font-size: 48px;
   margin-bottom: 10px;
   color: #212121;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 .carousel .desc {
   margin-bottom: 30px;
@@ -125,7 +125,7 @@ export default {
   display: inline-block;
   background-color: transparent;
   color: #212121;
-  width: 250px;
+  width: 200px;
   height: 38px;
   line-height: 38px;
   font-size: 14px;

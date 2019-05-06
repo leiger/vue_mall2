@@ -1,21 +1,16 @@
 <template>
   <div class="quantity">
     <button class="minus" @click="minus">-</button>
-    <span>{{value}}</span>
+    <span>{{num1}}</span>
     <button @click="plus" class="plus">+</button>
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      num: this.value
-    };
-  },
   computed: {
     num1() {
-      this.num = this.value;
+      return this.value;
     }
   },
   props: {
@@ -29,14 +24,13 @@ export default {
   },
   methods: {
     minus() {
-      if (this.num > this.min) {
-        this.num--;
-        this.$emit("changeValue", this.num);
+      if (this.num1 - 1 >= this.min) {
+        this.$emit("changeValue", -1);
       }
     },
     plus() {
       this.num++;
-      this.$emit("changeValue", this.num);
+      this.$emit("changeValue", 1);
     }
   }
 };

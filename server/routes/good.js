@@ -79,7 +79,6 @@ router.get("/list", async (req, res) => {
   try {
     let skip = (page - 1) * pageSize;
     let doc1 = await Goods.find(params).skip(skip).limit(pageSize);
-    console.log(Array.isArray(doc1));
     // sort by price
     if (sortWay === 1) {
       doc1.sort((a, b) => {

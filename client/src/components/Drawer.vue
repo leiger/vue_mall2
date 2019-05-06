@@ -11,7 +11,7 @@
         <QuantitySelector
           :value="item.productNum"
           :min="0"
-          @changeValue="changeQuantity(item.productId, arguments)"
+          @changeValue="changeQuantity({id:item.productId, preNum:item.productNum}, arguments)"
         />
         <div class="price">{{item.salePrice * item.productNum | currency}}</div>
       </div>
@@ -71,8 +71,8 @@ export default {
     currency: currency
   },
   methods: {
-    async changeQuantity(id, arg) {
-      let newQuantity = arg[0];
+    async changeQuantity({ id, preNum }, arg) {
+      let newQuantity = preNum + arg[0];
       let params = {},
         postAddress = "";
 
@@ -124,6 +124,9 @@ export default {
 </script>
 
 <style scoped>
+.cartListBox {
+  margin-bottom: 180px;
+}
 .itemBox {
   display: flex;
   padding: 14px;
@@ -153,11 +156,11 @@ export default {
   margin-left: 70px;
 }
 .checkoutConfirm {
-  width: 100%;
-  position: absolute;
+  width: 684px;
+  position: fixed;
   bottom: 0;
-  left: 0;
-  padding: 10px 30px;
+  right: 16px;
+  padding: 10px 14px 10px 30px;
   text-align: right;
   background: #fff;
 }

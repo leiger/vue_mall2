@@ -67,7 +67,7 @@ export default {
   methods: {
     openDrawer() {
       if (this.nickName === "") {
-        this.$Message.error("Login First!");
+        this.$Message.info("Login First!");
         setTimeout(() => {
           this.$store.commit("updateLoginModal", { action: true, type: 1 });
         }, 2000);

@@ -3,18 +3,28 @@
     <EntryBoard/>
     <NavHeader/>
     <!-- banner -->
-    <div class="banner">
-      <!-- <img :src="bannerImgSrc" alt="bannerImg"> -->
+    <div class="bannerBox">
+      <div class="banner"/>
     </div>
-    <!-- intro -->
-    <Article :postTitle="mainTitle">
-      <p>Choose well and buy less. We believe in owning fewer, quality things and making them last a long time. That’s why if any of our product ever breaks down, you can send it back to us and we’ll repair it.</p>
-    </Article>
 
     <Content class="layoutBox">
       <!--main content-->
-      <!--left-->
-      <div class="leftBox">
+      <!--sort & filter-->
+      <div class="filterBox">
+        <div class="cardBox">
+          <h4>SORT</h4>
+          <ul>
+            <li v-for="(name, index) in sortNames">
+              <a @click="sortGoods(index)" :class="{tagSelected: sortSelected[index]}">
+                {{name}}
+                <template v-if="index === 1">
+                  <Icon v-if="sortPriceArrow" type="ios-arrow-round-up" size="18"/>
+                  <Icon v-else type="ios-arrow-round-down" size="18"/>
+                </template>
+              </a>
+            </li>
+          </ul>
+        </div>
         <div class="cardBox">
           <h4>FILTER BY PRICE RANGE</h4>
           <ul>
@@ -26,25 +36,10 @@
             </li>
           </ul>
         </div>
-
-        <div class="cardBox">
-          <h4>SORT</h4>
-          <ul>
-            <li v-for="(name, index) in sortNames">
-              <a @click="sortGoods(index)" :class="{tagSelected: sortSelected[index]}">
-                {{name}}
-                <template v-if="index === 1">
-                  <Icon type="ios-arrow-round-up" v-if="sortPriceArrow"/>
-                  <Icon type="ios-arrow-round-down" v-else/>
-                </template>
-              </a>
-            </li>
-          </ul>
-        </div>
       </div>
-
-      <!--right-->
-      <div class="rightBox">
+    <Title class="title" :postTitle="mainTitle"/>
+      <!--goods-->
+      <div class="goods">
         <template v-for="(good, index) in goods">
           <div class="goodsBox">
             <router-link :to="'/products/'+good.productId" class="imgBox">
@@ -52,6 +47,8 @@
               <div class="goodsDetail">
                 <h4>{{ good.productName }}</h4>
                 <span>$ {{ good.salePrice }}</span>
+              </div>
+              <div class="mask">
                 <button @click.stop.prevent="addCart(good.productId)" class="addToCart">ADD TO CART</button>
               </div>
             </router-link>
@@ -77,7 +74,7 @@
 <script>
 import EntryBoard from "./../components/EntryBoard.vue";
 import NavHeader from "./../components/NavHeader.vue";
-import Article from "./../components/Article.vue";
+import Title from "./../components/Title.vue";
 import NavFooter from "./../components/NavFooter.vue";
 
 import axios from "axios";
@@ -89,7 +86,7 @@ import { currency } from "./../utils/currency";
 export default {
   data() {
     return {
-      mainTitle: "All Products",
+      mainTitle: "All",
       // priceFilter
       priceRange: [
         "All",
@@ -127,7 +124,7 @@ export default {
   components: {
     NavHeader,
     EntryBoard,
-    Article,
+    Title,
     NavFooter
   },
   mounted: function() {
@@ -225,9 +222,9 @@ export default {
           getCartList(this);
         } else if (data.status === "3") {
           // not login
-          this.$Message.error("Login First!");
+          this.$Message.info("Login First!");
           setTimeout(() => {
-            this.$store.commit("updateLoginModal", true);
+            this.$store.commit("updateLoginModal", { action: true, type: 0 });
           }, 2000);
         } else {
           // err
@@ -242,34 +239,46 @@ export default {
 </script>
 
 <style scoped>
+.bannerBox {
+  height: 420px;
+  overflow: hidden;
+}
 .banner {
   width: 100%;
-  min-height: 420px;
-  overflow: hidden;
+  height: 420px;
   background-position: center center;
   background-image: url(./../../static/goodsList/goodsList1.jpg);
+  transition: all 2s ease-in-out;
 }
-
+.banner:hover {
+  transform: scale(1.1);
+}
+.title {
+  margin: 30px;
+}
 .layoutBox {
   padding: 0 30px;
   max-width: 1600px;
   width: 100%;
   margin: 30px auto;
-  display: flex;
 }
-/* left part */
-.leftBox {
-  flex: 1;
+.filterBox {
+  background-color: #fff;
+  padding: 7px 20px;
+  margin: 14px 7px;
 }
 .cardBox {
-  margin-bottom: 24px;
+  margin: 7px;
 }
 .cardBox h4 {
   font-weight: 300;
   font-size: 16px;
+  display: inline-block;
+  margin-right: 10px;
 }
 .cardBox ul {
   list-style: none;
+  display: inline-block;
 }
 .cardBox li {
   display: inline-block;
@@ -293,9 +302,8 @@ export default {
 .cardBox a.tagSelected {
   font-weight: 600;
 }
-/* right part */
-.rightBox {
-  flex: 3;
+/* below part */
+.goods {
   display: flex;
   flex-wrap: wrap;
 }
@@ -307,60 +315,53 @@ export default {
 .imgBox {
   position: relative;
   display: block;
-  width: 100%;
-  height: 400px;
   text-align: center;
   background-color: #fff;
-  margin: 0 20px 40px;
+  margin: 0 7px 14px;
   overflow: hidden;
   cursor: pointer;
   font-size: 0;
 }
+.imgBox:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  transform: translate3d(0, -5px, 0);
+  transition: all 0.2s linear;
+}
 .imgBox img {
-  height: 400px;
-  padding: 60px 0;
+  width: 50%;
 }
-/* mask */
 .goodsDetail {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 400px;
-  background: rgba(255, 255, 255, 0.8);
-  color: #333;
-  opacity: 0;
+  padding: 0 48px 20px;
+  display: flex;
+  justify-content: space-between;
 }
-.goodsDetail:hover {
-  opacity: 1;
-}
-.goodsBox .goodsDetail h4 {
-  text-align: center;
-  margin-top: 100px;
-  color: #333;
+.goodsDetail h4 {
+  text-align: left;
+  color: rgba(51, 51, 51, 0.9);
   font-weight: 300;
   line-height: 1.8;
-  font-size: 36px;
+  font-size: 24px;
 }
-.goodsBox .goodsDetail span {
+.goodsDetail span {
   display: block;
   text-align: center;
   font-size: 30px;
-  color: #212121;
+  color: #ff6700;
 }
+
 .goodsBox .addToCart {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background-color: #212121;
+  background-color: #555;
   width: 100%;
   height: 60px;
-  border: 1px solid #212121;
+  border: none;
   color: #fff;
   font-size: 14px;
   padding: 9px 30px;
   text-align: center;
   cursor: pointer;
+}
+.goodsBox .addToCart:hover {
+  background-color: #212121;
 }
 
 .load_more {

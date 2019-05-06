@@ -8,7 +8,7 @@
         <BreadcrumbItem>{{categoryName}}</BreadcrumbItem>
         <BreadcrumbItem>{{product.productName}}</BreadcrumbItem>
       </Breadcrumb>
-      <Article :postTitle="product.productName"/>
+      <Title class="title" :postTitle="product.productName"/>
       <div class="productIntro">
         <div class="productLeft">
           <img :src="'./static/images/'+product.productImage" :alt="product.productName">
@@ -56,7 +56,7 @@
 <script>
 import NavHeader from "./../components/NavHeader.vue";
 import EntryBoard from "./../components/EntryBoard.vue";
-import Article from "./../components/Article.vue";
+import Title from "./../components/Title.vue";
 import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
 import QuantitySelector from "./../components/QuantitySelector.vue";
@@ -74,7 +74,7 @@ export default {
   components: {
     NavHeader,
     EntryBoard,
-    Article,
+    Title,
     MainBtn,
     QuantitySelector,
     NavFooter
@@ -134,6 +134,9 @@ export default {
 }
 .breadCrumb {
   text-align: center;
+}
+.container .title {
+  margin: 30px 0 50px;
 }
 .productIntro {
   max-width: 1200px;

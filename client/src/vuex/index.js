@@ -14,10 +14,10 @@ export default new Vuex.Store({
   },
   mutations: {
     updateLoginModal(state, payload) {
-      state.loginModalState = payload.action;
       if(payload.type !== undefined) {
         state.loginModalType = payload.type;
       }
+      state.loginModalState = payload.action;
     },
 
     updateUserInfo(state, nickName) {

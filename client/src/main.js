@@ -29,6 +29,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach(route => {
+  window.scrollTo(0,0);
   iView.LoadingBar.finish();
 });
 
