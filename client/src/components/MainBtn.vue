@@ -18,6 +18,10 @@ export default {
       },
       default: "default"
     },
+    size: {
+      type: String,
+      default: "default"
+    },
     disabled: Boolean
   },
   computed: {
@@ -27,7 +31,9 @@ export default {
         btnLong: this.long,
         btnDefault: this.type === "default",
         btnPrimary: this.type === "primary",
-        btnDisabled: this.disabled === "disabled"
+        btnDisabled: this.disabled === "disabled",
+        btnSmall: this.size === "small",
+        btnExtraSmall: this.size === "extraSmall"
       };
     }
   },
@@ -44,7 +50,6 @@ export default {
   width: 300px;
   height: 48px;
   padding: 9px 30px;
-  line-height: 30px;
   border-radius: 3px;
   letter-spacing: 1px;
   border: none;
@@ -69,5 +74,14 @@ export default {
 }
 .btnPrimary:hover {
   background-color: #bbb;
+}
+.btn.btnSmall {
+  height: 40px;
+  width: 200px;
+}
+.btn.btnExtraSmall {
+  width: 50px;
+  height: 32px;
+  padding: 3px;
 }
 </style>

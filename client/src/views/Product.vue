@@ -4,7 +4,7 @@
     <NavHeader/>
     <div class="container">
       <Breadcrumb class="breadCrumb">
-        <BreadcrumbItem to="/">Home</BreadcrumbItem>
+        <BreadcrumbItem to="/all">All Products</BreadcrumbItem>
         <BreadcrumbItem>{{categoryName}}</BreadcrumbItem>
         <BreadcrumbItem>{{product.productName}}</BreadcrumbItem>
       </Breadcrumb>
@@ -135,9 +135,9 @@ export default {
               numIncart = item.productNum;
             }
           });
-          let { data } = await axios.post("/cart/cartEdit", {
+          let { data } = await axios.post("/cart/addCart", {
             productId,
-            productNum: this.selectedNum + numIncart
+            productNum: this.selectedNum
           });
           if (data.status === "0") {
             this.$Message.success("Add Success!");

@@ -167,6 +167,7 @@ export default {
       return this.$store.state.loginModalType;
     }
   },
+  inject: ['reload'],
   methods: {
     closeModal() {
       this.$store.commit("updateLoginModal", { action: false });
@@ -196,6 +197,7 @@ export default {
             this.closeModal();
             // get cart list
             getCartList(this);
+            this.reload();
           } else if (data.status === "2") {
             this.$Message.error("Wrong Username or Password!");
           }

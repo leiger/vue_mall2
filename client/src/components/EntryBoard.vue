@@ -85,6 +85,7 @@ export default {
 
         if (data.status === "0") {
           this.$store.commit("updateUserInfo", "");
+          this.$router.push('/');
         } else {
           this.$Message.error("logout fail");
         }

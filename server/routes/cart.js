@@ -25,33 +25,6 @@ router.get('/cartList', async (req, res) => {
   }
 });
 
-// edit the number of goods in cart
-router.post('/cartEdit', async (req, res) => {
-  try {
-    let userId = req.cookies.userId || '';
-    let productId = req.body.productId;
-    let productNum = req.body.productNum;
-
-    console.log(productNum);
-
-    let doc = await Users.update({
-      _id: userId,
-      "cartList.productId": productId
-    }, {
-      'cartList.$.productNum': productNum,
-    });
-    if (doc) {
-      Response(res, '0');
-    } else {
-      // session expired
-      Response(res, '6');
-    }
-  } catch (err) {
-    Response(res, '1');
-    console.log(err);
-  }
-});
-
 // add to cart
 router.post('/addCart', async (req, res) => {
   try {
@@ -60,13 +33,14 @@ router.post('/addCart', async (req, res) => {
       _id: userId
     });
     let productId = req.body.productId;
+    let productNum = req.body.productNum || 1;
 
     if (doc) {
       let goodsItem = '';
       doc.cartList.forEach(item => {
         if (item.productId === productId) {
           goodsItem = item;
-          item.productNum++;
+          item.productNum += productNum;
         }
       });
 

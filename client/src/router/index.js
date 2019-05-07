@@ -8,7 +8,7 @@ import Faq from '../views/Faq.vue'
 import Contact from '../views/Contact.vue'
 import Product from '../views/Product.vue'
 import Address from '../views/Address.vue'
-import OrderConfirm from '../views/OrderConfirm.vue'
+import Payment from '../views/Payment.vue';
 import OrderSuccess from '../views/OrderSuccess.vue'
 
 Vue.use(Router)
@@ -44,9 +44,9 @@ export default new Router({
       component: Address
     },
     {
-      path: '/orderConfirm',
-      name: 'OrderConfirm',
-      component: OrderConfirm
+      path: '/payment',
+      name: 'Payment',
+      component: Payment
     },
     {
       path: '/orderSuccess',

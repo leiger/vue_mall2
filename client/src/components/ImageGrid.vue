@@ -8,7 +8,7 @@
       </div>
       <div class="firstRight">
         <Title postTitle="10% OFF DISCOUNT"/>
-        <p>Use code EXTRA15 to save even more on our summer sale. Plus free shipping on orders over $50.</p>
+        <p>Use code EXTRA10 to save even more on our summer sale. Plus Free shipping all day!</p>
         <MainBtn class="btn" @click="shopNow">SHOP NOW</MainBtn>
       </div>
     </div>

@@ -10,7 +10,10 @@ export default new Vuex.Store({
     loginModalType: 0,
     nickName: '',
     drawerState: false,
-    cartList: []
+    cartList: [],
+    addressModalState: false,
+    addressList: [],
+    discount: false
   },
   mutations: {
     updateLoginModal(state, payload) {
@@ -36,6 +39,16 @@ export default new Vuex.Store({
     },
     updateCartListOne(state, tem) {
       state.cartList[tem.index].productNum = tem.newValue;
+    },
+    // addressModal
+    updateAddressModal(state, payload) {
+      state.addressModalState = payload;
+    },
+    updateAddressList(state, payload) {
+      state.addressList = payload;
+    },
+    updateDiscount(state, payload) {
+      state.discount = payload;
     }
   }
 });

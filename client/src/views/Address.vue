@@ -1,227 +1,414 @@
 <template>
-  <Layout>
+  <div>
+    <EntryBoard/>
     <NavHeader/>
-
-    <!--steps-->
-    <div class="stepsBox">
-      <Steps :current="0" class="steps">
-        <Step title="Confirm Address"></Step>
-        <Step title="View Your Order"></Step>
-        <Step title="Make Payment"></Step>
-        <Step title="Order Confirmation"></Step>
-      </Steps>
-    </div>
-
+    <AddressModal/>
     <div class="layoutBox">
-      <Divider orientation="left">SHIPPING ADDRESS</Divider>
-
-      <div class="shippingAddress">
-        <Row :gutter="32" type="flex" align="middle">
-          <template v-for="(item,index) in addressListFilter">
-            <Col :lg="6" :md="8" :sm="12" :xs="24">
-            <div @click.stop.prevent="selectCard(index)">
-              <Card v-bind:class="{'selected': selected===index}" class="cardBox" :dis-hover="true">
-                <p class="username">{{ item.userName }}</p>
-                <p class="address">{{ item.streetName }}</p>
-                <p class="zipcode">{{ item.postCode }}</p>
-                <p class="tel">{{ item.tel }}</p>
-                <Divider class="divider" dashed/>
-                <Row type="flex" justify="center" align="middle">
-                  <Col span="12">
-                  <a v-if="item.isDefault === false && selected === index" class="salePrice"
-                     @click.stop.prevent="setDefault(item.addressId)" >Set Default</a>
-                  <p v-if="item.isDefault" class="defAdd">Default Address</p>
-                  </Col>
-                  <Col span="12">
-                  <Button icon="ios-trash-outline" shape="circle" type="dashed"
-                          style="float: right" @click.stop.prevent="deleteAddress(item.addressId)"></Button>
-                  </Col>
-                </Row>
-              </Card>
+      <div class="section address">
+        <h3 class="title">Shipping Address</h3>
+        <div class="addressList">
+          <template v-for="(address,index) in addressList">
+            <div
+              class="addressBox"
+              :class="{selected: selected === index}"
+              @click.stop.prevent="chooseAddress(index)"
+            >
+              <dl>
+                <dt class="uname">{{address.firstName}} {{address.lastName}}</dt>
+                <dd class="uaddress">
+                  <span>{{address.address}} -</span>
+                  <span>{{address.city}} -</span>
+                  <span>{{address.province}}</span>
+                </dd>
+                <dd class="ucode">{{address.postalCode}}</dd>
+              </dl>
+              <Icon
+                @click.stop.prevent="deleteAddress(address._id)"
+                size="20"
+                class="trash"
+                type="ios-trash-outline"
+              />
             </div>
-            </Col>
-            <!--add new-->
           </template>
-        </Row>
-        <!--more-->
-        <template v-if="addressList.length > 4">
-          <Button v-if="limit===4" icon="ios-arrow-down" shape="circle" type="dashed" class="more"
-                  @click="loadMore"></Button>
-          <Button v-else icon="ios-arrow-up" shape="circle" type="dashed" class="more" @click="loadMore"></Button>
-        </template>
+          <!-- addnew -->
+          <div class="addNew" @click="addNewAddress">
+            <Icon type="md-add-circle"/>Add New Address
+          </div>
+        </div>
       </div>
-
-      <Divider orientation="left">SHIPPING METHOD</Divider>
-
-      <Row :gutter="32" type="flex" align="middle">
-        <Col :lg="6" :md="8" :sm="12" :xs="24">
-        <Card class="cardBox selected" :dis-hover="true">
-          <p class="shipMethod">Standard Shipping</p>
-          <p class="shipFee">FREE!</p>
-        </Card>
-        </Col>
-      </Row>
-
-      <Button type="primary" style="float: right" @click="nextStep()">
-        NEXT
-        <Icon type="ios-arrow-forward"></Icon>
-      </Button>
+      <Divider/>
+      <div class="section goods">
+        <h3 class="title">Products</h3>
+        <div class="products">
+          <ul>
+            <li v-for="item in cartList">
+              <img :src="'/static/images/'+item.productImage" alt="img">
+              <span class="goodName">{{item.productName}}</span>
+              <span class="goodPrice">{{item.salePrice|currency}} x {{item.productNum}}</span>
+              <span class="subTotal">{{item.salePrice * item.productNum | currency}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <Divider/>
+      <div class="section shipping">
+        <h3 class="title">Shipping Methods</h3>
+        <span>FREE SHIPPING</span>
+      </div>
+      <Divider/>
+      <div class="section count">
+        <div class="left discount">
+          <h3 class="title">Discount Code</h3>
+          <Input v-model="discount.typed" class="discountInput"/>
+          <MainBtn @click="useCode()" size="extraSmall" type="primary">Add</MainBtn>
+        </div>
+        <div class="right moneyBox">
+          <ul>
+            <li>
+              <label>Total Number:</label>
+              <span>{{totalNum}}</span>
+            </li>
+            <li>
+              <label>Products Price:</label>
+              <span>{{totalPrice | currency}}</span>
+            </li>
+            <li>
+              <label>Shipping Fee:</label>
+              <span>+{{ 0 | currency}}</span>
+            </li>
+            <li>
+              <label>Discount Price:</label>
+              <span>-{{discountPrice | currency}}</span>
+            </li>
+            <li>
+              <label>Tax:</label>
+              <span>+{{tax | currency}}</span>
+            </li>
+            <li class="finalLi">
+              <label>Final Price:</label>
+              <span class="finalPrice">{{finalPrice | currency}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <Divider/>
+      <div class="clearfix">
+        <MainBtn @click="nextStep" class="continue">Continue to Payment</MainBtn>
+      </div>
     </div>
-
-
     <NavFooter/>
-  </Layout>
+  </div>
 </template>
 
 <script>
-  import NavHeader from './../components/NavHeader.vue';
-  import NavFooter from './../components/NavFooter.vue';
-  import Drawer from './../components/Drawer.vue';
-  import axios from 'axios'
+import EntryBoard from "./../components/EntryBoard.vue";
+import NavHeader from "./../components/NavHeader.vue";
+import AddressModal from "./../components/AddressModal.vue";
+import NavFooter from "./../components/NavFooter.vue";
+import MainBtn from "./../components/MainBtn.vue";
 
-  export default {
-    data() {
-      return {
-        limit: 4,
-        addressList: [],
-        selected: 0
+import getAddressList from "./../services/getAddressList.js";
+import { currency } from "./../utils/currency.js";
+
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      selected: 0,
+      discount: {
+        code: "EXTRA10",
+        typed: "",
+      }
+    };
+  },
+  components: {
+    NavHeader,
+    EntryBoard,
+    AddressModal,
+    NavFooter,
+    MainBtn
+  },
+  filters: {
+    currency
+  },
+  computed: {
+    addressList() {
+      return this.$store.state.addressList;
+    },
+    cartList() {
+      return this.$store.state.cartList;
+    },
+    totalNum() {
+      let total = 0;
+      this.$store.state.cartList.forEach(item => {
+        total += item.productNum;
+      });
+      return total;
+    },
+    totalPrice() {
+      let price = 0;
+      this.$store.state.cartList.forEach(item => {
+        price += item.productNum * item.salePrice;
+      });
+      return price;
+    },
+    discountPrice() {
+      if (this.discountState === true) {
+        return this.totalPrice * 0.1;
+      } else {
+        return 0;
       }
     },
-    components: {
-      NavHeader,
-      NavFooter
+    tax() {
+      return this.totalPrice*0.13
     },
-    computed: {
-      addressListFilter() {
-        return this.addressList.slice(0, this.limit);
+    finalPrice() {
+      return this.totalPrice - this.discountPrice + this.tax;
+    },
+    discountState() {
+      return this.$store.state.discount;
+    }
+  },
+  mounted() {
+    getAddressList(this);
+  },
+  methods: {
+    addNewAddress() {
+      this.$store.commit("updateAddressModal", true);
+    },
+    chooseAddress(index) {
+      this.selected = index;
+    },
+    async deleteAddress(id) {
+      try {
+        let { data } = await axios.post("/address/delAddress", {
+          _id: id
+        });
+        if (data.status === "0") {
+          this.$Message.success("Delete Success!");
+          getAddressList(this);
+        }
+      } catch (err) {
+        this.$Message.error("Error!");
       }
     },
-    mounted() {
-      this.init()
+    useCode() {
+      if (this.discount.used === true) {
+        this.$Message.warning("This code can only use once!");
+      }
+      console.log(this.discount.typed);
+      if (this.discount.typed === this.discount.code) {
+        this.$store.commit("updateDiscount", true);
+        this.$Message.success("Add Success!");
+      } else {
+        this.$Message.warning("Invalid Code!");
+        this.discount.typed = "";
+      }
     },
-    methods: {
-      init() {
-        axios.get('/address/addressList').then((res) => {
-          let data = res.data;
-          this.addressList = data.result;
-        });
-      },
-      loadMore() {
-        if (this.limit === 4) {
-          this.limit = this.addressList.length;
-        }
-        else {
-          this.limit = 4;
-        }
-      },
-      selectCard(index) {
-        this.selected = index;
-      },
-      setDefault(id) {
-        axios.post('/address/setDefault', {
-          addressId: id
-        }).then((res) => {
-          let data = res.data;
-          if (data.status === '0') {
-//            console.log('suc');
-            this.init();
-            this.$Message.success('Set Success!');
-          }
-          else {
-            this.$Message.error('Set Fail');
-          }
-        });
-      },
-      deleteAddress(id) {
-        this.$Modal.warning({
-          title: 'WARN',
-          content: 'Are you sure to delete this address?',
-          okText: 'OK',
-          cancelText: 'CANCEL',
-          onOk: () => {
-            axios.post('/address/delAddress', {
-              addressId: id
-            }).then((res) => {
-              let data = res.data;
-              if (data.status === '0') {
-                console.log('del suc');
-                this.init();
-                this.$Message.success('Delete Success!');
-              }
-            })
-          }
-        });
-      },
-      nextStep() {
+    nextStep() {
+      if (this.$store.state.nickName !== "") {
         this.$router.push({
-          path: '/orderConfirm',
+          path: "/payment",
           query: {
-            'addressId': this.addressList[this.selected].addressId
+            addressId: this.addressList[this.selected]._id
           }
         });
+      } else {
+        this.$Message.error("Session Expired or Not Login!");
+        setTimeout(() => {
+          this.$store.commit("updateLoginModal", { action: true, type: 0 });
+        }, 2000);
       }
     }
   }
+};
 </script>
 
 <style scoped>
-  .layoutBox {
-    width: 95%;
-    margin: 10px auto 20px;
-  }
+.layoutBox {
+  margin: 0 40px 40px;
+  padding: 30px 40px;
+  background-color: #f5f5f5;
+}
+.addressList,
+.shippingMethods {
+  display: flex;
+  flex-wrap: wrap;
+}
+.title {
+  color: #333;
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+.addressBox,
+.shippingBox,
+.addNew {
+  position: relative;
+  width: 268px;
+  height: 178px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.4s ease;
+}
+.addressBox,
+.shippingBox {
+  padding: 15px 24px;
+  margin: 0 15px 15px 0;
+}
+.addressBox:hover {
+  border-color: #b0b0b0;
+}
+.addressBox .uname {
+  margin: 0 0 10px;
+  line-height: 30px;
+  color: #333;
+  font-size: 14px;
+}
+.addressBox .uaddress {
+  max-height: 88px;
+  overflow: hidden;
+  margin: 0;
+  line-height: 22px;
+  color: #757575;
+}
+.selected {
+  border: 1px solid #ff6700;
+}
 
-  .cardBox {
-    margin: 0 0 16px;
-    cursor: pointer;
-  }
+.selected:hover {
+  border-color: #ff6700 !important;
+}
+.trash {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: #b0b0b0;
+  cursor: pointer;
+}
+.trash:hover {
+  color: #757575;
+}
 
-  .stepsBox {
-    background-color: #fff;
-  }
-
-  .steps {
-    padding: 17px;
-    width: 95%;
-    margin: auto;
-  }
-
-  .divider {
-    margin: 10px 0;
-  }
-
-  .more {
-    display: block;
-    margin: auto;
-  }
-
-  .selected {
-    border: 1px dashed #5cadff;
-  }
-
-  .selected:hover {
-    border-color: #5cadff !important;
-  }
-  .defAdd {
-    color: #c5c8ce;
-  }
-  .username {
-    font-size: 16px;
-    font-weight: 600;
-    padding-bottom: 5px;
-  }
-  .address,.zipcode {
-    padding-bottom: 5px;
-  }
-  .shipMethod {
-    padding-bottom: 14px;
-    text-align: center;
-    font-size: 16px;
-  }
-  .shipFee {
-    font-weight: 600;
-    text-align: center;
-    font-size: 16px;
-  }
+/* addnew */
+.addNew {
+  text-align: center;
+  color: #b0b0b0;
+}
+.addNew i {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 63px auto 8px;
+  font-size: 30px;
+  line-height: 30px;
+  text-align: center;
+  color: #e0e0e0;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+}
+.addNew:hover {
+  border-color: #b0b0b0;
+  color: #757575;
+}
+.addNew:hover i {
+  color: #757575;
+}
+.goods {
+}
+.goods ul {
+  list-style: none;
+  padding: 5px 0;
+}
+.goods li {
+  padding: 10px 0;
+  display: flex;
+}
+.goods li img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.goods span {
+  display: inline-block;
+  line-height: 30px;
+  color: #424242;
+  font-size: 14px;
+  vertical-align: top;
+  flex: 1;
+}
+.goods span.goodName {
+  flex: 3;
+}
+.goods .goodPrice,
+.goods .subTotal {
+  text-align: right;
+}
+.goods span.subTotal {
+  color: #ff6700;
+}
+.shipping .title,
+.discount .title {
+  display: inline-block;
+  margin-right: 50px;
+  margin-bottom: 0;
+}
+.shipping span {
+  font-size: 16px;
+  color: #ff6700;
+}
+.count {
+  display: flex;
+  justify-content: space-between;
+}
+.discount .discountInput {
+  display: inline-block;
+  width: 200px;
+}
+.right {
+  width: 300px;
+}
+.right ul {
+  list-style: none;
+}
+.right ul li {
+  display: flex;
+  line-height: 2;
+}
+.right ul li label {
+  flex: 1;
+  text-align: right;
+  margin-right: 20px;
+  color: #757575;
+  font-size: 14px;
+}
+.right ul li span {
+  font-size: 14px;
+  flex: 1;
+  color: #ff6700;
+  text-align: right;
+}
+.right ul li.finalLi {
+  align-items: baseline;
+}
+.right ul li span.finalPrice {
+  font-size: 30px;
+}
+.clearfix::after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.continue {
+  float: right;
+  clear: both;
+}
 </style>
 
 

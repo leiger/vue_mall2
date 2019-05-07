@@ -13,7 +13,7 @@ router.get('/orderDetail', async (req, res) => {
       orderId = req.param('orderId');
 
     let doc = await Users.findOne({
-      userId: userId
+      _id: userId
     });
     let orderList = doc.orderList;
     if (orderList.length > 0) {

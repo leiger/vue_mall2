@@ -1,20 +1,73 @@
 var express = require('express');
 var router = express.Router();
-
+let mongoose = require('mongoose');
 let Goods = require('../models/goods');
 let Users = require('../models/users');
 let categories = require('../models/categories');
 
 let Response = require('./../public/javascripts/response');
 
+router.post('/add', async (req, res) => {
+  try {
+    let userId = req.cookies.userId;
+    if (userId) {
+      let doc = await Users.findOne({
+        _id: mongoose.Types.ObjectId(userId)
+      });
+      if (doc) {
+        let {
+          firstName,
+          lastName,
+          address,
+          city,
+          province,
+          postalCode,
+          _default
+        } = req.body;
+        let insertData = {
+          _id: mongoose.Types.ObjectId(),
+          firstName,
+          lastName,
+          address,
+          city,
+          province,
+          postalCode,
+          _default
+        };
+        doc.addressList.push(insertData);
+        console.log(doc);
+        try {
+          let doc1 = await doc.save();
+          if (doc1) {
+            Response(res, '0');
+          }
+        } catch (err) {
+          Response(res, '1');
+          console.log(err);
+        }
+      }
+    } else {
+      // not login
+      Response(res, '3');
+    }
+  } catch (err) {
+    console.log(err);
+    Response(res, '1');
+  }
+});
+
 router.get('/addressList', async (req, res) => {
   try {
     let userId = req.cookies.userId;
-
-    let doc = await Users.findOne({
-      userId: userId
-    });
-    Response(res, '0', doc.addressList);
+    if (userId) {
+      let doc = await Users.findOne({
+        _id: userId
+      });
+      doc ? Response(res, '0', doc.addressList) : Response(res, '11');
+    } else {
+      // not login
+      Response(res, '3');
+    }
   } catch (err) {
     Response(res, '1');
   }
@@ -54,14 +107,14 @@ router.post('/setDefault', async (req, res) => {
 router.post('/delAddress', async (req, res) => {
   try {
     let userId = req.cookies.userId,
-      addressId = req.body.addressId;
+      _id = req.body._id;
 
     let doc = await Users.update({
-      userId: userId
+      _id: userId
     }, {
       $pull: {
-        'addressList': {
-          'addressId': addressId
+        addressList: {
+          _id
         }
       }
     });

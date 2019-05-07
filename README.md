@@ -116,6 +116,7 @@ node /bin/www
   - 8: invalid data
   - 9: hash error
   - 10: save new user error
+  - 11: can't find the user
 
 ### backend API
 - /user

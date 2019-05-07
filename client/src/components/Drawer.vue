@@ -75,7 +75,7 @@ export default {
     }
   },
   filters: {
-    currency: currency
+    currency
   },
   methods: {
     async changeQuantity({ id, preNum }, arg) {
@@ -87,9 +87,9 @@ export default {
       if (newQuantity > 0) {
         params = {
           productId: id,
-          productNum: newQuantity
+          productNum: arg[0]
         };
-        postAddress = "cart/cartEdit";
+        postAddress = "cart/addCart";
       } else {
         // delete
         params = {
@@ -106,7 +106,7 @@ export default {
         } else if (data.status === "6") {
           this.$Message.error("Session Expired!");
           setTimeout(() => {
-            this.$store.commit("updateLoginModal", true);
+            this.$store.commit("updateLoginModal", { action: true, type: 0 });
           }, 2000);
         } else {
           this.$Error.error("Error!");
@@ -128,7 +128,7 @@ export default {
     },
     selectItem(id) {
       this.$store.commit("updateDrawerState", false);
-      this.$router.push("/products/"+id);
+      this.$router.push("/products/" + id);
     }
   }
 };

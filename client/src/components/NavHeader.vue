@@ -27,7 +27,7 @@
           </li>
           <li key="5">
             <a @click="openDrawer">
-              CART
+              <Icon class="cartIcon" size="16" type="md-cart" />
               <span v-if="nickName">({{cartNum}})</span>
             </a>
           </li>
@@ -136,6 +136,9 @@ ul li a:hover {
 ul li a:hover::before {
   visibility: visible;
   transform: scaleX(1);
+}
+.cartIcon {
+  vertical-align: text-bottom;
 }
 </style>
 

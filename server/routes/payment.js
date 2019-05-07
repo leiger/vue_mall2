@@ -4,6 +4,7 @@ var router = express.Router();
 let Goods = require('../models/goods');
 let Users = require('../models/users');
 let categories = require('../models/categories');
+let mongoose = require('mongoose');
 
 let Response = require('./../public/javascripts/response');
 
@@ -15,56 +16,52 @@ router.post('/payment', async (req, res) => {
       addressId = req.body.addressId;
 
     let doc = await Users.findOne({
-      userId: userId
+      _id: userId
     });
     let address = '',
       goodsList = [];
     // get address
     doc.addressList.forEach((item) => {
-      if (addressId === item.addressId) {
+      console.log(addressId == item._id);
+      if (addressId == item._id) {
         address = item;
       }
     });
     // get purchase goods
-    doc.cartList.filter((item) => {
-      if (item.checked === '1') {
-        goodsList.push(item);
-      }
-    });
+    goodsList = doc.cartList;
+    // delete cart list
+    doc.cartList = [];
 
     // new order id
-    let platform = '233';
-    let r1 = Math.floor(Math.random() * 10);
-    let r2 = Math.floor(Math.random() * 10);
-
-    let sysDate = new Date().Format('yyyyMMddhhmmss');
     let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss');
 
-    let orderId = platform + r1 + sysDate + r2;
-
     let order = {
-      orderId: orderId,
+      _id: mongoose.Types.ObjectId(),
       orderTotal: orderTotal,
       addressInfo: address,
       goodsList: goodsList,
       orderStatus: '1',
       createDate: createDate
     };
-    // console.log(order);
+    console.log(order);
 
     // save to orderlist
     doc.orderList.push(order);
     try {
       let doc1 = await doc.save();
-      Response(res, '0', result = {
-        orderId: order.orderId,
-        orderTotal: order.orderTotal
-      });
+      if (doc1) {
+        Response(res, '0', result = {
+          orderId: order.orderId,
+          orderTotal: order.orderTotal
+        });
+      }
     } catch (err) {
       Response(res, '1');
+      console.log(err);
     }
   } catch (err) {
     Response(res, '1');
+    console.log(err);
   }
 });
 
