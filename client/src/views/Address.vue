@@ -118,7 +118,7 @@ export default {
       selected: 0,
       discount: {
         code: "EXTRA10",
-        typed: "",
+        typed: ""
       }
     };
   },
@@ -161,7 +161,7 @@ export default {
       }
     },
     tax() {
-      return this.totalPrice*0.13
+      return this.totalPrice * 0.13;
     },
     finalPrice() {
       return this.totalPrice - this.discountPrice + this.tax;
@@ -207,19 +207,12 @@ export default {
       }
     },
     nextStep() {
-      if (this.$store.state.nickName !== "") {
-        this.$router.push({
-          path: "/payment",
-          query: {
-            addressId: this.addressList[this.selected]._id
-          }
-        });
-      } else {
-        this.$Message.error("Session Expired or Not Login!");
-        setTimeout(() => {
-          this.$store.commit("updateLoginModal", { action: true, type: 0 });
-        }, 2000);
-      }
+      this.$router.push({
+        path: "/payment",
+        query: {
+          addressId: this.addressList[this.selected]._id
+        }
+      });
     }
   }
 };
@@ -317,8 +310,6 @@ export default {
 }
 .addNew:hover i {
   color: #757575;
-}
-.goods {
 }
 .goods ul {
   list-style: none;

@@ -25,7 +25,7 @@
       <Divider/>
       <div class="subTotal">
         <span class="info">Shipping & taxes calculated at checkout</span>
-        <span class="totalPrice">SUBTOTAL {{totalMoney | currency}}</span>
+        <span class="totalPrice">SUBTOTAL <span>{{totalMoney | currency}}</span></span>
       </div>
       <div class="buttonGroup">
         <MainBtn long @click="closeCart">CONTINUE SHOPPING</MainBtn>
@@ -192,9 +192,12 @@ export default {
 }
 .subTotal .totalPrice {
   font-size: 1.1rem;
-  color: #212121;
+  color: #666;
   line-height: 2rem;
   letter-spacing: 1px;
+}
+.subTotal .totalPrice span {
+  color: #ff6700;
 }
 .buttonGroup {
   display: flex;

@@ -25,6 +25,16 @@ export default {
   data() {
     return {};
   },
+  created() {
+    const redirect = this.$route.query.redirect;
+    // not login and redirect to this page
+    if (redirect) {
+      this.$Message.error("Not Login");
+      setTimeout(() => {
+        this.$store.commit("updateLoginModal", { action: true, type: 0 });
+      }, 2000);
+    }
+  },
   components: {
     EntryBoard,
     NavHeader,

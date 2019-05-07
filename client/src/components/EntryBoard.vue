@@ -32,15 +32,19 @@ import getCartList from "./../services/getCartList.js";
 
 export default {
   async mounted() {
-    try {
-      let { data } = await axios.get("/user/checkLogin");
-      if (data.status === "0") {
-        // this.nickName = data.result;
-        this.$store.commit("updateUserInfo", data.result);
-        getCartList(this);
+    // can't find userid in vuex means not login
+    if (!this.$store.state.nickName) {
+      try {
+        let { data } = await axios.get("/user/checkLogin");
+        // already login
+        if (data.status === "0") {
+          // this.nickName = data.result;
+          this.$store.commit("updateUserInfo", data.result);
+          getCartList(this);
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   },
   computed: {
@@ -85,7 +89,7 @@ export default {
 
         if (data.status === "0") {
           this.$store.commit("updateUserInfo", "");
-          this.$router.push('/');
+          this.$router.push("/");
         } else {
           this.$Message.error("logout fail");
         }

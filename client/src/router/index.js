@@ -16,7 +16,8 @@ Vue.use(Router)
 export default new Router({
   routes: [{
       path: '/',
-      component: Index
+      component: Index,
+      name: 'Index'
     },
     {
       path: '/all',
@@ -41,17 +42,26 @@ export default new Router({
     {
       path: '/address',
       name: 'Address',
-      component: Address
+      component: Address,
+      meta: {
+        login: true
+      }
     },
     {
       path: '/payment',
       name: 'Payment',
-      component: Payment
+      component: Payment,
+      meta: {
+        login: true
+      }
     },
     {
       path: '/orderSuccess',
       name: 'OrderSuccess',
-      component: OrderSuccess
+      component: OrderSuccess,
+      meta: {
+        login: true
+      }
     }
   ]
 })

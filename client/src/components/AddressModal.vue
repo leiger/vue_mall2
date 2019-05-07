@@ -146,12 +146,6 @@ export default {
           console.log(err);
           this.$Message.error("Error!");
         }
-      } else {
-        this.$Message.info("Not Login!");
-        this.$store.commit("updateAddressModal", false);
-        setTimeout(() => {
-          this.$store.commit("updateLoginModal", { action: true, type: 0 });
-        }, 2000);
       }
     }
   },

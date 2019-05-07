@@ -43,7 +43,6 @@ router.post('/payment', async (req, res) => {
       orderStatus: '1',
       createDate: createDate
     };
-    console.log(order);
 
     // save to orderlist
     doc.orderList.push(order);
@@ -51,7 +50,7 @@ router.post('/payment', async (req, res) => {
       let doc1 = await doc.save();
       if (doc1) {
         Response(res, '0', result = {
-          orderId: order.orderId,
+          orderId: order._id,
           orderTotal: order.orderTotal
         });
       }

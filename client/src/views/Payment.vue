@@ -169,7 +169,7 @@ export default {
     async createOrder() {
       try {
         let { data } = await axios.post("/payment/payment", {
-          addressId: this.$route.query.addressId,
+          addressId: this.$route.query._id,
           orderTotal: this.orderTotal
         });
         if (data.status === "0") {

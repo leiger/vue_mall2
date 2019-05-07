@@ -167,7 +167,7 @@ export default {
       return this.$store.state.loginModalType;
     }
   },
-  inject: ['reload'],
+  inject: ["reload"],
   methods: {
     closeModal() {
       this.$store.commit("updateLoginModal", { action: false });
@@ -197,7 +197,14 @@ export default {
             this.closeModal();
             // get cart list
             getCartList(this);
-            this.reload();
+            // if redirect from other page, return back
+            const redirect = this.$route.query.redirect;
+            console.log(redirect);
+            if (redirect) {
+              this.$router.push("/");
+            } else {
+              this.reload();
+            }
           } else if (data.status === "2") {
             this.$Message.error("Wrong Username or Password!");
           }
@@ -206,7 +213,7 @@ export default {
         else {
           let { data } = await axios.post("/user/signup", this.signUp);
           if (data.status === "0") {
-            this.$Message.success("Sign up Success!");
+            this.$Message.success("Sign up Success! Please login!");
             setTimeout(() => {
               this.$store.commit("updateLoginModal", { action: true, type: 0 });
             }, 1000);

@@ -143,3 +143,8 @@ node /bin/www
   - /payment: 
 - /order
   - /orderDetail
+
+
+#### check login
+- main.js: router.beforeEach, not login can't visit some pages
+- EntryBoard: used to get userName and id -> set this in vuex & display change

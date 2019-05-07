@@ -9,6 +9,7 @@ import iView from 'iview';
 import locale from 'iview/dist/locale/en-US';
 import 'iview/dist/styles/iview.css';
 import 'animate.css/animate.min.css';
+import axios from 'axios';
 
 import infiniteScroll from 'vue-infinite-scroll'
 
@@ -23,9 +24,25 @@ Vue.use(iView, {
 Vue.use(infiniteScroll);
 
 // global loading bar
-router.beforeEach((to, from, next) => {
+router.beforeEach( async (to, from, next) => {
   iView.LoadingBar.start();
-  next();
+
+  try {
+    let { data } = await axios.get("/user/checkLogin");
+    if(data.status === '0' || !to.meta.login) {
+      next();
+    }
+    else {
+      next({
+        name: 'Index',
+        query: {
+          redirect: to.fullPath
+        }
+      })
+    }
+  } catch(err) {
+    console.log(err);
+  }
 });
 
 router.afterEach(route => {
