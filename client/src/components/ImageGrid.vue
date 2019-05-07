@@ -2,22 +2,22 @@
   <div class="imageGrid">
     <Title postTitle="POPULAR COLLECTIONS"/>
     <div class="container">
-      <div class="imgBox imgBox1">
+      <div class="imgBox imgBox1 wow fadeIn" data-wow-delay="0.1s">
         <router-link to="/all" class="firstLeft"/>
         <h3 class="title">{{gridItems[0].title}}</h3>
       </div>
-      <div class="firstRight">
+      <div class="firstRight wow fadeIn" data-wow-delay="0.3s">
         <Title postTitle="10% OFF DISCOUNT"/>
         <p>Use code EXTRA10 to save even more on our summer sale. Plus Free shipping all day!</p>
         <MainBtn class="btn" @click="shopNow">SHOP NOW</MainBtn>
       </div>
     </div>
     <div class="container">
-      <div class="imgBox imgBox2">
+      <div class="imgBox imgBox2 wow fadeIn" data-wow-delay="0.5s">
         <router-link to="/all" class="secondLeft"/>
         <h3 class="title">{{gridItems[1].title}}</h3>
       </div>
-      <div class="imgBox imgBox3">
+      <div class="imgBox imgBox3 wow fadeIn" data-wow-delay="0.7s">
         <router-link to="/all" class="secondRight"/>
         <h3 class="title">{{gridItems[2].title}}</h3>
       </div>
@@ -31,6 +31,7 @@ import MainBtn from "./../components/MainBtn.vue";
 import bg1 from "./../../static/imageGrid/1.jpg";
 import bg2 from "./../../static/imageGrid/2.jpg";
 import bg3 from "./../../static/imageGrid/3.jpg";
+import WOW from "wow.js";
 
 export default {
   data() {
@@ -55,9 +56,12 @@ export default {
     Title,
     MainBtn
   },
+  mounted() {
+    new WOW().init();
+  },
   methods: {
     shopNow() {
-      this.$router.push('/all');
+      this.$router.push("/all");
     }
   }
 };
@@ -147,7 +151,7 @@ h3.title::after {
   background: #212121;
 }
 .firstRight {
-  background-color: rgba(0,0,0,.3);
+  background-color: rgba(0, 0, 0, 0.3);
   padding: 100px 20px;
 }
 .firstRight p {

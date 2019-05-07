@@ -170,4 +170,7 @@ export default {
 .row > div {
   flex: 1;
 }
+.row:first-child {
+  margin-top: 24px;
+}
 </style>

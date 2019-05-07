@@ -26,7 +26,7 @@ module.exports = {
       '/payment/*': {
         target: 'http://localhost:3000'
       },
-      '/orders/*': {
+      '/order/*': {
         target: 'http://localhost:3000'
       }
     },

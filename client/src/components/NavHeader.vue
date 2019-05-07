@@ -1,37 +1,36 @@
 <template>
   <header class="headerBox">
     <div class="headerNav">
-      <transition appear appear-class appear-active-class="animated fadeInDown">
-        <div class="headerLeft">
-          <router-link to="/">
-            <h1 class="headerLogo">VUE MALL</h1>
-          </router-link>
-        </div>
-      </transition>
+      <div class="headerLeft pulse wow">
+        <router-link to="/">
+          <h1 class="headerLogo">VUE MALL</h1>
+        </router-link>
+      </div>
+
       <div class="headerRight">
-        <transition-group appear appear-class appear-active-class="animated fadeInDown" tag="ul">
-          <li key="0">
+        <ul>
+          <li class="fadeInDown wow" key="0">
             <router-link to="/">HOME</router-link>
           </li>
-          <li key="1">
+          <li class="fadeInDown wow" key="1" data-wow-delay="0.05s">
             <router-link to="/all">STORE</router-link>
           </li>
-          <li key="2">
+          <li class="fadeInDown wow" key="2" data-wow-delay="0.1s">
             <router-link to="/about">ABOUT</router-link>
           </li>
-          <li key="3">
+          <!-- <li class="fadeInDown wow" key="3" data-wow-delay="0.15s">
             <router-link to="/faq">FAQ</router-link>
           </li>
-          <li key="4">
+          <li class="fadeInDown wow" key="4" data-wow-delay="0.2s">
             <router-link to="/contact">CONTACT</router-link>
-          </li>
-          <li key="5">
+          </li> -->
+          <li class="fadeInDown wow" key="5" data-wow-delay="0.15s">
             <a @click="openDrawer">
-              <Icon class="cartIcon" size="16" type="md-cart" />
+              <Icon class="cartIcon" size="16" type="ios-cart"/>
               <span v-if="nickName">({{cartNum}})</span>
             </a>
           </li>
-        </transition-group>
+        </ul>
       </div>
     </div>
     <LoginModal/>
@@ -42,13 +41,9 @@
 <script>
 import LoginModal from "./../components/LoginModal.vue";
 import Drawer from "./../components/Drawer.vue";
+import WOW from "wow.js";
 
 export default {
-  data() {
-    return {
-      showAnimated: false
-    };
-  },
   components: {
     LoginModal,
     Drawer
@@ -62,7 +57,7 @@ export default {
     }
   },
   mounted() {
-    this.showAnimated = true;
+    new WOW().init();
   },
   methods: {
     openDrawer() {

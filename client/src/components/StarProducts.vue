@@ -2,33 +2,21 @@
   <div class="starProducts">
     <Title postTitle="STAR PRODUCTS"/>
     <div class="starProductsBox">
-      <div :bordered="false" class="starProductsCard">
-        <router-link to="/products/201905007">
-          <div class="cardContent">
-            <p>LapTop i7</p>
-            <p class="sub">High Performance</p>
-            <img :src="starProductsSrc[0]">
-          </div>
-        </router-link>
-      </div>
-      <div :bordered="false" class="starProductsCard">
-        <router-link to="/products/201905006">
-          <div class="cardContent">
-            <p>Air Fresher</p>
-            <p class="sub">First choice for healthy lifestyle</p>
-            <img :src="starProductsSrc[1]">
-          </div>
-        </router-link>
-      </div>
-      <div :bordered="false" class="starProductsCard">
-        <router-link to="/products/201905005">
-          <div class="cardContent">
-            <p>Ceiling Light</p>
-            <p class="sub">Warm light, Protect eyes</p>
-            <img :src="starProductsSrc[2]">
-          </div>
-        </router-link>
-      </div>
+      <template v-for="(product,index) in starProducts">
+        <div
+          :bordered="false"
+          class="starProductsCard wow fadeIn"
+          :data-wow-delay="(index+1)*0.2+'s'"
+        >
+          <router-link to="product.link">
+            <div class="cardContent">
+              <p>{{product.name}}</p>
+              <p class="sub">{{product.sub}}</p>
+              <img :src="product.src">
+            </div>
+          </router-link>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -38,15 +26,40 @@ import Title from "./../components/Title.vue";
 import product1 from "./../../static/star-products/6.png";
 import product2 from "./../../static/star-products/2.png";
 import product3 from "./../../static/star-products/3.png";
+import WOW from "wow.js";
 
 export default {
   data() {
     return {
-      starProductsSrc: [product1, product2, product3]
+      starProducts: [
+        {
+          name: "LapTop i7",
+          sub: "High Performance",
+          src: product1,
+          link: "/products/201905007"
+        },
+        {
+          name: "Air Fresher",
+          sub: "First choice for healthy lifestyle",
+          src: product2,
+          link: "/products/201905006"
+        },
+        {
+          name: "Ceiling Light",
+          sub: "Warm light, Protect eyes",
+          src: product3,
+          link: "/products/201905005"
+        }
+      ]
     };
   },
   components: {
     Title
+  },
+  mounted() {
+    new WOW({
+      offset: 0
+    }).init();
   }
 };
 </script>

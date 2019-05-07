@@ -13,8 +13,8 @@
             </div>
             <Divider :dashed="true"/>
             <div class="detail">
-              <p>ORDER ID: {{ orderId }}</p>
-              <p>ORDER TOTAL: {{ orderTotal | currency }}</p>
+              <p>ORDER ID: {{ orderInfo._id }}</p>
+              <p>ORDER TOTAL: {{ orderInfo.orderTotal | currency }}</p>
             </div>
           </Card>
         </Col>
@@ -35,8 +35,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      orderId: "",
-      orderTotal: 0
+      orderInfo: {}
     };
   },
   components: {
@@ -47,24 +46,29 @@ export default {
   filters: {
     currency: currency
   },
-  mounted() {
-    let orderId = this.$route.query.orderId;
-    if (!orderId) {
-      return;
-    }
-    axios
-      .get("/order/orderDetail", {
-        params: {
-          orderId: orderId
-        }
-      })
-      .then(res => {
-        let data = res.data;
+  created() {
+    this.getOrder();
+  },
+  watch: {
+    $route: "getOrder"
+  },
+  methods: {
+    async getOrder() {
+      let orderId = this.$route.query.orderId;
+      if (orderId) {
+        let { data } = await axios.post("/order/orderDetail", {
+          orderId
+        });
         if (data.status === "0") {
-          this.orderId = orderId;
-          this.orderTotal = data.result.orderTotal;
+          this.orderInfo = data.result;
+        } else if (data.status === "5") {
+          this.$Message.info("this order Not exist !");
+          this.$router.push("/");
+        } else {
+          console.log("no order");
         }
-      });
+      }
+    }
   }
 };
 </script>

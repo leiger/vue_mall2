@@ -25,7 +25,7 @@ export default {
   data() {
     return {};
   },
-  created() {
+  mounted() {
     const redirect = this.$route.query.redirect;
     // not login and redirect to this page
     if (redirect) {

@@ -36,10 +36,34 @@
             </Form>
           </div>
         </div>
-        <div class="notice">
-          <div class="noticeBox">
-            <Title postTitle="Notice"/>
-            <p>Just Click Pay Now to Create a Order.</p>
+        <div class="orderInfo">
+          <h3 class="title">Order Info</h3>
+          <div class="orderInfoBox">
+            <ul>
+              <li>
+                <span class="name">Order Id:</span>
+                <span>{{orderInfo._id}}</span>
+              </li>
+              <li>
+                <span class="name">Order Time:</span>
+                <span>{{orderInfo.createDate}}</span>
+              </li>
+              <li>
+                <span class="name">Total:</span>
+                <span>{{orderInfo.orderTotal | currency}}</span>
+              </li>
+              <li>
+                <span class="name">Status:</span>
+                <span>
+                  <Tag color="warning">Not Pay</Tag>
+                </span>
+              </li>
+              <li v-if="orderInfo.addressInfo">
+                <span class="name">Order address:</span>
+                <span>{{orderInfo.addressInfo.address}} - {{orderInfo.addressInfo.city}} - {{orderInfo.addressInfo.province}}</span>
+                <span>{{orderInfo.addressInfo.postalCode}}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -92,6 +116,13 @@
             </div>
           </div>
         </div>
+        <div class="notice">
+          <div class="noticeBox">
+            <Title postTitle="Notice"/>
+            <p>Just Click Pay Now to Finish the order.</p>
+            <p>Left Forms are not necessary.</p>
+          </div>
+        </div>
       </div>
 
       <Divider/>
@@ -110,6 +141,8 @@ import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
 import Title from "./../components/Title.vue";
 
+import { currency } from "./../utils/currency.js";
+
 import axios from "axios";
 
 export default {
@@ -124,38 +157,8 @@ export default {
       orderTotal: 1000,
       billingAddress: {
         radio: "0"
-      }
-      // ruleValidata: {
-      //   cardNumber: [
-      //     {
-      //       required: true,
-      //       type: 'number',
-      //       message: "Please enter your card number",
-      //       trigger: "blur"
-      //     }
-      //   ],
-      //   name: [
-      //     {
-      //       required: true,
-      //       message: "Please enter the name on card",
-      //       trigger: "blur"
-      //     }
-      //   ],
-      //   expireDate: [
-      //     {
-      //       required: true,
-      //       message: "Please enter the expire date",
-      //       trigger: "blur"
-      //     }
-      //   ],
-      //   securityCode: [
-      //     {
-      //       required: true,
-      //       message: "Please enter security code",
-      //       trigger: "blur"
-      //     }
-      //   ]
-      // }
+      },
+      orderInfo: {}
     };
   },
   components: {
@@ -165,24 +168,49 @@ export default {
     MainBtn,
     Title
   },
+  filters: {
+    currency
+  },
+  created() {
+    this.getOrder();
+  },
+  watch: {
+    $route: "getOrder"
+  },
   methods: {
-    async createOrder() {
-      try {
-        let { data } = await axios.post("/payment/payment", {
-          addressId: this.$route.query._id,
-          orderTotal: this.orderTotal
+    async getOrder() {
+      let orderId = this.$route.query.orderId;
+      if (orderId) {
+        let { data } = await axios.post("/order/orderDetail", {
+          orderId
         });
         if (data.status === "0") {
-          this.$Message.success("Create Success!");
+          this.orderInfo = data.result;
+        } else if (data.status === "5") {
+          this.$Message.info("this order Not exist !");
+          this.$router.push("/");
+        } else {
+          console.log("no order");
+        }
+      }
+    },
+    async createOrder() {
+      try {
+        let { data } = await axios.post("/order/orderModify", {
+          orderId: this.$route.query.orderId
+        });
+        if (data.status === "0") {
+          this.$Message.success("Payment Success!");
           setTimeout(() => {
             this.$router.push({
               path: "/OrderSuccess",
               query: {
-                orderId: data.result.orderId
+                orderId: this.$route.query.orderId
               }
             });
           }, 2000);
         } else {
+          this.$Message.error("Payment Error!");
         }
       } catch (err) {
         console.log(err);
@@ -206,15 +234,44 @@ export default {
   font-weight: normal;
   margin-bottom: 20px;
 }
+.rowBox {
+  display: flex;
+}
 .totalMoney,
-.billingAddress {
-  width: 50%;
+.orderInfo,
+.billingAddress,
+.notice {
+  flex: 1;
   float: left;
 }
 .creditCardBox,
 .billingAddressBox {
   padding: 40px 40px 16px 40px;
   background-color: #fff;
+}
+.orderInfoBox {
+  padding: 40px;
+  background-color: #fff;
+}
+.orderInfoBox ul {
+  list-style: none;
+}
+.orderInfoBox li {
+  font-size: 14px;
+  line-height: 2;
+}
+.orderInfoBox .name {
+  width: 120px;
+  display: inline-block;
+  color: #757575;
+}
+.totalMoney,
+.billingAddress {
+  margin-right: 20px;
+}
+.orderInfo,
+.notice {
+  margin-left: 20px;
 }
 
 .inlineInput {
@@ -249,11 +306,10 @@ export default {
 .payNowBtn button {
   float: right;
 }
-.notice {
+
+.noticeBox {
   width: 300px;
   float: right;
-}
-.noticeBox {
   margin-top: 40px;
   background-color: rgba(255, 255, 204, 0.5);
   padding: 50px 20px;

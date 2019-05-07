@@ -117,6 +117,7 @@ node /bin/www
   - 9: hash error
   - 10: save new user error
   - 11: can't find the user
+  - 12: pay error
 
 ### backend API
 - /user

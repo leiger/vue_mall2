@@ -58,8 +58,8 @@ export default {
 .btnDisabled {
   opacity: 0.5;
 }
-.btnLong {
-  width: 100%;
+.btn.btnLong {
+  width: 100% !important;
 }
 .btnDefault {
   color: #fff;

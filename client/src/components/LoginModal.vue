@@ -37,7 +37,7 @@
               </Input>
             </FormItem>
             <!-- button -->
-            <button class="submitBtn" @click="handleSubmit('login')">Sign in</button>
+            <MainBtn long size="small" @click="handleSubmit('login')">Sign in</MainBtn>
             <Divider class="divider" size="small">More options</Divider>
             <!-- more options -->
             <div class="moreOptions">
@@ -72,7 +72,7 @@
               </Input>
             </FormItem>
             <!-- button -->
-            <button class="submitBtn" @click="handleSubmit('signUp')">Sign Up</button>
+            <MainBtn long size="small" @click="handleSubmit('signUp')">Sign Up</MainBtn>
           </Form>
         </div>
         <div class="modalRight">
@@ -97,6 +97,7 @@
 <script>
 import axios from "axios";
 import getCartList from "./../services/getCartList.js";
+import MainBtn from "./MainBtn.vue";
 
 export default {
   data() {
@@ -158,6 +159,9 @@ export default {
         ]
       }
     };
+  },
+  components: {
+    MainBtn
   },
   computed: {
     modalState() {
@@ -270,24 +274,6 @@ export default {
 .modalLeft {
   flex: 2;
   padding: 20px 38px 0 20px;
-}
-.modalLeft .submitBtn {
-  width: 100%;
-  height: 36px;
-  line-height: 36px;
-  font-size: 14px;
-  border-radius: 3px;
-  border: 1px solid #757575;
-  color: #fff;
-  background-color: #212121;
-  text-align: center;
-  outline: none;
-  cursor: pointer;
-  transition: 0.5s;
-}
-.modalLeft .submitBtn:hover {
-  background-color: #fff;
-  color: #17233d;
 }
 .modalLeft .divider {
   padding: 16px;

@@ -15,7 +15,12 @@
           <h4>SORT</h4>
           <ul>
             <li v-for="(name, index) in sortNames">
-              <a @click="sortGoods(index)" :class="{tagSelected: sortSelected[index]}">
+              <a
+                class="wow fadeInDown"
+                @click="sortGoods(index)"
+                :class="{tagSelected: sortSelected[index]}"
+                :data-wow-delay="index*0.05+'s'"
+              >
                 {{name}}
                 <template v-if="index === 1">
                   <Icon v-if="sortPriceArrow" type="ios-arrow-round-up" size="18"/>
@@ -30,6 +35,8 @@
           <ul>
             <li v-for="(price, index) in priceRange">
               <a
+                class="wow fadeInDown"
+                :data-wow-delay="index*0.05+'s'"
                 @click="setPriceFilter(index)"
                 :class="{tagSelected: priceFilterSelected[index]}"
               >{{price}}</a>
@@ -37,16 +44,16 @@
           </ul>
         </div>
       </div>
-    <Title class="title" :postTitle="mainTitle"/>
+      <Title class="title" :postTitle="mainTitle"/>
       <!--goods-->
       <div class="goods">
         <template v-for="(good, index) in goods">
-          <div class="goodsBox">
+          <div class="goodsBox wow zoomIn" :data-wow-delay="index%2*0.3+'s'">
             <router-link :to="'/products/'+good.productId" class="imgBox">
               <img :src="'/static/images/'+good.productImage" :alt="good.productName">
               <div class="goodsDetail">
                 <h4>{{ good.productName }}</h4>
-                <span>$ {{ good.salePrice }}</span>
+                <span>{{ good.salePrice | currency}}</span>
               </div>
               <div class="mask">
                 <button @click.stop.prevent="addCart(good.productId)" class="addToCart">ADD TO CART</button>
@@ -81,6 +88,7 @@ import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
 
 import getCartList from "./../services/getCartList.js";
 import { currency } from "./../utils/currency";
+import WOW from "wow.js";
 
 export default {
   data() {
@@ -126,8 +134,12 @@ export default {
     Title,
     NavFooter
   },
+  filters: {
+    currency
+  },
   mounted: function() {
     this.getGoodsList();
+    new WOW().init();
   },
   methods: {
     async getGoodsList(flag) {
@@ -309,7 +321,6 @@ export default {
 .goodsBox {
   position: relative;
   width: 50%;
-  overflow: hidden;
 }
 .imgBox {
   position: relative;
@@ -317,7 +328,6 @@ export default {
   text-align: center;
   background-color: #fff;
   margin: 0 7px 14px;
-  overflow: hidden;
   cursor: pointer;
   font-size: 0;
 }

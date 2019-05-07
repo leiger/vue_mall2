@@ -10,11 +10,11 @@
       </Breadcrumb>
       <Title class="title" :postTitle="product.productName"/>
       <div class="productIntro">
-        <div class="productLeft">
+        <div class="productLeft wow fadeIn" data-wow-delay="0.2s">
           <img :src="'./static/images/'+product.productImage" :alt="product.productName">
         </div>
-        <Affix class="productRight" :offset-top="100">
-          <div class="infoBox">
+        <div class="productRight">
+          <div class="infoBox wow fadeIn" data-wow-delay="0.4s">
             <div class="productName">{{product.productName}}</div>
             <div class="productPrice">
               <span class="price">{{product.salePrice | currency}}</span>
@@ -39,10 +39,24 @@
               </span>
             </div>
           </div>
-        </Affix>
+          <Tabs class="infoBox wow fadeIn" data-wow-delay="0.6s" value="Shipping">
+            <TabPane
+              label="SHIPPING"
+              name="Shipping"
+            >Orders processed here will take 5-7 business days to arrive. Overseas deliveries can take anywhere from 7-16 days.</TabPane>
+            <TabPane
+              label="TAXES"
+              name="Taxes"
+            >You will be responsible for paying for your own tax costs for your item. Tax costs are non-refundable. If you receive a refund, the cost of return tax will be deducted from your refund</TabPane>
+            <TabPane
+              label="RETURNS"
+              name="Returns"
+            >We always aim for make sure our customers love our products, but if you do need to return an order, we’re happy to help.</TabPane>
+          </Tabs>
+        </div>
       </div>
     </div>
-    <div class="detail">
+    <div class="detail wow fadeIn" data-wow-delay="0.2s">
       <div class="productIntro">
         <div class="productLeft">
           <div v-if="product.desc" class="descBox" v-for="detail in product.desc">
@@ -68,6 +82,7 @@ import QuantitySelector from "./../components/QuantitySelector.vue";
 import { currency } from "./../utils/currency";
 import axios from "axios";
 import getCartList from "../services/getCartList";
+import WOW from "wow.js";
 
 export default {
   data() {
@@ -94,6 +109,9 @@ export default {
   },
   created() {
     this.getProductDetail(this.$route);
+  },
+  mounted() {
+    new WOW().init();
   },
   watch: {
     $route(to, from) {
@@ -163,10 +181,7 @@ export default {
 
 <style scoped>
 .container {
-  padding: 0 30px;
-  max-width: 1600px;
-  width: 100%;
-  margin: 30px auto;
+  margin: 40px;
 }
 .breadCrumb {
   text-align: center;
@@ -175,13 +190,13 @@ export default {
   margin: 30px 0 50px;
 }
 .productIntro {
-  max-width: 1200px;
   margin: auto;
   display: flex;
+  background-color: #fff;
 }
 .productLeft {
-  flex: 4;
-  margin-right: 30px;
+  flex: 1;
+  margin-right: 20px;
   padding: 0 50px 0;
   background-color: #fff;
 }
@@ -189,13 +204,18 @@ export default {
   width: 100%;
 }
 .productRight {
-  flex: 3;
+  flex: 1;
 }
 .productRight .infoBox {
   width: 100%;
   height: 350px;
   background-color: #fff;
-  padding: 24px;
+  padding: 40px;
+  margin-bottom: 20px;
+}
+.productRight .infoBox:nth-child(2) {
+  height: 150px;
+  margin-bottom: 0;
 }
 .productName {
   color: #212121;
@@ -238,8 +258,7 @@ export default {
 /* detail */
 .detail {
   background-color: #fff;
-  margin: 50px 0 0;
-  padding: 60px 0;
+  padding: 40px 0;
 }
 .descBox {
   margin-bottom: 20px;

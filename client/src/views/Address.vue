@@ -59,7 +59,9 @@
       <div class="section count">
         <div class="left discount">
           <h3 class="title">Discount Code</h3>
-          <Input v-model="discount.typed" class="discountInput"/>
+          <Tooltip content="Can you find it?" placement="top-start">
+            <Input v-model="discount.typed" class="discountInput"/>
+          </Tooltip>
           <MainBtn @click="useCode()" size="extraSmall" type="primary">Add</MainBtn>
         </div>
         <div class="right moneyBox">
@@ -108,6 +110,7 @@ import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
 
 import getAddressList from "./../services/getAddressList.js";
+import getCartList from "./../services/getCartList.js";
 import { currency } from "./../utils/currency.js";
 
 import axios from "axios";
@@ -172,6 +175,7 @@ export default {
   },
   mounted() {
     getAddressList(this);
+    getCartList(this);
   },
   methods: {
     addNewAddress() {
@@ -200,19 +204,39 @@ export default {
       console.log(this.discount.typed);
       if (this.discount.typed === this.discount.code) {
         this.$store.commit("updateDiscount", true);
-        this.$Message.success("Add Success!");
+        this.$Message.success("Congratulations!");
       } else {
-        this.$Message.warning("Invalid Code!");
+        this.$Message.warning("Sorry, Invalid Code!");
         this.discount.typed = "";
       }
     },
-    nextStep() {
-      this.$router.push({
-        path: "/payment",
-        query: {
-          addressId: this.addressList[this.selected]._id
+    async nextStep() {
+      if (this.finalPrice > 0) {
+        try {
+          let { data } = await axios.post("/order/createOrder", {
+            addressId: this.addressList[this.selected]._id,
+            orderTotal: this.finalPrice
+          });
+          if (data.status === "0") {
+            this.$Message.success("Create Success!");
+            getCartList(this);
+            setTimeout(() => {
+              this.$router.push({
+                path: "/payment",
+                query: {
+                  orderId: data.result.orderId
+                }
+              });
+            }, 2000);
+          } else {
+          }
+        } catch (err) {
+          console.log(err);
+          this.$Message.error("Error!");
         }
-      });
+      } else {
+        this.$Message.error("Invalid Order!");
+      }
     }
   }
 };
