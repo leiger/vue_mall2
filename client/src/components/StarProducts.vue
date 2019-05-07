@@ -8,7 +8,7 @@
           class="starProductsCard wow fadeIn"
           :data-wow-delay="(index+1)*0.2+'s'"
         >
-          <router-link to="product.link">
+          <router-link :to="product.link">
             <div class="cardContent">
               <p>{{product.name}}</p>
               <p class="sub">{{product.sub}}</p>
