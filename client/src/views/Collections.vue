@@ -1,12 +1,9 @@
 <template>
   <Layout>
-    <EntryBoard/>
-    <NavHeader/>
     <!-- banner -->
     <div class="bannerBox">
       <div class="banner"/>
     </div>
-
     <Content class="layoutBox">
       <!--main content-->
       <!--sort & filter-->
@@ -73,22 +70,17 @@
         </div>
       </div>
     </Content>
-    <nav-footer/>
   </Layout>
 </template>
 
 <script>
-import EntryBoard from "./../components/EntryBoard.vue";
-import NavHeader from "./../components/NavHeader.vue";
 import Title from "./../components/Title.vue";
-import NavFooter from "./../components/NavFooter.vue";
 
 import axios from "axios";
 import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
 
 import getCartList from "./../services/getCartList.js";
 import { currency } from "./../utils/currency";
-import WOW from "wow.js";
 
 export default {
   data() {
@@ -129,17 +121,13 @@ export default {
     };
   },
   components: {
-    NavHeader,
-    EntryBoard,
-    Title,
-    NavFooter
+    Title
   },
   filters: {
     currency
   },
   mounted: function() {
     this.getGoodsList();
-    new WOW().init();
   },
   methods: {
     async getGoodsList(flag) {
@@ -269,7 +257,7 @@ export default {
 }
 .layoutBox {
   padding: 0 30px;
-  max-width: 1600px;
+  max-width: 1226px;
   width: 100%;
   margin: 30px auto;
 }
@@ -349,12 +337,12 @@ export default {
   color: rgba(51, 51, 51, 0.9);
   font-weight: 300;
   line-height: 1.8;
-  font-size: 24px;
+  font-size: 20px;
 }
 .goodsDetail span {
   display: block;
   text-align: center;
-  font-size: 30px;
+  font-size: 24px;
   color: #ff6700;
 }
 

@@ -1,7 +1,5 @@
 <template>
   <Layout>
-    <EntryBoard/>
-    <NavHeader/>
     <div class="container">
       <Breadcrumb class="breadCrumb">
         <BreadcrumbItem to="/all">All Products</BreadcrumbItem>
@@ -11,7 +9,7 @@
       <Title class="title" :postTitle="product.productName"/>
       <div class="productIntro">
         <div class="productLeft wow fadeIn" data-wow-delay="0.2s">
-          <img :src="'./static/images/'+product.productImage" :alt="product.productName">
+          <img :src="'/static/images/'+product.productImage" :alt="product.productName">
         </div>
         <div class="productRight">
           <div class="infoBox wow fadeIn" data-wow-delay="0.4s">
@@ -67,7 +65,6 @@
         <div class="productRight"/>
       </div>
     </div>
-    <NavFooter/>
   </Layout>
 </template>
 
@@ -82,7 +79,6 @@ import QuantitySelector from "./../components/QuantitySelector.vue";
 import { currency } from "./../utils/currency";
 import axios from "axios";
 import getCartList from "../services/getCartList";
-import WOW from "wow.js";
 
 export default {
   data() {
@@ -92,12 +88,9 @@ export default {
     };
   },
   components: {
-    NavHeader,
-    EntryBoard,
     Title,
     MainBtn,
-    QuantitySelector,
-    NavFooter
+    QuantitySelector
   },
   computed: {
     // avoid render error before get data
@@ -109,9 +102,6 @@ export default {
   },
   created() {
     this.getProductDetail(this.$route);
-  },
-  mounted() {
-    new WOW().init();
   },
   watch: {
     $route(to, from) {
@@ -181,7 +171,8 @@ export default {
 
 <style scoped>
 .container {
-  margin: 40px;
+  margin: 40px auto;
+  max-width: 1226px;
 }
 .breadCrumb {
   text-align: center;

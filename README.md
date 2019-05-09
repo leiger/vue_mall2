@@ -1,44 +1,21 @@
-# vue_mall
+# vue_mall2
 a mall written by vue
-function: add to cart, sort, filter, login, logout...
 
-old repository address: [newMall](https://github.com/leiger/newMall)
+old repository address: 
+- v1.0: [newMall](https://github.com/leiger/newMall) 
+- v2.0 [vmall](https://github.com/leiger/vmall)
 
-### client
-using vue.js, vuex, vue-router, axios, iview, yarn and some other technologies
+---
+
+### FRONT_END
+#### Install
 ```
 cd client
 npm install
 npm start
 ```
-
-### Plan
-#### goods details
-#### modify database
-#### animation
-#### store rewrite
----
-### 05-04
-#### filter by category
-#### animation
-#### delay load
-#### large image
-#### register
-#### logo design
-#### error log collection
-
-### server
-using express and mongondb
-```
-cd server
-npm install
-node /bin/www
-```
-### service
-#### getCartList
-
-### components
-#### EntryBoard
+#### Components
+##### EntryBoard
 - functions 
   - jump to the my github
   - toggle between signin+signup/nickName+signOut btn
@@ -53,7 +30,7 @@ node /bin/www
   - /user/checkLogin
   - /user/logout
 
-#### LoginModal
+##### LoginModal
 - login form
 - login check
   - exist?
@@ -63,7 +40,7 @@ node /bin/www
 - after login
   - send ajax request: get nickName, cartList, close modal
 
-#### NavHeader
+##### NavHeader
 - logo
 - navbar
 - cart 
@@ -71,7 +48,7 @@ node /bin/www
   - login ? show nums: hide
 - contain LoginModal&Drawer components: reduce reuse in other pages
 
-#### Drawer
+##### Drawer
 - functions
   - change quantity
     - two parameters: id, quantity
@@ -86,10 +63,30 @@ node /bin/www
   - /cart/delCart
   - /cart/getCartList - getCartList.js
 
-#### Article
+##### Article
 - props: postTitle
 
-### Server
+#### Router
+- `/`: index page
+- `/profile/username`: user profile
+- `/collections/:collectionName`: collection and all products in it
+- `products/:productId`: return specific product
+- `/about`
+- `/checkout`
+- `/payment/:orderId`
+- `/orderSuccess/:orderId`
+
+---
+
+### BACK_END
+using express and mongondb
+
+#### Install
+```
+cd server
+npm install
+node /bin/www
+```
 #### database
 - goods
   - productId
@@ -103,7 +100,7 @@ node /bin/www
   - salePrice
   - productImage
 
-### Error code
+#### Error code
 - status
   - 0: success
   - 1: fatal error
@@ -119,33 +116,61 @@ node /bin/www
   - 11: can't find the user
   - 12: pay error
 
-### backend API
-- /user
-  - /login: params: {username, password}
-  - /logout
-  - /checkLogin
-  - /signup
-    - hash password
-- /good
-  - /product: find one product
-  - /list: params: {page, pageSize, sortFlag, sortWay, priceLevel}
-    - return a list of products
-- /cart
-  - /cartList: return user's cart list
-  - /cartEdit: edit the number of goods in cart
-  - /addCart: add product to cart
-  - /delCart: delete product from cart
-- /address
-  - /addressList: return addressList
-  - /setDefault: set Default address
-  - /delAddress: delete address
-  - /getAddress: return one address 
-- /payment
-  - /payment: 
-- /order
-  - /orderDetail
+#### API
+- /api
+  - /user
+    - /login: params: {username, password}
+    - /logout
+    - /checkLogin
+    - /signup
+      - hash password
+  - /products
+    - / params: {page, pageSize, sortFlag, sortWay, priceLevel}
+      - GET: get all products
+    - /:id
+  - /cart
+    - /cartList: return user's cart list
+    - /cartEdit: edit the number of goods in cart
+    - /addCart: add product to cart
+    - /delCart: delete product from cart
+  - /address
+    - /addressList: return addressList
+    - /setDefault: set Default address
+    - /delAddress: delete address
+    - /getAddress: return one address 
+  - /payment
+    - /payment: 
+  - /order
+    - /orderDetail
+---
 
+### Plan
+- products details
+- modify database
+- filter by category
+- delay load
+- large image
+- logo design
+- error log collection
 
-#### check login
-- main.js: router.beforeEach, not login can't visit some pages
-- EntryBoard: used to get userName and id -> set this in vuex & display change
+---
+
+### bugs
+  - login twice
+  - browser compatibility
+
+---
+
+### New Design
+#### REST API
+- `GET /api/session`: get session/login status
+- `POST /api/session`: login and save sessions
+  - BODY: `{username: '', password: ''}`
+- `DELETE /api/session`: destroys session and redirect to / 
+
+- `POST /api/users`: records the entered information into database as a new /users/username
+- `GET /api/users/{name}`: gets the current user data in a profile view
+- `PUT /api/users/{name}`: updates new information about user
+
+- `GET /api/collections/{name}`
+- `GET /api/collections/`

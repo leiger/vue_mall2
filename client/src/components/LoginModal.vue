@@ -201,9 +201,8 @@ export default {
             this.closeModal();
             // get cart list
             getCartList(this);
-            // if redirect from other page, return back
+            // redirect from other page
             const redirect = this.$route.query.redirect;
-            console.log(redirect);
             if (redirect) {
               this.$router.push("/");
             } else {

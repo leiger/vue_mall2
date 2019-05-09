@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+let session = require('cookie-session');
 
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -12,20 +13,44 @@ var cartRouter = require('./routes/cart');
 var addressRouter = require('./routes/address');
 
 let Response = require('./public/javascripts/response');
+let mongoose = require('mongoose');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//
+// connect mongodb
+mongoose.connect('mongodb://127.0.0.1:27017/vue_mall', {
+  useNewUrlParser: true
+});
+
+let db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log("MongoDB connected success.");
+});
+
+//
+// session
+app.use(cookieParser('user'));
+app.use(session({
+  keys: ['key1', 'key2'],
+  name: 'user',
+  resave: true,
+  saveUninitialized: true,
+  maxAge: 24 * 60 * 60
+}))
 
 app.use(function (req, res, next) {
   if (req.cookies.userId) {

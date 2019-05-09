@@ -24,42 +24,26 @@ router.post('/signup', async (req, res) => {
         Response(res, '7');
       } else {
         // hash password
-        try {
-          let userPwdHash = await bcrypt.hash(userPwd, 10);
-          if (userPwdHash) {
-            try {
-              let ObjectId = mongoose.Types.ObjectId();
-              let insertData = new Users({
-                _id: ObjectId,
-                userName,
-                userPwd: userPwdHash,
-                orderList: [],
-                cartList: [],
-                addressList: []
-              });
-
-              try {
-                let doc1 = await insertData.save();
-                if (doc1) {
-                  // success
-                  Response(res, '0');
-                } else {
-                  Response(res, '10');
-                }
-              } catch (err) {
-                Response(res, '1');
-                console.log(err);
-              }
-            } catch (err) {
-              Response(res, '1');
-              console.log(err);
-            }
+        let userPwdHash = await bcrypt.hash(userPwd, 10);
+        if (userPwdHash) {
+          let ObjectId = mongoose.Types.ObjectId();
+          let insertData = new Users({
+            _id: ObjectId,
+            userName,
+            userPwd: userPwdHash,
+            orderList: [],
+            cartList: [],
+            addressList: []
+          });
+          let doc1 = await insertData.save();
+          if (doc1) {
+            // success
+            Response(res, '0');
           } else {
-            Response(res, '9');
+            Response(res, '10');
           }
-        } catch (err) {
-          Response(res, '1');
-          console.log(err);
+        } else {
+          Response(res, '9');
         }
       }
     } catch (err) {
@@ -81,28 +65,18 @@ router.post('/login', async (req, res) => {
 
     if (doc) {
       // check password
-      try {
-        let result = await bcrypt.compare(req.body.password, doc.userPwd);
+      let result = await bcrypt.compare(req.body.password, doc.userPwd);
 
-        if (result) {
-          // set cookies 1h
-          res.cookie("userId", doc._id, {
-            path: '/',
-            maxAge: 1000 * 60 * 60
-          });
-          res.cookie("userName", doc.userName, {
-            path: '/',
-            maxAge: 1000 * 60 * 60
-          });
-          Response(res, '0', {
-            userName: doc.userName
-          });
-        } else {
-          Response(res, '3');
+      if (result) {
+        req.session.user = {
+          id: doc._id,
+          name: doc.userName
         }
-      } catch (err) {
-        Response(res, '1');
-        console.log(err);
+        Response(res, '0', {
+          userName: doc.userName
+        });
+      } else {
+        Response(res, '3');
       }
     } else {
       // Wrong Username or Password!
@@ -115,26 +89,16 @@ router.post('/login', async (req, res) => {
 
 // logout
 router.post('/logout', (req, res) => {
-  try {
-    res.cookie('userId', '', {
-      path: '/',
-      maxAge: -1
-    });
-    res.cookie('userName', '', {
-      path: '/',
-      maxAge: -1
-    });
-    Response(res, '0');
-  } catch (err) {
-    Response(res, '1');
-  }
+  res.clearCookie('userId');
+  res.clearCookie('userName');
+  Response(res, '0');
 });
 
 // check wheather the user is login in
 router.get('/checkLogin', (req, res) => {
   try {
-    if (req.cookies.userId) {
-      Response(res, '0', req.cookies.userName || '');
+    if (req.session.user) {
+      Response(res, '0');
     } else {
       Response(res, '3');
     }

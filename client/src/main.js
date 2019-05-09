@@ -23,8 +23,8 @@ Vue.use(iView, {
 });
 Vue.use(infiniteScroll);
 
-// global loading bar
 router.beforeEach( async (to, from, next) => {
+  // global loading bar
   iView.LoadingBar.start();
 
   try {

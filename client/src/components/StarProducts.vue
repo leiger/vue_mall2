@@ -26,7 +26,6 @@ import Title from "./../components/Title.vue";
 import product1 from "./../../static/star-products/6.png";
 import product2 from "./../../static/star-products/2.png";
 import product3 from "./../../static/star-products/3.png";
-import WOW from "wow.js";
 
 export default {
   data() {
@@ -55,11 +54,6 @@ export default {
   },
   components: {
     Title
-  },
-  mounted() {
-    new WOW({
-      offset: 0
-    }).init();
   }
 };
 </script>

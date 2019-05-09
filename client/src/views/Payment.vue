@@ -201,14 +201,12 @@ export default {
         });
         if (data.status === "0") {
           this.$Message.success("Payment Success!");
-          setTimeout(() => {
-            this.$router.push({
-              path: "/OrderSuccess",
-              query: {
-                orderId: this.$route.query.orderId
-              }
-            });
-          }, 2000);
+          this.$router.push({
+            path: "/OrderSuccess",
+            query: {
+              orderId: this.$route.query.orderId
+            }
+          });
         } else {
           this.$Message.error("Payment Error!");
         }

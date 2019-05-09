@@ -9,22 +9,14 @@
 
       <div class="headerRight">
         <ul>
-          <li class="fadeInDown wow" key="0">
-            <router-link to="/">HOME</router-link>
+          <li
+            v-for="(item,index) in menu"
+            class="fadeInDown wow"
+            :data-wow-delay="(index+1)*0.05+'s'"
+          >
+            <router-link :to="item.link">{{item.name}}</router-link>
           </li>
-          <li class="fadeInDown wow" key="1" data-wow-delay="0.05s">
-            <router-link to="/all">STORE</router-link>
-          </li>
-          <li class="fadeInDown wow" key="2" data-wow-delay="0.1s">
-            <router-link to="/about">ABOUT</router-link>
-          </li>
-          <!-- <li class="fadeInDown wow" key="3" data-wow-delay="0.15s">
-            <router-link to="/faq">FAQ</router-link>
-          </li>
-          <li class="fadeInDown wow" key="4" data-wow-delay="0.2s">
-            <router-link to="/contact">CONTACT</router-link>
-          </li> -->
-          <li class="fadeInDown wow" key="5" data-wow-delay="0.15s">
+          <li class="fadeInDown wow" key="5" :data-wow-delay="menu.length*0.05">
             <a @click="openDrawer">
               <Icon class="cartIcon" size="16" type="ios-cart"/>
               <span v-if="nickName">({{cartNum}})</span>
@@ -41,9 +33,26 @@
 <script>
 import LoginModal from "./../components/LoginModal.vue";
 import Drawer from "./../components/Drawer.vue";
-import WOW from "wow.js";
 
 export default {
+  data() {
+    return {
+      menu: [
+        {
+          name: "HOME",
+          link: "/"
+        },
+        {
+          name: "STORE",
+          link: "/collections"
+        },
+        {
+          name: "ABOUT",
+          link: "/about"
+        }
+      ]
+    };
+  },
   components: {
     LoginModal,
     Drawer
@@ -55,9 +64,6 @@ export default {
     nickName() {
       return this.$store.state.nickName;
     }
-  },
-  mounted() {
-    new WOW().init();
   },
   methods: {
     openDrawer() {
@@ -82,7 +88,6 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
 /* left */
 .headerBox {
   height: 80px;
@@ -92,7 +97,7 @@ export default {
   line-height: 80px;
   color: rgba(0, 0, 0, 0.9);
 }
-
+/* menu */
 ul {
   list-style: none;
   margin: auto;

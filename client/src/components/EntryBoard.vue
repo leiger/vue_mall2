@@ -7,6 +7,7 @@
         </a>
       </div>
       <div class="entryRight">
+        <!-- not login -->
         <template v-if="nickName === ''">
           <a @click="openLoginModel(1)">SIGN UP</a>
           <Divider type="vertical"/>
@@ -14,6 +15,7 @@
             <Icon type="ios-log-in" size="15"/>SIGN IN
           </a>
         </template>
+        <!-- already login -->
         <template v-else>
           <span type="text" v-text="nickName" key="nickName"></span>
           <Divider type="vertical" orientation="center"/>

@@ -1,23 +1,11 @@
 let express = require('express');
 let router = express.Router();
-let mongoose = require('mongoose');
+
 let Goods = require('../models/goods');
 let Users = require('../models/users');
 let categories = require('../models/categories');
 
 let Response = require('./../public/javascripts/response');
-
-// connect mongodb
-mongoose.connect('mongodb://127.0.0.1:27017/vue_mall', {
-  useNewUrlParser: true
-});
-
-let db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log("MongoDB connected success.");
-});
 
 // find one goods
 router.get("/product", async (req, res) => {

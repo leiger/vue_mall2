@@ -31,7 +31,6 @@ import MainBtn from "./../components/MainBtn.vue";
 import bg1 from "./../../static/imageGrid/1.jpg";
 import bg2 from "./../../static/imageGrid/2.jpg";
 import bg3 from "./../../static/imageGrid/3.jpg";
-import WOW from "wow.js";
 
 export default {
   data() {
@@ -56,12 +55,9 @@ export default {
     Title,
     MainBtn
   },
-  mounted() {
-    new WOW().init();
-  },
   methods: {
     shopNow() {
-      this.$router.push("/all");
+      this.$router.push("/categories");
     }
   }
 };
