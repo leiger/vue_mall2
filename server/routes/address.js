@@ -1,11 +1,8 @@
 var express = require('express');
 var router = express.Router();
 let mongoose = require('mongoose');
-let Goods = require('../models/goods');
-let Users = require('../models/users');
-let categories = require('../models/categories');
-
-let Response = require('./../public/javascripts/response');
+let Products = require('../models/product');
+let Users = require('../models/user');
 
 router.post('/add', async (req, res) => {
   try {

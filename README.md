@@ -69,7 +69,7 @@ npm start
 #### Router
 - `/`: index page
 - `/profile/username`: user profile
-- `/collections/:collectionName`: collection and all products in it
+- `/categories/:collectionName`: category and all products in it
 - `products/:productId`: return specific product
 - `/about`
 - `/checkout`
@@ -88,60 +88,57 @@ npm install
 node /bin/www
 ```
 #### database
-- goods
-  - productId
-  - category
-    - 01: Smart Devices
-    - 02: Outdoor
-    - 03: Steam TV
-    - 04: Mobile Phone Accessories
-    - 05: Laptop
-  - productName
-  - salePrice
-  - productImage
+- users
+  - _id
+  - email
+  - password
+  - orderList: Array
+    - _id
+    - total: order total money
+    - address: shipping address(full address)
+    - products
+    - status
+      - 0: unpaid
+      - 1: paid
+      - 2: shipping
+      - 3: finish
+      - -1: cancel
+    - date: create date
+  - cartList: Array
+    - _id
+    - name
+    - newPrice
+    - images
+    - numInCart
+  - addressList: Array
+    - _id
+    - firstname
+    - lastname
+    - address
+    - city
+    - province
+    - postalCode
 
-#### Error code
-- status
-  - 0: success
-  - 1: fatal error
-  - 2: Wrong Username or Password!
-  - 3: not login
-  - 4: cart edit error
-  - 5: not have this order
-  - 6: session expired
-  - 7: User exist
-  - 8: invalid data
-  - 9: hash error
-  - 10: save new user error
-  - 11: can't find the user
-  - 12: pay error
+- products
+  - _id
+  - category: {
+    _id,
+    name,
+    products
+  }
+  - name: length(2-50)
+  - oldPrice: optional, >0
+  - newPrice: >0
+  - promote: recomend
+  - images: up to 3
+  - numInStock
+  - desc: optional
 
-#### API
-- /api
-  - /user
-    - /login: params: {username, password}
-    - /logout
-    - /checkLogin
-    - /signup
-      - hash password
-  - /products
-    - / params: {page, pageSize, sortFlag, sortWay, priceLevel}
-      - GET: get all products
-    - /:id
-  - /cart
-    - /cartList: return user's cart list
-    - /cartEdit: edit the number of goods in cart
-    - /addCart: add product to cart
-    - /delCart: delete product from cart
-  - /address
-    - /addressList: return addressList
-    - /setDefault: set Default address
-    - /delAddress: delete address
-    - /getAddress: return one address 
-  - /payment
-    - /payment: 
-  - /order
-    - /orderDetail
+- categories
+  - _id
+  - name
+  - products
+
 ---
 
 ### Plan
@@ -151,26 +148,38 @@ node /bin/www
 - delay load
 - large image
 - logo design
-- error log collection
+- error log category
 
 ---
 
 ### bugs
-  - login twice
-  - browser compatibility
+  - objectId num wrong 500 error
+  - 
 
 ---
 
 ### New Design
 #### REST API
-- `GET /api/session`: get session/login status
-- `POST /api/session`: login and save sessions
+- `POST /api/auth`: login and save sessions
   - BODY: `{username: '', password: ''}`
-- `DELETE /api/session`: destroys session and redirect to / 
+- `DELETE /api/auth`: destroys session and redirect to / 
 
-- `POST /api/users`: records the entered information into database as a new /users/username
-- `GET /api/users/{name}`: gets the current user data in a profile view
-- `PUT /api/users/{name}`: updates new information about user
+- `GET /api/users`: get all users
+- `POST /api/users`: add a new user
+- `GET /api/users/:id`: get a user info
+  - `PUT /api/users/:id`: update a user's password
+- `DELETE /api/users/:id`: delete a user
 
-- `GET /api/collections/{name}`
-- `GET /api/collections/`
+- `GET /api/categories`: return all names of categories
+- `POST /api/categories`: add a new category
+- `PUT /api/categories/:id`: modify a product name in a category
+- `DELETE /api/categories/:id`: delete a category
+- `GET /api/categories/:id`: get all products under that category
+  - `POST /api/categories/:id`: add a new product into a category
+
+- `GET /api/cart/:userId`: get a user's cart
+- `PUT /api/cart/:userId`: update a user's cart
+  - BODY: `{productId, changeNum}`
+
+- `GET /api/address/:userId`: get a user's all address
+- `GET /api/address`
