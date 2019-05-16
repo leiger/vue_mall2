@@ -103,17 +103,10 @@
 </template>
 
 <script>
-import EntryBoard from "./../components/EntryBoard.vue";
-import NavHeader from "./../components/NavHeader.vue";
 import AddressModal from "./../components/AddressModal.vue";
-import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
-
-import getAddressList from "./../services/getAddressList.js";
-import getCartList from "./../services/getCartList.js";
 import { currency } from "./../utils/currency.js";
-
-import axios from "axios";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -126,35 +119,26 @@ export default {
     };
   },
   components: {
-    NavHeader,
-    EntryBoard,
     AddressModal,
-    NavFooter,
     MainBtn
   },
   filters: {
     currency
   },
   computed: {
+    ...mapGetters(["totalPrice"]),
     addressList() {
-      return this.$store.state.addressList;
+      return this.$store.state.addresses.addressList;
     },
     cartList() {
-      return this.$store.state.cartList;
+      return this.$store.state.cart.cartList;
     },
     totalNum() {
       let total = 0;
-      this.$store.state.cartList.forEach(item => {
+      this.$store.state.cart.cartList.forEach(item => {
         total += item.productNum;
       });
       return total;
-    },
-    totalPrice() {
-      let price = 0;
-      this.$store.state.cartList.forEach(item => {
-        price += item.productNum * item.salePrice;
-      });
-      return price;
     },
     discountPrice() {
       if (this.discountState === true) {
@@ -169,15 +153,16 @@ export default {
     finalPrice() {
       return this.totalPrice - this.discountPrice + this.tax;
     },
-    discountState() {
-      return this.$store.state.discount;
-    }
+    // discountState() {
+    //   return this.$store.state.discount;
+    // }
   },
   mounted() {
-    getAddressList(this);
-    getCartList(this);
+    // getAddressList(this);
+    // getCartList(this);
   },
   methods: {
+    ...mapActions(["getAddresses", "setAddress", "deleteAddress"]),
     addNewAddress() {
       this.$store.commit("updateAddressModal", true);
     },

@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
 let mongoose = require('mongoose');
-let {
-  User
-} = require('../models/user');
+let User = require('../models/user');
 let {
   Order,
   validate

@@ -43,11 +43,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import canada from "canada";
-
 import MainBtn from "./MainBtn.vue";
-import getAddressList from "./../services/getAddressList.js";
 
 export default {
   data() {
@@ -103,7 +100,7 @@ export default {
   },
   computed: {
     modalState() {
-      return this.$store.state.addressModalState;
+      return this.$store.state.address.addressModalState;
     },
     provinceList() {
       return Object.keys(canada.provinces);

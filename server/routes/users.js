@@ -8,13 +8,13 @@ const Joi = require('@hapi/joi');
 
 // get all users
 router.get('/', async (req, res) => {
-  const users = await User.find().select('_id email');
+  const users = await User.find().select('-password');
   res.send(users);
 });
 
 // get a user info
 router.get('/:id', async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).select('-password');
 
   if (!user) return res.status(404).send('The user with the given ID was not found');
 
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   // password twice entered are not the same
-  if (req.body.password !== req.body.rePassword) return res.status(400).send('passwords are no the same');
+  if (req.body.password !== req.body.rePassword) return res.status(400).json({statusText:'passwords are no the same'});
 
   let exist = await User.findOne({
     email: req.body.email

@@ -8,16 +8,16 @@
       </div>
       <div class="entryRight">
         <!-- not login -->
-        <template v-if="nickName === ''">
-          <a @click="openLoginModel(1)">SIGN UP</a>
+        <template v-if="email === ''">
+          <a @click="setModal({type: 1, open: true})">SIGN UP</a>
           <Divider type="vertical"/>
-          <a @click="openLoginModel(0)">
+          <a @click="setModal({type: 0, open: true})">
             <Icon type="ios-log-in" size="15"/>SIGN IN
           </a>
         </template>
         <!-- already login -->
         <template v-else>
-          <span type="text" v-text="nickName" key="nickName"></span>
+          <span type="text" v-text="email" key="email"></span>
           <Divider type="vertical" orientation="center"/>
           <a @click="logOut">
             <Icon type="ios-log-out" size="15"/>LOG OUT
@@ -25,42 +25,53 @@
         </template>
       </div>
     </div>
+    <LoginModal @loginValid="handleLoginForm" @signUpValid="handleSignUpForm"/>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-import getCartList from "./../services/getCartList.js";
+import { mapActions, mapMutations } from "vuex";
+import LoginModal from "./../components/LoginModal.vue";
 
 export default {
-  async mounted() {
-    // can't find userid in vuex means not login
-    if (!this.$store.state.nickName) {
-      try {
-        let { data } = await axios.get("/user/checkLogin");
-        // already login
-        if (data.status === "0") {
-          // this.nickName = data.result;
-          this.$store.commit("updateUserInfo", data.result);
-          getCartList(this);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    }
+  components: {
+    LoginModal
   },
   computed: {
-    nickName() {
-      return this.$store.state.nickName;
+    id() {
+      return this.$store.state.user.userInfo.id;
+    },
+    email() {
+      return this.$store.state.user.userInfo.email;
     }
   },
   methods: {
+    ...mapActions([
+      "handleLogin",
+      "getUserInfo",
+      "getCartList",
+      "handleSignUp",
+      "handleLogOut"
+    ]),
+    ...mapMutations(["setModal"]),
+
     toGithubAddress() {
       window.open(`https://github.com/leiger/vue_mall2`, "_blank");
     },
 
-    openLoginModel(type) {
-      this.$store.commit("updateLoginModal", { action: true, type });
+    async handleLoginForm({ email, password }) {
+      const result = await this.handleLogin({ email, password });
+      if (result) this.$Message.success("login success");
+      await this.getCartList(this.id);
+    },
+    async handleSignUpForm({ email, password, rePassword }) {
+      const result = await this.handleSignUp({ email, password, rePassword });
+      if (result) this.$Message.success("sign up success");
+    },
+    async handleLogOutConfirm() {
+      const result = await this.handleLogOut();
+      this.$Notice.destroy();
+      if (result) this.$Message.success("logout success");
     },
 
     logOut() {
@@ -76,7 +87,7 @@ export default {
               {
                 style: { display: "inline-block", paddingLeft: "10px" },
                 on: {
-                  click: this.confirmLogout
+                  click: this.handleLogOutConfirm
                 }
               },
               "OK"
@@ -84,22 +95,6 @@ export default {
           ]);
         }
       });
-    },
-    async confirmLogout() {
-      try {
-        let { data } = await axios.post("/user/logout");
-
-        if (data.status === "0") {
-          this.$store.commit("updateUserInfo", "");
-          this.$router.push("/");
-        } else {
-          this.$Message.error("logout fail");
-        }
-
-        this.$Notice.close("logout");
-      } catch (err) {
-        console.log(err);
-      }
     }
   }
 };

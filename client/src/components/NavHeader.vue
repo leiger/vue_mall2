@@ -19,20 +19,19 @@
           <li class="fadeInDown wow" key="5" :data-wow-delay="menu.length*0.05">
             <a @click="openDrawer">
               <Icon class="cartIcon" size="16" type="ios-cart"/>
-              <span v-if="nickName">({{cartNum}})</span>
+              <span v-if="id">({{cartNum}})</span>
             </a>
           </li>
         </ul>
       </div>
     </div>
-    <LoginModal/>
     <Drawer/>
   </header>
 </template>
 
 <script>
-import LoginModal from "./../components/LoginModal.vue";
 import Drawer from "./../components/Drawer.vue";
+import { mapMutations, mapActions } from "vuex";
 
 export default {
   data() {
@@ -54,26 +53,28 @@ export default {
     };
   },
   components: {
-    LoginModal,
     Drawer
   },
   computed: {
     cartNum() {
-      return this.$store.state.cartList.length;
+      return this.$store.state.cart.cartList.length;
     },
-    nickName() {
-      return this.$store.state.nickName;
+    id() {
+      return this.$store.state.user.userInfo.id;
     }
   },
   methods: {
+    ...mapMutations(["setModal", "setDrawerState"]),
+    ...mapActions(["getCartList"]),
     openDrawer() {
-      if (this.nickName === "") {
+      if (this.id === "") {
         this.$Message.info("Login First!");
         setTimeout(() => {
-          this.$store.commit("updateLoginModal", { action: true, type: 0 });
+          this.setModal({ type: 0, open: true });
         }, 2000);
       } else {
-        this.$store.commit("updateDrawerState", true);
+        this.setDrawerState(true);
+        this.getCartList(this.id);
       }
     }
   }

@@ -4,23 +4,21 @@
     class-name="loginModal"
     :value="modalState"
     width="750"
-    @on-cancel="closeModal"
+    @on-cancel="setModal({type: 0, open: false})"
     :footer-hide="true"
   >
     <div class="loginContent">
       <div class="loginHead">
-        <transition appear name="scaleUp">
-          <h2>VUE MALL</h2>
-        </transition>
+        <h2>VUE MALL</h2>
         <Divider v-if="modalType">Sign up a new Account</Divider>
         <Divider v-else>Sign in to your Account</Divider>
       </div>
       <div class="loginBox">
         <div class="modalLeft">
-          <Form v-if="!this.modalType" ref="login" :model="login" :rules="loginRule">
-            <!--username-->
-            <FormItem prop="username">
-              <Input type="text" size="large" v-model="login.username" placeholder="Username">
+          <Form v-if="!modalType" ref="login" :model="login" :rules="loginRule">
+            <!--email-->
+            <FormItem prop="email">
+              <Input type="text" size="large" v-model="login.email" placeholder="Email">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
@@ -37,7 +35,7 @@
               </Input>
             </FormItem>
             <!-- button -->
-            <MainBtn long size="small" @click="handleSubmit('login')">Sign in</MainBtn>
+            <MainBtn long size="small" @click.prevent="handleSubmit('login')">Sign in</MainBtn>
             <Divider class="divider" size="small">More options</Divider>
             <!-- more options -->
             <div class="moreOptions">
@@ -47,9 +45,9 @@
             </div>
           </Form>
           <Form v-else ref="signUp" :model="signUp" :rules="signUpRule">
-            <!--username-->
-            <FormItem prop="username">
-              <Input type="text" size="large" v-model="signUp.username" placeholder="Username">
+            <!--email-->
+            <FormItem prop="email">
+              <Input type="text" size="large" v-model="signUp.email" placeholder="Email">
                 <Icon type="ios-person-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
@@ -72,16 +70,16 @@
               </Input>
             </FormItem>
             <!-- button -->
-            <MainBtn long size="small" @click="handleSubmit('signUp')">Sign Up</MainBtn>
+            <MainBtn long size="small" @click.prevent="handleSubmit('signUp')">Sign Up</MainBtn>
           </Form>
         </div>
         <div class="modalRight">
-          <a v-if="!this.modalType" @click="changeLoginModalType">Create a account</a>
-          <a v-else @click="changeLoginModalType">Sign in</a>
+          <a v-if="!modalType" @click="setModal({type: 1, open: true})">Create a account</a>
+          <a v-else @click="setModal({type: 0, open: true})">Sign in</a>
           <Divider/>
           <p class="test">create one OR using this:</p>
           <p>
-            Username:
+            Email:
             <span>admin</span>
           </p>
           <p>
@@ -95,9 +93,8 @@
 </template>
 
 <script>
-import axios from "axios";
-import getCartList from "./../services/getCartList.js";
 import MainBtn from "./MainBtn.vue";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   data() {
@@ -112,14 +109,14 @@ export default {
     };
     return {
       login: {
-        username: "",
+        email: "",
         password: ""
       },
       loginRule: {
-        username: [
+        email: [
           {
             required: true,
-            message: "Please enter your username",
+            message: "Please enter your email",
             trigger: "blur"
           }
         ],
@@ -132,12 +129,12 @@ export default {
         ]
       },
       signUp: {
-        username: "",
+        email: "",
         password: "",
         rePassword: ""
       },
       signUpRule: {
-        username: [
+        email: [
           {
             required: true,
             message: "Please fill in the user name",
@@ -165,82 +162,33 @@ export default {
   },
   computed: {
     modalState() {
-      return this.$store.state.loginModalState;
+      return this.$store.state.user.modal.open;
     },
     modalType() {
-      return this.$store.state.loginModalType;
+      return this.$store.state.user.modal.type;
     }
   },
-  inject: ["reload"],
+  // inject: ["reload"],
   methods: {
-    closeModal() {
-      this.$store.commit("updateLoginModal", { action: false });
-    },
+    ...mapMutations(["setModal"]),
+
     // check input data valid or not
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.loginLoading = true;
-          this.onSubmit(name);
-          this.loginLoading = false;
+          if (name === "login") this.$emit("loginValid", this.login);
+          else this.$emit("signUpValid", this.signUp);
         } else {
           this.$Message.error("Fail");
         }
       });
     },
 
-    async onSubmit(name) {
-      try {
-        if (name === "login") {
-          let { data } = await axios.post("/user/login", this.login);
-          // login success
-          if (data.status === "0") {
-            this.$Message.success("Login Success!");
-            this.$store.commit("updateUserInfo", data.result.userName);
-            // close modal
-            this.closeModal();
-            // get cart list
-            getCartList(this);
-            // redirect from other page
-            const redirect = this.$route.query.redirect;
-            if (redirect) {
-              this.$router.push("/");
-            } else {
-              this.reload();
-            }
-          } else if (data.status === "2") {
-            this.$Message.error("Wrong Username or Password!");
-          }
-        }
-        // sign up
-        else {
-          let { data } = await axios.post("/user/signup", this.signUp);
-          if (data.status === "0") {
-            this.$Message.success("Sign up Success! Please login!");
-            setTimeout(() => {
-              this.$store.commit("updateLoginModal", { action: true, type: 0 });
-            }, 1000);
-          } else if (data.status === "7") {
-            this.$Message.info("Username is already exist!");
-          } else {
-            this.$Message.error("Fail!");
-          }
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
     // click third part login ways
     unAvailableInfo() {
       this.$Notice.warning({
         title: "Sorry",
         desc: "Third Part Login is not supported Now!"
-      });
-    },
-    changeLoginModalType() {
-      this.$store.commit("updateLoginModal", {
-        action: true,
-        type: this.modalType === 1 ? 0 : 1
       });
     }
   }

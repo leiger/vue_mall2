@@ -17,6 +17,15 @@ let userSchema = new Schema({
     maxlength: 255,
     trim: true
   },
+  admin: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  avatar: {
+    type: String,
+    default: '../assets/avatar.png'
+  },
   orderList: [{
     total: Number,
     address: Object,
@@ -69,7 +78,10 @@ let userSchema = new Schema({
   }],
   addressList: [{
     type: new mongoose.Schema({
-      firstname: String,
+      firstname: {
+        type: String,
+        default: ''
+      },
       lastname: String,
       address: String,
       city: String,

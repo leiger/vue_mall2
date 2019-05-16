@@ -2,20 +2,24 @@
   <Layout>
     <div class="container">
       <Breadcrumb class="breadCrumb">
-        <BreadcrumbItem to="/all">All Products</BreadcrumbItem>
-        <BreadcrumbItem>{{categoryName}}</BreadcrumbItem>
-        <BreadcrumbItem>{{product.productName}}</BreadcrumbItem>
+        <BreadcrumbItem to="/collections">All Products</BreadcrumbItem>
+        <BreadcrumbItem v-if="product.category">{{product.category.name}}</BreadcrumbItem>
+        <BreadcrumbItem>{{product.name}}</BreadcrumbItem>
       </Breadcrumb>
       <Title class="title" :postTitle="product.productName"/>
       <div class="productIntro">
         <div class="productLeft wow fadeIn" data-wow-delay="0.2s">
-          <img :src="'/static/images/'+product.productImage" :alt="product.productName">
+          <img
+            v-if="product.images"
+            :src="'http://localhost:3000/images/products/'+product.images[0]"
+            :alt="product.name"
+          >
         </div>
         <div class="productRight">
           <div class="infoBox wow fadeIn" data-wow-delay="0.4s">
-            <div class="productName">{{product.productName}}</div>
+            <div class="productName">{{product.name}}</div>
             <div class="productPrice">
-              <span class="price">{{product.salePrice | currency}}</span>
+              <span class="price">{{product.newPrice | currency}}</span>
             </div>
             <div class="productQuantity">
               <span>Quantity</span>
@@ -69,21 +73,15 @@
 </template>
 
 <script>
-import NavHeader from "./../components/NavHeader.vue";
-import EntryBoard from "./../components/EntryBoard.vue";
 import Title from "./../components/Title.vue";
-import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
 import QuantitySelector from "./../components/QuantitySelector.vue";
-
+import { mapActions, mapMutations } from "vuex";
 import { currency } from "./../utils/currency";
-import axios from "axios";
-import getCartList from "../services/getCartList";
 
 export default {
   data() {
     return {
-      product: {},
       selectedNum: 1
     };
   },
@@ -93,76 +91,45 @@ export default {
     QuantitySelector
   },
   computed: {
-    // avoid render error before get data
-    categoryName() {
-      return Object.keys(this.product).length === 0
-        ? ""
-        : this.product.categoryId[0].categoryName;
+    product() {
+      return this.$store.state.products.currentProduct;
+    },
+    id() {
+      return this.$store.state.user.userInfo.id;
     }
   },
-  created() {
-    this.getProductDetail(this.$route);
+  mounted() {
+    this.getProductById(this.$route.params);
   },
-  watch: {
-    $route(to, from) {
-      this.getProductDetail(to);
-    }
-  },
+  // watch: {
+  //   $route(to, from) {
+  //     console.log(to);
+  //     this.getProductById(to);
+  //   }
+  // },
   filters: {
     currency: currency
   },
   methods: {
-    async getProductDetail(route) {
-      let id = route.params.id;
-      let params = {
-        productId: id
-      };
-      try {
-        let { data } = await axios.get("/good/product", {
-          params
-        });
-        if (data.status === "0") {
-          this.product = data.result.productDetail;
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
+    ...mapActions(["getProductById", "updateCartList"]),
+    ...mapMutations(["setModal"]),
+
     handleChangeValue(id, arg) {
       this.selectedNum = this.selectedNum + arg[0];
     },
     async addToCart() {
-      let { productId } = this.product;
-
-      if (this.selectedNum > 0) {
-        try {
-          let cartList = this.$store.state.cartList;
-          let numIncart = 0;
-          cartList.forEach(item => {
-            if (item.productId === productId) {
-              numIncart = item.productNum;
-            }
-          });
-          let { data } = await axios.post("/cart/addCart", {
-            productId,
-            productNum: this.selectedNum
-          });
-          if (data.status === "0") {
-            this.$Message.success("Add Success!");
-            getCartList(this);
-          } else if (data.status === "3") {
-            this.$Message.info("Login First!");
-            setTimeout(() => {
-              this.$store.commit("updateLoginModal", { action: true, type: 0 });
-            }, 2000);
-          } else {
-            this.$Message.error("Add Fail!");
-          }
-        } catch (err) {
-          console.log(err);
-        }
+      if (!this.id) {
+        this.$Message.info("Login First!");
+        setTimeout(() => {
+          this.setModal({ type: 0, open: true });
+        }, 2000);
       } else {
-        this.$$Message.error("Invalid!");
+        let result = await this.updateCartList({
+          id: this.id,
+          productId: this.product._id,
+          changeNum: this.selectedNum
+        });
+        if(result) this.$Message.success("Add success!")
       }
     }
   }

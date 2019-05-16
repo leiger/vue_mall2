@@ -7,17 +7,17 @@
     <div v-else class="cartListBox">
       <div class="itemBox" v-for="item in cartList">
         <div class="imgBox">
-          <img :src="'/static/images/'+item.productImage" alt="img">
+          <img :src="'http://localhost:3000/images/products/'+item.images[0]" alt="img">
         </div>
-        <a @click="selectItem(item.productId)">
-          <h5 class="itemName">{{item.productName}}</h5>
+        <a @click="selectItem(item._id)">
+          <h5 class="itemName">{{item.name}}</h5>
         </a>
         <QuantitySelector
-          :value="item.productNum"
+          :value="item.numInCart"
           :min="0"
-          @changeValue="changeQuantity({id:item.productId, preNum:item.productNum}, arguments)"
+          @changeValue="changeQuantity(item._id, arguments)"
         />
-        <div class="price">{{item.salePrice * item.productNum | currency}}</div>
+        <div class="price">{{item.newPrice * item.numInCart | currency}}</div>
       </div>
     </div>
 
@@ -25,16 +25,19 @@
       <Divider/>
       <div class="subTotal">
         <span class="info">Shipping & taxes calculated at checkout</span>
-        <span class="totalPrice">SUBTOTAL <span>{{totalMoney | currency}}</span></span>
+        <span class="totalPrice">
+          SUBTOTAL
+          <span>{{totalPrice | currency}}</span>
+        </span>
       </div>
       <div class="buttonGroup">
-        <MainBtn long @click="closeCart">CONTINUE SHOPPING</MainBtn>
+        <MainBtn long @click="drawerState = false">CONTINUE SHOPPING</MainBtn>
         <MainBtn
           class="checkoutBtn"
           long
           v-if="cartList.length !== 0"
           type="primary"
-          :disabled="totalMoney === 0?true:false"
+          :disabled="totalPrice === 0?true:false"
           @click="checkout"
         >CHECK OUT ></MainBtn>
       </div>
@@ -43,11 +46,10 @@
 </template>
 
 <script>
-import axios from "axios";
 import MainBtn from "./../components/MainBtn.vue";
 import QuantitySelector from "./../components/QuantitySelector.vue";
 import { currency } from "./../utils/currency";
-import getCartList from "./../services/getCartList.js";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -57,77 +59,44 @@ export default {
   computed: {
     drawerState: {
       get() {
-        return this.$store.state.drawerState;
+        return this.$store.state.cart.drawerState;
       },
-      set(drawerState) {
-        this.$store.commit("updateDrawerState", drawerState);
+      set(status) {
+        this.setDrawerState(status);
       }
     },
     cartList() {
-      return this.$store.state.cartList;
+      return this.$store.state.cart.cartList;
     },
-    totalMoney() {
-      let tempMoney = 0;
-      this.cartList.forEach(temp => {
-        tempMoney += temp.productNum * parseInt(temp.salePrice);
-      });
-      return tempMoney;
-    }
+    id() {
+      return this.$store.state.user.userInfo.id;
+    },
+    ...mapGetters(["totalPrice"])
   },
   filters: {
     currency
   },
   methods: {
-    async changeQuantity({ id, preNum }, arg) {
-      let newQuantity = preNum + arg[0];
-      let params = {},
-        postAddress = "";
+    ...mapActions(["updateCartList"]),
+    ...mapMutations(["setDrawerState"]),
+    changeQuantity(productId, arg) {
+      this.updateCartList({
+        id: this.id,
+        productId,
+        changeNum: arg[0]
+      });
+    },
 
-      // modify
-      if (newQuantity > 0) {
-        params = {
-          productId: id,
-          productNum: arg[0]
-        };
-        postAddress = "cart/addCart";
-      } else {
-        // delete
-        params = {
-          productId: id
-        };
-        postAddress = "cart/delCart";
-      }
-      try {
-        let { data } = await axios.post(postAddress, params);
-        if (data.status === "0") {
-          console.log("success");
-          // update cart list data in vuex
-          getCartList(this);
-        } else if (data.status === "6") {
-          this.$Message.error("Session Expired!");
-          setTimeout(() => {
-            this.$store.commit("updateLoginModal", { action: true, type: 0 });
-          }, 2000);
-        } else {
-          this.$Error.error("Error!");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    closeCart() {
-      this.$store.commit("updateDrawerState", false);
-    },
     checkout() {
-      if (this.totalMoney > 0) {
+      if (this.totalPrice > 0) {
         this.$router.push({
           path: "/address"
         });
-        this.$store.commit("updateDrawerState", false);
+        this.drawerState = false;
       }
     },
     selectItem(id) {
-      this.$store.commit("updateDrawerState", false);
+      this.drawerState = false;
       this.$router.push("/products/" + id);
     }
   }

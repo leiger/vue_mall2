@@ -9,9 +9,7 @@ import iView from 'iview';
 import locale from 'iview/dist/locale/en-US';
 import 'iview/dist/styles/iview.css';
 import 'animate.css/animate.min.css';
-import axios from 'axios';
-
-import infiniteScroll from 'vue-infinite-scroll'
+import Cookies from 'js-cookie';
 
 // used for mock data
 // require('./../mock/mock.js');
@@ -21,15 +19,15 @@ Vue.config.productionTip = false;
 Vue.use(iView, {
   locale
 });
-Vue.use(infiniteScroll);
 
 router.beforeEach( async (to, from, next) => {
   // global loading bar
   iView.LoadingBar.start();
 
   try {
-    let { data } = await axios.get("/user/checkLogin");
-    if(data.status === '0' || !to.meta.login) {
+    let id = Cookies.get('id');
+    console.log(id);
+    if(id || !to.meta.login) {
       next();
     }
     else {

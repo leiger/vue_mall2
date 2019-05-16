@@ -1,13 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const {
-  User
-} = require('../models/user');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const Joi = require('@hapi/joi');
 
-// authentication, login
+// auth
+router.get('/', async (req, res) => {
+  if (!req.cookies.id) return res.status(401).send('Not Login');
+
+  let user = await User.findById(req.cookies._id).select('_id email admin');
+  if (!user) return res.status(400).send('Invalid User!');
+
+  res.send(user);
+});
+
+// login
 router.post('/', async (req, res) => {
   const {
     error
@@ -25,13 +33,17 @@ router.post('/', async (req, res) => {
   // set cookies
   res.cookie("id", user._id);
   res.cookie("email", user.email);
-  res.send('success');
+  res.send({
+    id: user._id,
+    email: user.email
+  });
 });
 
 // logout
 router.delete('/', (req, res) => {
   res.clearCookie('id');
   res.clearCookie('email');
+  res.send('success');
 });
 
 function validate(req) {

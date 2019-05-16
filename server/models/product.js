@@ -33,8 +33,7 @@ let productSchema = new Schema({
     default: false
   },
   images: [{
-    type: String,
-    validate: [arrayLimit, 'exceeds the limit of 3']
+    type: String
   }],
   numInStock: {
     type: Number,
@@ -55,7 +54,7 @@ function validateProduct(product) {
     categoryId: Joi.objectId().required(),
     oldPrice: Joi.number().min(0).max(10000).optional(),
     newPrice: Joi.number().min(0).max(10000).required(),
-    promote: Joi.boolean().required(),
+    promote: Joi.boolean(),
     images: Joi.array(),
     numInStock: Joi.number().min(0).max(1000).required(),
     desc: Joi.array().optional()

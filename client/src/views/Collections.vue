@@ -9,34 +9,15 @@
       <!--sort & filter-->
       <div class="filterBox">
         <div class="cardBox">
-          <h4>SORT</h4>
+          <h4>CATEGORY</h4>
           <ul>
-            <li v-for="(name, index) in sortNames">
+            <li v-for="(category, index) in categories">
               <a
                 class="wow fadeInDown"
-                @click="sortGoods(index)"
-                :class="{tagSelected: sortSelected[index]}"
+                @click="filterProducts(category, index)"
+                :class="{tagSelected: category.name === mainTitle}"
                 :data-wow-delay="index*0.05+'s'"
-              >
-                {{name}}
-                <template v-if="index === 1">
-                  <Icon v-if="sortPriceArrow" type="ios-arrow-round-up" size="18"/>
-                  <Icon v-else type="ios-arrow-round-down" size="18"/>
-                </template>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="cardBox">
-          <h4>FILTER BY PRICE RANGE</h4>
-          <ul>
-            <li v-for="(price, index) in priceRange">
-              <a
-                class="wow fadeInDown"
-                :data-wow-delay="index*0.05+'s'"
-                @click="setPriceFilter(index)"
-                :class="{tagSelected: priceFilterSelected[index]}"
-              >{{price}}</a>
+              >{{category.name}}</a>
             </li>
           </ul>
         </div>
@@ -44,30 +25,20 @@
       <Title class="title" :postTitle="mainTitle"/>
       <!--goods-->
       <div class="goods">
-        <template v-for="(good, index) in goods">
+        <template v-for="(good, index) in products">
           <div class="goodsBox wow zoomIn" :data-wow-delay="index%2*0.3+'s'">
-            <router-link :to="'/products/'+good.productId" class="imgBox">
-              <img :src="'/static/images/'+good.productImage" :alt="good.productName">
+            <router-link :to="'/products/'+good._id" class="imgBox">
+              <img :src="'http://localhost:3000/images/products/'+good.images[0]" :alt="good.name">
               <div class="goodsDetail">
-                <h4>{{ good.productName }}</h4>
-                <span>{{ good.salePrice | currency}}</span>
+                <h4>{{ good.name }}</h4>
+                <span>{{ good.newPrice | currency}}</span>
               </div>
               <div class="mask">
-                <button @click.stop.prevent="addCart(good.productId)" class="addToCart">ADD TO CART</button>
+                <button @click.stop.prevent="addCart(good._id)" class="addToCart">ADD TO CART</button>
               </div>
             </router-link>
           </div>
         </template>
-        <!--load more-->
-        <div
-          class="load_more"
-          v-infinite-scroll="loadMore"
-          infinite-scroll-disabled="busy"
-          infinite-scroll-distance="10"
-          v-if="loading.imageShow"
-        >
-          <img :src="loading.imageUrl" alt="loading...">
-        </div>
       </div>
     </Content>
   </Layout>
@@ -75,162 +46,60 @@
 
 <script>
 import Title from "./../components/Title.vue";
-
-import axios from "axios";
-import loadingSvg from "./../../static/loading-svg/loading-spin.svg";
-
-import getCartList from "./../services/getCartList.js";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import { currency } from "./../utils/currency";
 
 export default {
   data() {
     return {
-      mainTitle: "All",
-      // priceFilter
-      priceRange: [
-        "All",
-        "$0 to $100",
-        "$100 to $500",
-        "$500 to $1000",
-        "$1000 to $2000"
-      ],
-      priceLevel: 0,
-      priceFilterSelected: [true, false, false, false],
-
-      // sort
-      // sortWay default: 0, price: 1
-      // sortFlag asce or desc
-      sortNames: ["Default", "Price"],
-      sortSelected: [true, false],
-      sort: {
-        sortWay: 0,
-        sortFlag: true
-      },
-      sortPriceArrow: true,
-
-      goods: [],
-      page: 1,
-      pageSize: 12,
-
-      // vue-infinite-scroll
-      busy: false,
-      loading: {
-        imageUrl: loadingSvg,
-        imageShow: true
-      }
+      products: [],
+      mainTitle: "All"
     };
   },
   components: {
     Title
   },
+  computed: {
+    categories() {
+      return [{ name: "All" }, ...this.$store.state.products.categoriesInfo];
+    },
+    id() {
+      return this.$store.state.user.userInfo.id;
+    }
+  },
   filters: {
     currency
   },
-  mounted: function() {
-    this.getGoodsList();
+  mounted: async function() {
+    await this.getProducts();
+    await this.getCategories();
+    this.products = this.$store.state.products.productsInfo;
   },
   methods: {
-    async getGoodsList(flag) {
-      let params = {
-        page: this.page,
-        pageSize: this.pageSize,
-        // 1: asce; -1: desc
-        sortFlag: this.sort.sortFlag ? 1 : -1,
-        // price or default
-        sortWay: this.sort.sortWay,
-        priceLevel: this.priceLevel
-      };
-
-      this.loading.imageShow = true;
-
-      try {
-        let { data } = await axios.get("/good/list", {
-          params
-        });
-        // console.log(res);
-        if (data.status === "0") {
-          // flag means first page or later page
-          if (flag) {
-            this.goods = this.goods.concat(data.result.list);
-            // no more data
-            if (data.result.count < this.pageSize) {
-              this.busy = true;
-            } else {
-              this.busy = false;
-            }
-          } else {
-            this.goods = data.result.list;
-            this.busy = false;
-          }
-        }
-        // request false
-        else {
-          this.goods = [];
-          this.$Message.error("Request Fail, Please reload the page");
-        }
-        this.loading.imageShow = false;
-      } catch (err) {
-        console.log(err);
+    ...mapActions(["getProducts", "getCategories", "updateCartList"]),
+    ...mapMutations(["setModal"]),
+    filterProducts(category) {
+      this.products = this.$store.state.products.productsInfo;
+      if (category._id) {
+        this.products = this.products.filter(
+          product => product.category._id === category._id
+        );
       }
+      this.mainTitle = category.name;
     },
-    sortGoods(name) {
-      // price sort
-      if (name === 1) {
-        if (this.sortSelected[1] === true) {
-          this.sortPriceArrow = !this.sortPriceArrow;
-          this.sort.sortFlag = !this.sort.sortFlag;
-        }
-        this.sortSelected = [false, true];
-      }
-      // default sort
-      else {
-        this.sortSelected = [true, false];
-      }
-      this.page = 1;
-      this.sort.sortWay = name;
-      this.getGoodsList();
-    },
-    setPriceFilter(level) {
-      this.page = 1;
-      this.priceLevel = level;
-      this.priceFilterSelected = [false, false, false, false];
-      this.priceFilterSelected[level] = true;
-      this.mainTitle = this.priceRange[level];
-      this.getGoodsList();
-    },
-    loadMore: function() {
-      // forbid load frequently
-      this.busy = true;
-
-      setTimeout(() => {
-        this.page++;
-        //          console.log(this.page);
-        this.getGoodsList(true);
-        // this.busy = false;
-      }, 1000);
-    },
-
     async addCart(productId) {
-      try {
-        let { data } = await axios.post("/cart/addCart", {
-          productId: productId
+      if (!this.id) {
+        this.$Message.info("Login First!");
+        setTimeout(() => {
+          this.setModal({ type: 0, open: true });
+        }, 2000);
+      } else {
+        let result = this.updateCartList({
+          id: this.id,
+          productId,
+          changeNum: 1
         });
-        if (data.status === "0") {
-          // login already
-          this.$Message.success("Add Success!");
-          getCartList(this);
-        } else if (data.status === "3") {
-          // not login
-          this.$Message.info("Login First!");
-          setTimeout(() => {
-            this.$store.commit("updateLoginModal", { action: true, type: 0 });
-          }, 2000);
-        } else {
-          // err
-          this.$Message.error("Add error!");
-        }
-      } catch (err) {
-        console.log(err);
+        if (result) this.$Message.success("Add success!");
       }
     }
   }
@@ -273,7 +142,7 @@ export default {
   font-weight: 300;
   font-size: 16px;
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 .cardBox ul {
   list-style: none;
