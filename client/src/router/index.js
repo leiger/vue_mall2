@@ -11,6 +11,7 @@ import Products from '../views/Products.vue';
 import Checkout from '../views/Checkout.vue';
 import Payment from '../views/Payment.vue';
 import OrderSuccess from '../views/OrderSuccess.vue';
+import NotFound from '../views/NotFound.vue';
 
 Vue.use(Router)
 
@@ -79,6 +80,13 @@ export default new Router({
           meta: {
             login: true,
             index: 6
+          }
+        },
+        {
+          path: '*',
+          component: NotFound,
+          meta: {
+            index: 7
           }
         }
       ]
