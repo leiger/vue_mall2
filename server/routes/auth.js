@@ -9,7 +9,7 @@ const Joi = require('@hapi/joi');
 router.get('/', async (req, res) => {
   if (!req.cookies.id) return res.status(401).send('Not Login');
 
-  let user = await User.findById(req.cookies._id).select('_id email admin');
+  let user = await User.findById(req.cookies.id).select('_id email admin');
   if (!user) return res.status(400).send('Invalid User!');
 
   res.send(user);
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
   res.cookie("id", user._id);
   res.cookie("email", user.email);
   res.send({
-    id: user._id,
+    _id: user._id,
     email: user.email
   });
 });

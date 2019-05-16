@@ -50,6 +50,8 @@ function validateEmail(email) {
 
 function validateOrder(user) {
   const schema = {
+    userId: Joi.string(),
+    addressId: Joi.string(),
     total: Joi.number().min(0).required()
   };
   return Joi.validate(user, schema);

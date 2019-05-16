@@ -27,29 +27,11 @@ let userSchema = new Schema({
     default: '../assets/avatar.png'
   },
   orderList: [{
-    total: Number,
-    address: Object,
-    products: Array,
-    status: {
-      type: Number,
-      default: 0,
-      required: true
-    },
-    date: {
-      start: {
-        type: Date,
-        default: Date.now,
-        required: true
-      },
-      paid: Date,
-      shipping: Date,
-      finish: Date,
-      cancel: Date
-    }
+    type: Schema.Types.ObjectId
   }],
   cartList: [{
     type: new mongoose.Schema({
-      _id:{
+      _id: {
         type: Schema.Types.ObjectId,
         required: true
       },

@@ -15,7 +15,7 @@
       </div>
       <div class="loginBox">
         <div class="modalLeft">
-          <Form v-if="!modalType" ref="login" :model="login" :rules="loginRule">
+          <Form v-if="!modalType" ref="login" :model="login" :rules="loginRule" key="login">
             <!--email-->
             <FormItem prop="email">
               <Input type="text" size="large" v-model="login.email" placeholder="Email">
@@ -44,7 +44,7 @@
               <Icon @click="unAvailableInfo()" type="logo-github" size="28"/>
             </div>
           </Form>
-          <Form v-else ref="signUp" :model="signUp" :rules="signUpRule">
+          <Form v-else ref="signUp" :model="signUp" :rules="signUpRule" key="signUp">
             <!--email-->
             <FormItem prop="email">
               <Input type="text" size="large" v-model="signUp.email" placeholder="Email">
@@ -118,7 +118,8 @@ export default {
             required: true,
             message: "Please enter your email",
             trigger: "blur"
-          }
+          },
+          { type: "email", message: "Incorrect email format", trigger: "blur" }
         ],
         password: [
           {
@@ -137,9 +138,10 @@ export default {
         email: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "Please fill in the email",
             trigger: "blur"
-          }
+          },
+          { type: "email", message: "Incorrect email format", trigger: "blur" }
         ],
         password: [
           {

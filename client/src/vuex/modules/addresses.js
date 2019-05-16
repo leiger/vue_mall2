@@ -1,4 +1,4 @@
-import { getAddresses, setAddress, deleteAddress } from '@/services/users';
+import { getAddresses, addAddress, deleteAddress } from '@/services/addresses';
 
 const state = {
   // id, email
@@ -7,37 +7,39 @@ const state = {
 }
 
 const mutations = {
-  setAddressses: (state, addressList) => {
-    state.addressList = addressList
+  setAddresses: (state, {addressList}) => {
+    state.addressList = [...addressList];
   },
-  setModalState: (state, status) => {
+  setAddressModalState: (state, status) => {
     state.addressModalState = status;
   }
 }
 
 const actions = {
   // user login
-  async getAddresses({ commit }) {
+  async getAddresses({ commit }, id) {
     try {
-      const { data } = await getAddresses();
+      const { data } = await getAddresses(id);
       commit('setAddresses', data);
     }
     catch (err) {
       console.log(err);
     }
   },
-  async setAddress({ dispatch }, payload) {
+  async addAddress({ dispatch }, {id, payload}) {
     try {
-      await setAddress(payload);
-      await dispatch('getAddresses');
+      await addAddress({id, payload});
+      await dispatch('getAddresses', id);
+      return true;
     } catch (err) {
       console.log(err);
+      return false;
     }
   },
-  async deleteAddress({ dispatch }, payload) {
+  async deleteAddress({ dispatch }, {id, addressId}) {
     try {
-      await deleteAddress(payload);
-      await dispatch('getAddresses');
+      await deleteAddress({id, addressId});
+      await dispatch('getAddresses', id);
     } catch (err) {
       console.log(err);
     }

@@ -1,4 +1,4 @@
-import { login, signUp, logOut } from '@/services/users';
+import { login, signUp, logOut, checkState } from '@/services/users';
 
 const state = {
   // id, email
@@ -15,8 +15,8 @@ const state = {
 }
 
 const mutations = {
-  setUser: (state, { id, email }) => {
-    state.userInfo.id = id;
+  setUser: (state, { _id, email }) => {
+    state.userInfo.id = _id;
     state.userInfo.email = email;
   },
   setLoginState: (state, loginState) => {
@@ -29,6 +29,16 @@ const mutations = {
 }
 
 const actions = {
+  // check state
+  async checkState({ commit }) {
+    try {
+      const { data } = await checkState();
+      commit('setUser', data);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
   // user login
   async handleLogin({ commit }, { email, password }) {
     try {

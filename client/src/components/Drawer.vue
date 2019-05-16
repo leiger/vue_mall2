@@ -90,7 +90,7 @@ export default {
     checkout() {
       if (this.totalPrice > 0) {
         this.$router.push({
-          path: "/address"
+          path: "/checkout"
         });
         this.drawerState = false;
       }

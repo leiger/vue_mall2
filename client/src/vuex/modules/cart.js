@@ -36,7 +36,7 @@ const actions = {
 
 const getters = {
   totalPrice: state => {
-    console.log(state.cartList);
+    // console.log(state.cartList);
     return state.cartList.reduce((price, product) => {
       return price + product.newPrice * product.numInCart
     }, 0);

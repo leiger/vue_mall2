@@ -45,11 +45,21 @@ export default {
       return this.$store.state.user.userInfo.email;
     }
   },
+  async mounted() {
+    let result = await this.checkState();
+    console.log(this.id);
+    if (result) {
+      this.getAddresses(this.id);
+      this.getCartList(this.id);
+    }
+  },
   methods: {
     ...mapActions([
+      "checkState",
       "handleLogin",
       "getUserInfo",
       "getCartList",
+      "getAddresses",
       "handleSignUp",
       "handleLogOut"
     ]),
@@ -61,8 +71,10 @@ export default {
 
     async handleLoginForm({ email, password }) {
       const result = await this.handleLogin({ email, password });
-      if (result) this.$Message.success("login success");
-      await this.getCartList(this.id);
+      if (result) {
+        this.$Message.success("login success");
+        await this.getCartList(this.id);
+      }
     },
     async handleSignUpForm({ email, password, rePassword }) {
       const result = await this.handleSignUp({ email, password, rePassword });

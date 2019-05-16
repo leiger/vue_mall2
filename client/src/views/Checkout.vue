@@ -1,7 +1,5 @@
 <template>
   <div>
-    <EntryBoard/>
-    <NavHeader/>
     <AddressModal/>
     <div class="layoutBox">
       <div class="section address">
@@ -14,7 +12,7 @@
               @click.stop.prevent="chooseAddress(index)"
             >
               <dl>
-                <dt class="uname">{{address.firstName}} {{address.lastName}}</dt>
+                <dt class="uname">{{address.firstname}} {{address.lastname}}</dt>
                 <dd class="uaddress">
                   <span>{{address.address}} -</span>
                   <span>{{address.city}} -</span>
@@ -23,7 +21,7 @@
                 <dd class="ucode">{{address.postalCode}}</dd>
               </dl>
               <Icon
-                @click.stop.prevent="deleteAddress(address._id)"
+                @click.stop.prevent="handleDeleteAddress(address._id)"
                 size="20"
                 class="trash"
                 type="ios-trash-outline"
@@ -31,7 +29,7 @@
             </div>
           </template>
           <!-- addnew -->
-          <div class="addNew" @click="addNewAddress">
+          <div class="addNew" @click="setAddressModalState(true)">
             <Icon type="md-add-circle"/>Add New Address
           </div>
         </div>
@@ -42,10 +40,10 @@
         <div class="products">
           <ul>
             <li v-for="item in cartList">
-              <img :src="'/static/images/'+item.productImage" alt="img">
-              <span class="goodName">{{item.productName}}</span>
-              <span class="goodPrice">{{item.salePrice|currency}} x {{item.productNum}}</span>
-              <span class="subTotal">{{item.salePrice * item.productNum | currency}}</span>
+              <img :src="'http://localhost:3000/images/products/'+item.images[0]" alt="img">
+              <span class="goodName">{{item.name}}</span>
+              <span class="goodPrice">{{item.newPrice|currency}} x {{item.numInCart}}</span>
+              <span class="subTotal">{{item.newPrice * item.numInCart | currency}}</span>
             </li>
           </ul>
         </div>
@@ -98,7 +96,6 @@
         <MainBtn @click="nextStep" class="continue">Continue to Payment</MainBtn>
       </div>
     </div>
-    <NavFooter/>
   </div>
 </template>
 
@@ -127,6 +124,9 @@ export default {
   },
   computed: {
     ...mapGetters(["totalPrice"]),
+    id() {
+      return this.$store.state.user.userInfo.id;
+    },
     addressList() {
       return this.$store.state.addresses.addressList;
     },
@@ -136,7 +136,7 @@ export default {
     totalNum() {
       let total = 0;
       this.$store.state.cart.cartList.forEach(item => {
-        total += item.productNum;
+        total += item.numInCart;
       });
       return total;
     },
@@ -153,74 +153,68 @@ export default {
     finalPrice() {
       return this.totalPrice - this.discountPrice + this.tax;
     },
+    orderId() {
+      return this.$store.state.orders.order._id;
+    }
     // discountState() {
     //   return this.$store.state.discount;
     // }
   },
-  mounted() {
-    // getAddressList(this);
-    // getCartList(this);
-  },
   methods: {
-    ...mapActions(["getAddresses", "setAddress", "deleteAddress"]),
-    addNewAddress() {
-      this.$store.commit("updateAddressModal", true);
-    },
+    ...mapActions([
+      "getAddresses",
+      "setAddress",
+      "deleteAddress",
+      "addOrder",
+      "getCartList"
+    ]),
+    ...mapMutations(["setAddressModalState"]),
     chooseAddress(index) {
       this.selected = index;
     },
-    async deleteAddress(id) {
-      try {
-        let { data } = await axios.post("/address/delAddress", {
-          _id: id
-        });
-        if (data.status === "0") {
-          this.$Message.success("Delete Success!");
-          getAddressList(this);
+    handleDeleteAddress(addressId) {
+      this.$Modal.warning({
+        title: "WARN",
+        content: "Are you sure to delete this address?",
+        okText: "OK",
+        cancelText: "CANCEL",
+        onOk: async () => {
+          let result = await this.deleteAddress({
+            id: this.id,
+            addressId
+          });
+          if (result) this.$Message.success("Delete Success!");
         }
-      } catch (err) {
-        this.$Message.error("Error!");
-      }
+      });
     },
     useCode() {
-      if (this.discount.used === true) {
-        this.$Message.warning("This code can only use once!");
-      }
-      console.log(this.discount.typed);
-      if (this.discount.typed === this.discount.code) {
-        this.$store.commit("updateDiscount", true);
-        this.$Message.success("Congratulations!");
-      } else {
-        this.$Message.warning("Sorry, Invalid Code!");
-        this.discount.typed = "";
-      }
+      // if (this.discount.used === true) {
+      //   this.$Message.warning("This code can only use once!");
+      // }
+      // if (this.discount.typed.trim() === this.discount.code) {
+      //   this.$store.commit("updateDiscount", true);
+      //   this.$Message.success("Congratulations!");
+      // } else {
+      //   this.$Message.warning("Sorry, Invalid Code!");
+      //   this.discount.typed = "";
+      // }
+      this.$Message.warning("Sorry, this function not support now!");
     },
     async nextStep() {
-      if (this.finalPrice > 0) {
-        try {
-          let { data } = await axios.post("/order/createOrder", {
-            addressId: this.addressList[this.selected]._id,
-            orderTotal: this.finalPrice
+      const result = await this.addOrder({
+        userId: this.id,
+        totalPrice: this.finalPrice,
+        addressId: this.addressList[this.selected]._id
+      });
+      if (result) {
+        this.$Message.success("Create Order Success!");
+        console.log(this.orderId);
+        setTimeout(() => {
+          this.$router.push({
+            path: `/payment/${this.orderId}`
           });
-          if (data.status === "0") {
-            this.$Message.success("Create Success!");
-            getCartList(this);
-            setTimeout(() => {
-              this.$router.push({
-                path: "/payment",
-                query: {
-                  orderId: data.result.orderId
-                }
-              });
-            }, 2000);
-          } else {
-          }
-        } catch (err) {
-          console.log(err);
-          this.$Message.error("Error!");
-        }
-      } else {
-        this.$Message.error("Invalid Order!");
+          this.getCartList(this.id);
+        }, 2000);
       }
     }
   }

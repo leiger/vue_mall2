@@ -24,7 +24,6 @@
 
 <script>
 import Article from "./../components/Article.vue";
-import axios from "axios";
 
 import article1Src from "./../../static/about/article1.jpg";
 import article2Src from "./../../static/about/article2.jpg";

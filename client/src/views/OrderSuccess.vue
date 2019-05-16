@@ -1,7 +1,5 @@
 <template>
   <Layout>
-    <EntryBoard/>
-    <NavHeader/>
     <div class="layoutBox">
       <Row class="mainBox" type="flex" justify="center">
         <Col :lg="8" :sm="12" :xs="24">
@@ -14,61 +12,33 @@
             <Divider :dashed="true"/>
             <div class="detail">
               <p>ORDER ID: {{ orderInfo._id }}</p>
-              <p>ORDER TOTAL: {{ orderInfo.orderTotal | currency }}</p>
+              <p>ORDER TOTAL: {{ orderInfo.total | currency }}</p>
             </div>
           </Card>
         </Col>
       </Row>
     </div>
-    <NavFooter/>
   </Layout>
 </template>
 
 <script>
-import EntryBoard from "./../components/EntryBoard.vue";
-import NavHeader from "./../components/NavHeader.vue";
-import NavFooter from "./../components/NavFooter.vue";
-import Drawer from "./../components/Drawer.vue";
 import { currency } from "./../utils/currency";
-import axios from "axios";
+import { mapActions } from "vuex";
 
 export default {
-  data() {
-    return {
-      orderInfo: {}
-    };
-  },
-  components: {
-    EntryBoard,
-    NavHeader,
-    NavFooter
-  },
   filters: {
     currency: currency
   },
-  created() {
-    this.getOrder();
+  computed: {
+    orderInfo() {
+      return this.$store.state.orders.order;
+    }
   },
-  watch: {
-    $route: "getOrder"
+  mounted() {
+    this.getOrderById(this.$route.params.id);
   },
   methods: {
-    async getOrder() {
-      let orderId = this.$route.query.orderId;
-      if (orderId) {
-        let { data } = await axios.post("/order/orderDetail", {
-          orderId
-        });
-        if (data.status === "0") {
-          this.orderInfo = data.result;
-        } else if (data.status === "5") {
-          this.$Message.info("this order Not exist !");
-          this.$router.push("/");
-        } else {
-          console.log("no order");
-        }
-      }
-    }
+    ...mapActions(["getOrderById"])
   }
 };
 </script>

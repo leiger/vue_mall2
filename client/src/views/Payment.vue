@@ -1,149 +1,139 @@
 <template>
-  <div>
-    <EntryBoard/>
-    <NavHeader/>
-    <div class="layoutBox">
-      <div class="rowBox">
-        <div class="totalMoney">
-          <h3 class="title">Credit Card</h3>
-          <div class="creditCardBox">
-            <Form>
+  <div class="layoutBox">
+    <div class="rowBox">
+      <div class="totalMoney">
+        <h3 class="title">Credit Card</h3>
+        <div class="creditCardBox">
+          <Form>
+            <FormItem>
+              <Input v-model="form.cardNumber" placeholder="Card Number"/>
+            </FormItem>
+            <FormItem>
+              <Input v-model="form.name" placeholder="Name on Card"/>
+            </FormItem>
+            <div class="inlineInput">
               <FormItem>
-                <Input v-model="form.cardNumber" placeholder="Card Number"/>
+                <Input v-model="form.expireDate" placeholder="Expiration date(MM/YY)"/>
               </FormItem>
-              <FormItem>
-                <Input v-model="form.name" placeholder="Name on Card"/>
+              <FormItem class="securityCode">
+                <Tooltip placement="right-start">
+                  <Input
+                    v-model="form.securityCode"
+                    placeholder="Security Code"
+                    icon="ios-help-circle-outline"
+                  />
+                  <div slot="content">
+                    <span>3-digit security code</span>
+                    <br>
+                    <span>on the back of your card</span>
+                  </div>
+                </Tooltip>
               </FormItem>
-              <div class="inlineInput">
-                <FormItem>
-                  <Input v-model="form.expireDate" placeholder="Expiration date(MM/YY)"/>
+            </div>
+          </Form>
+        </div>
+      </div>
+      <div class="orderInfo">
+        <h3 class="title">Order Info</h3>
+        <div class="orderInfoBox">
+          <ul>
+            <li>
+              <span class="name">Order Id:</span>
+              <span>{{orderInfo._id}}</span>
+            </li>
+            <li>
+              <span class="name">Order Time:</span>
+              <span v-if="orderInfo.date">{{orderInfo.date.start}}</span>
+            </li>
+            <li>
+              <span class="name">Total:</span>
+              <span>{{orderInfo.total | currency}}</span>
+            </li>
+            <li>
+              <span class="name">Status:</span>
+              <span>
+                <Tag v-if="orderInfo.status === 0" color="warning">Not Pay</Tag>
+              </span>
+            </li>
+            <li v-if="orderInfo.address">
+              <span class="name">Order address:</span>
+              <span>{{orderInfo.address.address}} - {{orderInfo.address.city}} - {{orderInfo.address.province}}</span>
+              <span>{{orderInfo.address.postalCode}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <Divider/>
+    <div class="rowBox">
+      <div class="billingAddress">
+        <h3 class="title">Billing Address</h3>
+        <div class="billingAddressBox">
+          <RadioGroup class="radioGroup" v-model="billingAddress.radio" vertical>
+            <Radio size="large" label="0">
+              <span>Same as shipping address</span>
+            </Radio>
+            <Radio size="large" label="1">
+              <span>Use a different billing address</span>
+            </Radio>
+          </RadioGroup>
+          <div v-if="billingAddress.radio === '1'">
+            <Form ref="form" :label-width="100">
+              <div class="row">
+                <FormItem label="First Name" prop="firstName">
+                  <Input placeholder="First name (optional)"/>
                 </FormItem>
-                <FormItem class="securityCode">
-                  <Tooltip placement="right-start">
-                    <Input
-                      v-model="form.securityCode"
-                      placeholder="Security Code"
-                      icon="ios-help-circle-outline"
-                    />
-                    <div slot="content">
-                      <span>3-digit security code</span>
-                      <br>
-                      <span>on the back of your card</span>
-                    </div>
-                  </Tooltip>
+                <FormItem label="Last Name" prop="lastName">
+                  <Input placeholder="Last name"/>
+                </FormItem>
+              </div>
+              <div class="row">
+                <FormItem label="Address" prop="address">
+                  <Input placeholder="Address"/>
+                </FormItem>
+                <FormItem label="Post Code" prop="postalCode">
+                  <Input placeholder="Post Code"/>
+                </FormItem>
+              </div>
+
+              <div class="row">
+                <FormItem label="Province" prop="province">
+                  <Select>
+                    <Option :value="1">not use</Option>
+                  </Select>
+                </FormItem>
+                <FormItem label="City" prop="city">
+                  <Select>
+                    <Option :value="2">not use</Option>
+                  </Select>
                 </FormItem>
               </div>
             </Form>
           </div>
         </div>
-        <div class="orderInfo">
-          <h3 class="title">Order Info</h3>
-          <div class="orderInfoBox">
-            <ul>
-              <li>
-                <span class="name">Order Id:</span>
-                <span>{{orderInfo._id}}</span>
-              </li>
-              <li>
-                <span class="name">Order Time:</span>
-                <span>{{orderInfo.createDate}}</span>
-              </li>
-              <li>
-                <span class="name">Total:</span>
-                <span>{{orderInfo.orderTotal | currency}}</span>
-              </li>
-              <li>
-                <span class="name">Status:</span>
-                <span>
-                  <Tag color="warning">Not Pay</Tag>
-                </span>
-              </li>
-              <li v-if="orderInfo.addressInfo">
-                <span class="name">Order address:</span>
-                <span>{{orderInfo.addressInfo.address}} - {{orderInfo.addressInfo.city}} - {{orderInfo.addressInfo.province}}</span>
-                <span>{{orderInfo.addressInfo.postalCode}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
       </div>
-
-      <Divider/>
-      <div class="rowBox">
-        <div class="billingAddress">
-          <h3 class="title">Billing Address</h3>
-          <div class="billingAddressBox">
-            <RadioGroup class="radioGroup" v-model="billingAddress.radio" vertical>
-              <Radio size="large" label="0">
-                <span>Same as shipping address</span>
-              </Radio>
-              <Radio size="large" label="1">
-                <span>Use a different billing address</span>
-              </Radio>
-            </RadioGroup>
-            <div v-if="billingAddress.radio === '1'">
-              <Form ref="form" :label-width="100">
-                <div class="row">
-                  <FormItem label="First Name" prop="firstName">
-                    <Input placeholder="First name (optional)"/>
-                  </FormItem>
-                  <FormItem label="Last Name" prop="lastName">
-                    <Input placeholder="Last name"/>
-                  </FormItem>
-                </div>
-                <div class="row">
-                  <FormItem label="Address" prop="address">
-                    <Input placeholder="Address"/>
-                  </FormItem>
-                  <FormItem label="Post Code" prop="postalCode">
-                    <Input placeholder="Post Code"/>
-                  </FormItem>
-                </div>
-
-                <div class="row">
-                  <FormItem label="Province" prop="province">
-                    <Select>
-                      <Option :value="1">not use</Option>
-                    </Select>
-                  </FormItem>
-                  <FormItem label="City" prop="city">
-                    <Select>
-                      <Option :value="2">not use</Option>
-                    </Select>
-                  </FormItem>
-                </div>
-              </Form>
-            </div>
-          </div>
+      <div class="notice">
+        <div class="noticeBox">
+          <Title postTitle="Notice"/>
+          <p>Just Click Pay Now to Finish the order.</p>
+          <p>Left Forms are not necessary.</p>
         </div>
-        <div class="notice">
-          <div class="noticeBox">
-            <Title postTitle="Notice"/>
-            <p>Just Click Pay Now to Finish the order.</p>
-            <p>Left Forms are not necessary.</p>
-          </div>
-        </div>
-      </div>
-
-      <Divider/>
-      <div class="payNowBtn">
-        <MainBtn @click="createOrder">Pay Now</MainBtn>
       </div>
     </div>
-    <NavFooter/>
+
+    <Divider/>
+    <div class="payNowBtn">
+      <MainBtn @click="handlePayment">Pay Now</MainBtn>
+    </div>
   </div>
 </template>
 
 <script>
-import NavHeader from "./../components/NavHeader.vue";
-import EntryBoard from "./../components/EntryBoard.vue";
-import NavFooter from "./../components/NavFooter.vue";
 import MainBtn from "./../components/MainBtn.vue";
 import Title from "./../components/Title.vue";
-
 import { currency } from "./../utils/currency.js";
-
-import axios from "axios";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   data() {
@@ -157,62 +147,38 @@ export default {
       orderTotal: 1000,
       billingAddress: {
         radio: "0"
-      },
-      orderInfo: {}
+      }
     };
   },
+  computed: {
+    orderInfo() {
+      return this.$store.state.orders.order;
+    }
+  },
   components: {
-    NavHeader,
-    EntryBoard,
-    NavFooter,
     MainBtn,
     Title
   },
   filters: {
     currency
   },
-  created() {
-    this.getOrder();
-  },
-  watch: {
-    $route: "getOrder"
+  mounted() {
+    this.getOrderById(this.$route.params.id);
   },
   methods: {
-    async getOrder() {
-      let orderId = this.$route.query.orderId;
-      if (orderId) {
-        let { data } = await axios.post("/order/orderDetail", {
-          orderId
-        });
-        if (data.status === "0") {
-          this.orderInfo = data.result;
-        } else if (data.status === "5") {
-          this.$Message.info("this order Not exist !");
-          this.$router.push("/");
-        } else {
-          console.log("no order");
-        }
-      }
-    },
-    async createOrder() {
-      try {
-        let { data } = await axios.post("/order/orderModify", {
-          orderId: this.$route.query.orderId
-        });
-        if (data.status === "0") {
-          this.$Message.success("Payment Success!");
+    ...mapActions(["getOrderById", "modifyOrderState"]),
+    async handlePayment() {
+      const result = await this.modifyOrderState({
+        orderId: this.$route.params.id,
+        status: 1
+      });
+      if (result) {
+        this.$Message.success("Create Order Success!");
+        setTimeout(() => {
           this.$router.push({
-            path: "/OrderSuccess",
-            query: {
-              orderId: this.$route.query.orderId
-            }
+            path: `/orderSuccess/${this.$route.params.id}`
           });
-        } else {
-          this.$Message.error("Payment Error!");
-        }
-      } catch (err) {
-        console.log(err);
-        this.$Message.error("Error!");
+        }, 2000);
       }
     }
   }

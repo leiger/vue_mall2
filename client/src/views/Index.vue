@@ -12,21 +12,10 @@
 import CarouselShow from "./../components/CarouselShow.vue";
 import StarProducts from "./../components/StarProducts.vue";
 import ImageGrid from "./../components/ImageGrid.vue";
-import axios from "axios";
 
 export default {
   data() {
     return {};
-  },
-  mounted() {
-    const redirect = this.$route.query.redirect;
-    // not login and redirect to this page
-    if (redirect) {
-      this.$Message.error("Not Login");
-      setTimeout(() => {
-        this.$store.commit("updateLoginModal", { action: true, type: 0 });
-      }, 2000);
-    }
   },
   components: {
     CarouselShow,

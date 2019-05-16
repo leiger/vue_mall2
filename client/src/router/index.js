@@ -65,7 +65,7 @@ export default new Router({
           }
         },
         {
-          path: 'payment',
+          path: 'payment/:id',
           component: Payment,
           meta: {
             login: true,
@@ -73,7 +73,7 @@ export default new Router({
           }
         },
         {
-          path: 'orderSuccess',
+          path: 'orderSuccess/:id',
           name: 'OrderSuccess',
           component: OrderSuccess,
           meta: {

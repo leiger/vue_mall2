@@ -5,15 +5,15 @@
     :title="modalTitle"
     :value="modalState"
     width="750"
-    @on-cancel="closeModal"
+    @on-cancel="setAddressModalState(false)"
   >
     <Form ref="form" :model="form" :rules="ruleValidate" :label-width="100">
       <div class="row">
-        <FormItem label="First Name" prop="firstName">
-          <Input v-model="form.firstName" placeholder="First name (optional)"/>
+        <FormItem label="First Name" prop="firstname">
+          <Input v-model="form.firstname" placeholder="First name (optional)"/>
         </FormItem>
-        <FormItem label="Last Name" prop="lastName">
-          <Input v-model="form.lastName" placeholder="Last name"/>
+        <FormItem label="Last Name" prop="lastname">
+          <Input v-model="form.lastname" placeholder="Last name"/>
         </FormItem>
       </div>
       <FormItem label="Address" prop="address">
@@ -37,7 +37,7 @@
     </Form>
     <div slot="footer">
       <MainBtn size="small" @click="handleSubmit('form')">SAVE</MainBtn>
-      <MainBtn size="small" @click="closeModal" type="primary">CANCEL</MainBtn>
+      <MainBtn size="small" @click="setAddressModalState(false)" type="primary">CANCEL</MainBtn>
     </div>
   </Modal>
 </template>
@@ -45,22 +45,22 @@
 <script>
 import canada from "canada";
 import MainBtn from "./MainBtn.vue";
+import { mapMutations, mapActions } from "vuex";
 
 export default {
   data() {
     return {
       modalTitle: "Add Shipping Address",
       form: {
-        firstName: "",
-        lastName: "",
+        firstname: "",
+        lastname: "",
         address: "",
         city: "",
         province: "",
-        postalCode: "",
-        _default: false
+        postalCode: ""
       },
       ruleValidate: {
-        lastName: [
+        lastname: [
           {
             required: true,
             message: "Please enter your last name",
@@ -99,8 +99,11 @@ export default {
     };
   },
   computed: {
+    id() {
+      return this.$store.state.user.userInfo.id;
+    },
     modalState() {
-      return this.$store.state.address.addressModalState;
+      return this.$store.state.addresses.addressModalState;
     },
     provinceList() {
       return Object.keys(canada.provinces);
@@ -116,9 +119,8 @@ export default {
     }
   },
   methods: {
-    closeModal() {
-      this.$store.commit("updateAddressModal", false);
-    },
+    ...mapMutations(["setAddressModalState"]),
+    ...mapActions(["addAddress", "getAddresses"]),
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
@@ -129,22 +131,34 @@ export default {
       });
     },
     async saveSubmit() {
-      let userName = this.$store.state.nickName;
-      if (userName) {
-        try {
-          let { data } = await axios.post("/address/add", this.form);
-          console.log(data);
-          if (data.status === "0") {
-            this.$store.commit("updateAddressModal", false);
-            this.$Message.success("Add Success!");
-            getAddressList(this);
-          }
-        } catch (err) {
-          console.log(err);
-          this.$Message.error("Error!");
+      if (this.id) {
+        let result = await this.addAddress({
+          id: this.id,
+          payload: this.form
+        });
+        if (result) {
+          this.$Message.success("Add Success!");
+          this.setAddressModalState(false);
         }
       }
     }
+    // async saveSubmit() {
+    //   let userName = this.$store.state.nickName;
+    //   if (userName) {
+    //     try {
+    //       let { data } = await axios.post("/address/add", this.form);
+    //       console.log(data);
+    //       if (data.status === "0") {
+    //         this.$store.commit("updateAddressModal", false);
+    //         this.$Message.success("Add Success!");
+    //         getAddressList(this);
+    //       }
+    //     } catch (err) {
+    //       console.log(err);
+    //       this.$Message.error("Error!");
+    //     }
+    //   }
+    // }
   },
   components: {
     MainBtn
