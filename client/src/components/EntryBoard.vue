@@ -47,7 +47,7 @@ export default {
   },
   async mounted() {
     let result = await this.checkState();
-    console.log(this.id);
+    console.log(result);
     if (result) {
       this.getAddresses(this.id);
       this.getCartList(this.id);

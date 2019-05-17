@@ -7,12 +7,15 @@
 /client/npm-debug.log*
 /client/yarn-debug.log*
 /client/yarn-error.log*
+/client/mock/
 
 logfile.log
 uncaughtExceptions.log
 
 # server
 /server/node_modules
+/server/logfile.log
+/server/uncaughtExceptions.log
 
 # Editor directories and files
 .idea

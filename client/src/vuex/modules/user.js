@@ -33,6 +33,7 @@ const actions = {
   async checkState({ commit }) {
     try {
       const { data } = await checkState();
+      if (!data) return false;
       commit('setUser', data);
       return true;
     } catch (err) {

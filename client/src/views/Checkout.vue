@@ -160,6 +160,11 @@ export default {
     //   return this.$store.state.discount;
     // }
   },
+  mounted() {
+    if(this.id) {
+      this.getAddresses(this.id);
+    }
+  },
   methods: {
     ...mapActions([
       "getAddresses",
@@ -323,7 +328,7 @@ export default {
   display: flex;
 }
 .goods li img {
-  width: 30px;
+  width: 40px;
   height: 30px;
   margin-right: 10px;
 }

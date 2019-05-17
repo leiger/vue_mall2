@@ -112,8 +112,9 @@ export default {
   padding: 14px;
 }
 .itemBox img {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 75px;
+  margin-top: 7px;
 }
 .itemBox .itemName {
   display: inline-block;

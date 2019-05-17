@@ -53,6 +53,7 @@
               <span class="name">Status:</span>
               <span>
                 <Tag v-if="orderInfo.status === 0" color="warning">Not Pay</Tag>
+                <Tag v-else-if="orderInfo.status === 1" color="success">Payed</Tag>
               </span>
             </li>
             <li v-if="orderInfo.address">
@@ -173,7 +174,7 @@ export default {
         status: 1
       });
       if (result) {
-        this.$Message.success("Create Order Success!");
+        this.$Message.success("Pay Success!");
         setTimeout(() => {
           this.$router.push({
             path: `/orderSuccess/${this.$route.params.id}`

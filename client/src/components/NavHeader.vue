@@ -3,7 +3,8 @@
     <div class="headerNav">
       <div class="headerLeft pulse wow">
         <router-link to="/">
-          <h1 class="headerLogo">VUE MALL</h1>
+          <img :src="logoImg" alt="vmall">
+          <h1 class="headerLogo">Vmall</h1>
         </router-link>
       </div>
 
@@ -32,10 +33,12 @@
 <script>
 import Drawer from "./../components/Drawer.vue";
 import { mapMutations, mapActions } from "vuex";
+import logoImg from "./../../static/logo.svg";
 
 export default {
   data() {
     return {
+      logoImg,
       menu: [
         {
           name: "HOME",
@@ -90,12 +93,23 @@ export default {
   justify-content: space-between;
 }
 /* left */
+.headerLeft a {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+}
+.headerLeft img {
+  display: inline-block;
+  height: 32px;
+  vertical-align: middle;
+}
 .headerBox {
   height: 80px;
 }
 .headerLogo {
-  font-size: 18px;
-  line-height: 80px;
+  display: inline-block;
+  font-size: 20px;
+  margin-left: 12px;
   color: rgba(0, 0, 0, 0.9);
 }
 /* menu */

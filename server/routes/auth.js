@@ -7,7 +7,7 @@ const Joi = require('@hapi/joi');
 
 // auth
 router.get('/', async (req, res) => {
-  if (!req.cookies.id) return res.status(401).send('Not Login');
+  if (!req.cookies.id) return res.send(false);
 
   let user = await User.findById(req.cookies.id).select('_id email admin');
   if (!user) return res.status(400).send('Invalid User!');

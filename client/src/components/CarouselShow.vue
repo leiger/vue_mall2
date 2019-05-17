@@ -16,11 +16,12 @@
               <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
             </transition>
             <transition appear enter-active-class="animated fadeInUp">
-              <router-link
+              <!-- <router-link
                 :to="'/products/'+item.id"
                 class="learnMore"
                 v-if="currentCarouselIndex === index"
-              >LEARN MORE</router-link>
+              >LEARN MORE</router-link> -->
+              <MainBtn size="small" @click="learnMore(item.id)">LEARN MORE</MainBtn>
             </transition>
           </div>
         </div>
@@ -33,8 +34,12 @@
 import bg1 from "./../../static/carousel/bg_1.jpg";
 import bg2 from "./../../static/carousel/bg_2.jpg";
 import bg4 from "./../../static/carousel/bg_4.jpg";
+import MainBtn from './MainBtn.vue';
 
 export default {
+  components: {
+    MainBtn
+  },
   data() {
     return {
       carouselItems: [
@@ -58,8 +63,7 @@ export default {
           title: "Electric Scooter",
           desc: `<p>Intuitive and easy-to-learn</p>
                   <p>18.6 miles long-range battery life</p>
-                  <p>Double braking system</p>
-                  <p>Portable folding design</p>`,
+                  <p>Double braking system</p>`,
           id: "201905009"
         }
       ],
@@ -69,6 +73,9 @@ export default {
   methods: {
     carouselChange(oldIndex, newIndex) {
       this.currentCarouselIndex = newIndex;
+    },
+    learnMore(id) {
+       this.$router.push("/products/" + id);
     }
   }
 };
@@ -105,38 +112,17 @@ export default {
 .carousel .carouselIntro {
   position: absolute;
   z-index: 10;
-  top: 30%;
+  top: 35%;
   left: 18%;
 }
 .carousel h4 {
-  font-size: 48px;
-  margin-bottom: 10px;
+  font-size: 36px;
   color: #212121;
-  letter-spacing: 1px;
 }
 .carousel .desc {
   margin-bottom: 30px;
-  letter-spacing: 1px;
 }
 .carousel p {
   font-size: 16px;
-}
-.carousel a.learnMore {
-  display: inline-block;
-  background-color: transparent;
-  color: #212121;
-  width: 200px;
-  height: 38px;
-  line-height: 38px;
-  font-size: 14px;
-  border: 1px solid #757575;
-  text-align: center;
-  outline: none;
-  cursor: pointer;
-  transition: 0.5s;
-}
-.carousel a:hover {
-  color: #fff;
-  background-color: #212121;
 }
 </style>

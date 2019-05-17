@@ -84,7 +84,7 @@ export default {
   margin: 0 30px;
 }
 .starProductsCard:nth-child(3) {
-  background-color: #dae4df;
+  background-color: #a9cee1;
 }
 img {
   width: 50%;

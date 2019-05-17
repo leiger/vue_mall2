@@ -22,30 +22,38 @@
           </ul>
         </div>
       </div>
-      <Title class="title" :postTitle="mainTitle"/>
       <!--goods-->
-      <div class="goods">
+      <div class="goods" v-if="products.length > 0">
         <template v-for="(good, index) in products">
           <div class="goodsBox wow zoomIn" :data-wow-delay="index%2*0.3+'s'">
             <router-link :to="'/products/'+good._id" class="imgBox">
               <img :src="'http://localhost:3000/images/products/'+good.images[0]" :alt="good.name">
               <div class="goodsDetail">
-                <h4>{{ good.name }}</h4>
-                <span>{{ good.newPrice | currency}}</span>
-              </div>
-              <div class="mask">
-                <button @click.stop.prevent="addCart(good._id)" class="addToCart">ADD TO CART</button>
+                <div class="detailLeft">
+                  <h4>{{ good.name }}</h4>
+                </div>
+                <div class="detailRight">
+                  <div class="price">
+                    <span>{{ good.newPrice | currency}}</span>
+                    <del v-if="good.oldPrice" class="oldPrice">{{good.oldPrice | currency}}</del>
+                  </div>
+
+                  <button @click.stop.prevent="addCart(good._id)" class="addToCart">ADD TO CART</button>
+                </div>
               </div>
             </router-link>
           </div>
         </template>
+      </div>
+      <div class="archive" v-else>
+        <Icon type="ios-archive-outline"/>
+        <span>No Product</span>
       </div>
     </Content>
   </Layout>
 </template>
 
 <script>
-import Title from "./../components/Title.vue";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { currency } from "./../utils/currency";
 
@@ -55,9 +63,6 @@ export default {
       products: [],
       mainTitle: "All"
     };
-  },
-  components: {
-    Title
   },
   computed: {
     categories() {
@@ -116,7 +121,7 @@ export default {
   height: 420px;
   background-position: center center;
   background-image: url(./../../static/goodsList/goodsList1.jpg);
-  transition: all 2s ease-in-out;
+  transition: all 4s ease-in-out;
 }
 .banner:hover {
   transform: scale(1.1);
@@ -132,17 +137,17 @@ export default {
 }
 .filterBox {
   background-color: #fff;
-  padding: 7px 20px;
-  margin: 14px 7px;
+  padding: 20px;
+  margin: 20px 7px 50px;
 }
 .cardBox {
   margin: 7px;
 }
 .cardBox h4 {
-  font-weight: 300;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 20px;
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 30px;
 }
 .cardBox ul {
   list-style: none;
@@ -150,17 +155,17 @@ export default {
 }
 .cardBox li {
   display: inline-block;
-  padding: 6px 6px 0 0;
+  padding-right: 12px;
 }
 .cardBox a {
   display: inline-block;
   border: 1px solid #e4e4e4;
-  border-radius: 2px;
-  padding: 1px 12px;
+  padding: 0 20px;
+  letter-spacing: 0.5px;
   width: auto;
-  font-size: 0.9rem;
+  font-size: 16px;
   color: rgba(33, 33, 33, 0.8);
-  line-height: 30px;
+  line-height: 40px;
   transition: 0.5s;
 }
 .cardBox a:hover {
@@ -168,7 +173,7 @@ export default {
   border: 1px solid #666;
 }
 .cardBox a.tagSelected {
-  font-weight: 600;
+  border-color: #ff6700;
 }
 /* below part */
 .goods {
@@ -194,34 +199,48 @@ export default {
   transition: all 0.2s linear;
 }
 .imgBox img {
-  width: 50%;
+  width: 100%;
+  height: 358px;
 }
 .goodsDetail {
-  padding: 0 48px 20px;
+  padding: 0 28px 28px;
   display: flex;
   justify-content: space-between;
 }
 .goodsDetail h4 {
-  text-align: left;
-  color: rgba(51, 51, 51, 0.9);
-  font-weight: 300;
-  line-height: 1.8;
-  font-size: 20px;
+  margin-top: 35px;
+  font-weight: 400;
+  font-size: 24px;
+  display: block;
+  color: #242424;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.goodsDetail .price {
+  display: flex;
+  margin-top: 25px;
+  justify-content: flex-end;
+  align-items: baseline;
 }
 .goodsDetail span {
   display: block;
-  text-align: center;
+  letter-spacing: 1px;
   font-size: 24px;
   color: #ff6700;
 }
-
+.goodsDetail .oldPrice {
+  font-size: 14px;
+  margin-left: 10px;
+  display: inline-block;
+  color: #666;
+}
 .goodsBox .addToCart {
   background-color: #555;
-  width: 100%;
-  height: 60px;
   border: none;
   color: #fff;
   font-size: 14px;
+  margin-top: 5px;
   padding: 9px 30px;
   text-align: center;
   cursor: pointer;
@@ -229,11 +248,17 @@ export default {
 .goodsBox .addToCart:hover {
   background-color: #212121;
 }
-
-.load_more {
-  height: 50px;
-  line-height: 50px;
+.archive {
   text-align: center;
+  margin-bottom: 80px;
+}
+.archive i {
+  font-size: 60px;
+  color: #666;
+}
+.archive span {
+  display: block;
+  color: #666;
 }
 </style>
 
