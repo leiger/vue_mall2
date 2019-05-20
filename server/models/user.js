@@ -60,10 +60,7 @@ let userSchema = new Schema({
   }],
   addressList: [{
     type: new mongoose.Schema({
-      firstname: {
-        type: String,
-        default: ''
-      },
+      firstname: String,
       lastname: String,
       address: String,
       city: String,

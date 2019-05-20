@@ -60,6 +60,7 @@ router.put('/:id', async (req, res) => {
   if (!order) return res.status(404).send('The order with the given ID was not found');
 
   order.status = req.body.status;
+  order.date.paid = req.body.date;
   await order.save();
 
   res.send(order);

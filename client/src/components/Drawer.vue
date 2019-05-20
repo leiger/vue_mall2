@@ -2,6 +2,7 @@
   <Drawer width="700" v-model="drawerState" :scrollable="true">
     <Divider>SHOPPING CART</Divider>
     <div v-if="cartList.length === 0" class="emptyBox">
+      <Icon type="ios-archive-outline"/>
       <p>YOUR CART IS CURRENTLY EMPTY.</p>
     </div>
     <div v-else class="cartListBox">
@@ -113,8 +114,8 @@ export default {
 }
 .itemBox img {
   width: 100px;
-  height: 75px;
-  margin-top: 7px;
+  height: 70px;
+  margin-top: 10px;
 }
 .itemBox .itemName {
   display: inline-block;
@@ -175,6 +176,17 @@ export default {
 }
 .checkoutBtn {
   margin-left: 15px;
+}
+.emptyBox {
+  margin: 50px auto;
+  text-align: center;
+}
+.emptyBox i {
+  font-size: 60px;
+  color: #bbb;
+}
+.emptyBox p {
+  color: #bbb;
 }
 </style>
 

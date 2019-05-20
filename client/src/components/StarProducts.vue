@@ -1,13 +1,14 @@
 <template>
   <div class="starProducts">
     <Title postTitle="STAR PRODUCTS"/>
-    <div class="starProductsBox">
-      <template v-for="(product,index) in starProducts">
-        <div
-          :bordered="false"
-          class="starProductsCard wow fadeIn"
-          :data-wow-delay="(index+1)*0.2+'s'"
-        >
+    <Row class="starProductsBox">
+      <Col
+        class="starProductsCard wow fadeIn"
+        :lg="8"
+        v-for="(product,index) in starProducts"
+        :key="product.name"
+      >
+        <div class="startProductsContent" :bordered="false" :data-wow-delay="(index+1)*0.2+'s'">
           <router-link :to="product.link">
             <div class="cardContent">
               <p>{{product.name}}</p>
@@ -16,8 +17,8 @@
             </div>
           </router-link>
         </div>
-      </template>
-    </div>
+      </Col>
+    </Row>
   </div>
 </template>
 
@@ -58,45 +59,40 @@ export default {
 };
 </script>
 
-<style scoped>
-.starProductsBox {
-  display: flex;
-}
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .starProductsCard {
-  flex: 1;
-  cursor: pointer;
-  padding: 20px;
-  transition: all 0.2s linear;
+  padding: 10px;
+
+  .startProductsContent {
+    cursor: pointer;
+    transition: all 0.2s linear;
+    background-color: rgb(219, 225, 228);
+
+    &:hover {
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      transform: translate3d(0, -5px, 0);
+    }
+  }
 }
-.starProductsCard:hover {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  transform: translate3d(0, -5px, 0);
-}
+
 .cardContent {
   padding: 20px 0 0px;
   text-align: center;
-}
-.starProductsCard:first-child {
-  background-color: rgb(219, 225, 228);
-}
-.starProductsCard:nth-child(2) {
-  background-color: #e9e0e1;
-  margin: 0 30px;
-}
-.starProductsCard:nth-child(3) {
-  background-color: #a9cee1;
-}
-img {
-  width: 50%;
-}
-p {
-  font-size: 22px;
-  color: #212121;
-  letter-spacing: 1px;
-  opacity: 0.7;
-}
-.sub {
-  font-size: 14px;
-  color: rgba(51, 51, 51, 0.7);
+
+  img {
+    width: 50%;
+  }
+
+  p {
+    font-size: 22px;
+    color: @title-color;
+  }
+
+  .sub {
+    font-size: 14px;
+    color: @secondary-color;
+  }
 }
 </style>

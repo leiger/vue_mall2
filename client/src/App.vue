@@ -29,11 +29,4 @@ export default {
 </script>
 
 <style>
-a, button {
-  transition: .5s all;
-  cursor: pointer;
-}
-button {
-  outline: none;
-}
 </style>

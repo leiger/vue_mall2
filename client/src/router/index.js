@@ -11,6 +11,7 @@ import Products from '../views/Products.vue';
 import Checkout from '../views/Checkout.vue';
 import Payment from '../views/Payment.vue';
 import OrderSuccess from '../views/OrderSuccess.vue';
+import MyAccount from '../views/MyAccount.vue';
 import NotFound from '../views/NotFound.vue';
 
 Vue.use(Router)
@@ -81,12 +82,19 @@ export default new Router({
             login: true,
             index: 6
           }
+        },{
+          path: 'myAccount',
+          component: MyAccount,
+          meta: {
+            login: true,
+            index: 7
+          }
         },
         {
           path: '*',
           component: NotFound,
           meta: {
-            index: 7
+            index: 8
           }
         }
       ]

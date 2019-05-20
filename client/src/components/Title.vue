@@ -15,26 +15,30 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .title {
   margin-bottom: 42px;
-}
-.title h2 {
-  position: relative;
-  text-align: center;
-  font-size: 26px;
-  color: #212121;
-  font-weight: normal;
-}
-.title h2:after {
-  content: "";
-  width: 36px;
-  height: 3px;
-  background: #212121;
-  position: absolute;
-  left: 0;
-  bottom: -12px;
-  left: 50%;
-  margin-left: -18px;
+
+  h2 {
+    position: relative;
+    text-align: center;
+    font-size: 24px;
+    color: @title-color;
+    font-weight: normal;
+
+    &:after {
+      content: "";
+      width: 36px;
+      height: 3px;
+      background: @primary-color;
+      position: absolute;
+      left: 0;
+      bottom: -12px;
+      left: 50%;
+      margin-left: -18px;
+    }
+  }
 }
 </style>

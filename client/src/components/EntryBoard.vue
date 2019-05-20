@@ -3,25 +3,33 @@
     <div class="entry">
       <div class="entryLeft">
         <a @click="toGithubAddress">
-          <Icon class="entryLeftIcon" type="logo-github" size="15"/>FIND ME ON GITHUB
+          <Icon class="entryLeftIcon" type="logo-github" size="14"/>Github
         </a>
       </div>
       <div class="entryRight">
         <!-- not login -->
         <template v-if="email === ''">
-          <a @click="setModal({type: 1, open: true})">SIGN UP</a>
+          <a @click="setModal({type: 1, open: true})">Sign up</a>
           <Divider type="vertical"/>
           <a @click="setModal({type: 0, open: true})">
-            <Icon type="ios-log-in" size="15"/>SIGN IN
+            <Icon type="ios-log-in" size="12"/>Login
           </a>
         </template>
         <!-- already login -->
         <template v-else>
-          <span type="text" v-text="email" key="email"></span>
-          <Divider type="vertical" orientation="center"/>
-          <a @click="logOut">
-            <Icon type="ios-log-out" size="15"/>LOG OUT
-          </a>
+          <Dropdown placement="bottom-end" @on-click="handleDropDown">
+            <a href="javascript:void(0)">
+              <Icon type="md-person"/>
+              {{email}}
+              <Icon type="ios-arrow-down"/>
+            </a>
+            <DropdownMenu slot="list">
+              <DropdownItem name="account">My Account</DropdownItem>
+              <DropdownItem name="logOut" divided>
+                <Icon type="ios-log-out" size="12"/>Log out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </template>
       </div>
     </div>
@@ -78,52 +86,65 @@ export default {
     },
     async handleSignUpForm({ email, password, rePassword }) {
       const result = await this.handleSignUp({ email, password, rePassword });
-      if (result) this.$Message.success("sign up success");
+      if (result) {
+        this.$Message.success("sign up success");
+        setModal({ type: 0, open: true });
+      }
     },
     async handleLogOutConfirm() {
       const result = await this.handleLogOut();
       this.$Notice.destroy();
-      if (result) this.$Message.success("logout success");
+      if (result) {
+        this.$Message.success("logout success");
+        this.$router.push('/');
+      }
     },
-
-    logOut() {
-      this.$Notice.warning({
-        title: "Warning",
-        duration: 0,
-        name: "logout",
-        render: h => {
-          return h("span", [
-            "Confirm Logout?",
-            h(
-              "a",
-              {
-                style: { display: "inline-block", paddingLeft: "10px" },
-                on: {
-                  click: this.handleLogOutConfirm
-                }
-              },
-              "OK"
-            )
-          ]);
-        }
-      });
+    handleDropDown(name) {
+      if (name === "account") {
+        this.$router.push("/MyAccount");
+      } else {
+        this.$Notice.warning({
+          title: "Warning",
+          duration: 0,
+          name: "logout",
+          render: h => {
+            return h("span", [
+              "Confirm Logout?",
+              h(
+                "a",
+                {
+                  style: { display: "inline-block", paddingLeft: "10px" },
+                  on: {
+                    click: this.handleLogOutConfirm
+                  }
+                },
+                "OK"
+              )
+            ]);
+          }
+        });
+      }
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .entryBoard {
   height: 40px;
   line-height: 40px;
-  background-color: #212121;
+  background-color: @header-bg-color;
+
+  .entry {
+    width: 95%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+  }
 }
-.entry {
-  width: 95%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-}
+
 span {
   color: #b0b0b0;
 }

@@ -1,25 +1,27 @@
 <template>
   <Layout>
+    <Breadcrumb class="breadCrumb">
+      <BreadcrumbItem to="/collections">All Products</BreadcrumbItem>
+      <BreadcrumbItem v-if="product.category">{{product.category.name}}</BreadcrumbItem>
+      <BreadcrumbItem>{{product.name}}</BreadcrumbItem>
+    </Breadcrumb>
     <div class="container">
-      <Breadcrumb class="breadCrumb">
-        <BreadcrumbItem to="/collections">All Products</BreadcrumbItem>
-        <BreadcrumbItem v-if="product.category">{{product.category.name}}</BreadcrumbItem>
-        <BreadcrumbItem>{{product.name}}</BreadcrumbItem>
-      </Breadcrumb>
-      <Title class="title" :postTitle="product.productName"/>
-      <div class="productIntro">
-        <div class="productLeft wow fadeIn" data-wow-delay="0.2s">
-          <img
-            v-if="product.images"
-            :src="'http://localhost:3000/images/products/'+product.images[0]"
-            :alt="product.name"
-          >
-        </div>
-        <div class="productRight">
+      <Row class="productIntro">
+        <Col :sm="24" :lg="12" class="productLeft wow fadeIn" data-wow-delay="0.2s">
+          <Carousel class="productCarousel" v-if="product.images">
+            <CarouselItem v-for="image of product.images" :key="image">
+              <img :src="'http://localhost:3000/images/products/'+image" :alt="product.name">
+            </CarouselItem>
+          </Carousel>
+        </Col>
+        <Col :sm="24" :lg="12" class="productRight">
           <div class="infoBox wow fadeIn" data-wow-delay="0.4s">
             <div class="productName">{{product.name}}</div>
             <div class="productPrice">
               <span class="price">{{product.newPrice | currency}}</span>
+              <del>
+                <span v-if="product.oldPrice">{{product.oldPrice | currency}}</span>
+              </del>
             </div>
             <div class="productQuantity">
               <span>Quantity</span>
@@ -30,7 +32,7 @@
               />
             </div>
             <div class="addToCart">
-              <MainBtn @click="addToCart()" type="primary" long>ADD TO CART +</MainBtn>
+              <MainBtn @click="addToCart()" long>ADD TO CART +</MainBtn>
             </div>
             <div class="guarantee">
               <span>
@@ -55,8 +57,8 @@
               name="Returns"
             >We always aim for make sure our customers love our products, but if you do need to return an order, we’re happy to help.</TabPane>
           </Tabs>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </div>
     <div class="detail wow fadeIn" data-wow-delay="0.2s">
       <div class="productIntro">
@@ -73,7 +75,6 @@
 </template>
 
 <script>
-import Title from "./../components/Title.vue";
 import MainBtn from "./../components/MainBtn.vue";
 import QuantitySelector from "./../components/QuantitySelector.vue";
 import { mapActions, mapMutations } from "vuex";
@@ -86,7 +87,6 @@ export default {
     };
   },
   components: {
-    Title,
     MainBtn,
     QuantitySelector
   },
@@ -129,54 +129,50 @@ export default {
           productId: this.product._id,
           changeNum: this.selectedNum
         });
-        if(result) this.$Message.success("Add success!")
+        if (result) this.$Message.success("Add success!");
       }
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .container {
-  margin: 40px auto;
+  margin: 24px auto 40px;
   max-width: 1226px;
 }
 .breadCrumb {
+  margin-top: 24px;
   text-align: center;
 }
-.container .title {
-  margin: 30px 0 50px;
-}
 .productIntro {
-  margin: auto;
-  display: flex;
+  padding: 24px;
   background-color: #fff;
 }
+
+// left
 .productLeft {
-  flex: 1;
-  margin-right: 20px;
-  padding: 0 50px 0;
-  background-color: #fff;
+  .productCarousel {
+    margin: 24px;
+  }
+  img {
+    width: 100%;
+  }
 }
-.productLeft img {
-  width: 100%;
-}
-.productRight {
-  flex: 1;
-}
+// right
 .productRight .infoBox {
-  width: 100%;
   height: 350px;
   background-color: #fff;
-  padding: 40px;
-  margin-bottom: 20px;
+  margin: 24px;
 }
 .productRight .infoBox:nth-child(2) {
   height: 150px;
   margin-bottom: 0;
 }
 .productName {
-  color: #212121;
+  color: @title-color;
   font-size: 28px;
   font-weight: 600;
   text-align: left;
@@ -194,11 +190,16 @@ export default {
 .productPrice {
   font-weight: lighter;
   margin-bottom: 20px;
-  color: #ff6700;
-}
-.productPrice span.price {
-  font-size: 24px;
-  font-weight: 600;
+  color: @price-color;
+
+  span.price {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  del {
+    color: @disabled-color;
+  }
 }
 .addToCart {
   margin-bottom: 20px;
@@ -217,15 +218,18 @@ export default {
 .detail {
   background-color: #fff;
   padding: 40px 0;
-}
-.descBox {
-  margin-bottom: 20px;
-}
-.detail .descTitle {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-.detail .descDetail {
-  font-size: 15px;
+
+  .descBox {
+    margin-bottom: 20px;
+  }
+
+  .descTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .descDetail {
+    font-size: 15px;
+  }
 }
 </style>

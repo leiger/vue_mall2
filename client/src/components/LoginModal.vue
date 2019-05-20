@@ -9,7 +9,9 @@
   >
     <div class="loginContent">
       <div class="loginHead">
-        <h2>VUE MALL</h2>
+        <h2>
+          <img src="../assets/images/logo.svg" alt>
+        </h2>
         <Divider v-if="modalType">Sign up a new Account</Divider>
         <Divider v-else>Sign in to your Account</Divider>
       </div>
@@ -39,9 +41,9 @@
             <Divider class="divider" size="small">More options</Divider>
             <!-- more options -->
             <div class="moreOptions">
-              <Icon @click="unAvailableInfo()" type="logo-google" size="28"/>
-              <Icon @click="unAvailableInfo()" type="logo-facebook" size="28"/>
-              <Icon @click="unAvailableInfo()" type="logo-github" size="28"/>
+              <Icon title="google" @click="unAvailableInfo()" type="logo-google" size="28"/>
+              <Icon title="facebook" @click="unAvailableInfo()" type="logo-facebook" size="28"/>
+              <Icon title="github" @click="unAvailableInfo()" type="logo-github" size="28"/>
             </div>
           </Form>
           <Form v-else ref="signUp" :model="signUp" :rules="signUpRule" key="signUp">
@@ -197,25 +199,33 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
+@import "../assets/css/variables";
+
 /* vertical */
 .loginModal {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.loginModal .ivu-modal {
-  top: 0;
+
+  .ivu-modal {
+    top: 0;
+  }
 }
 
 .loginContent {
   padding: 30px;
+
+  .loginHead h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 0;
+    img {
+      width: 50px;
+    }
+  }
 }
 
-.loginHead h2 {
-  text-align: center;
-  margin-bottom: 30px;
-}
 .loginBox {
   display: flex;
 }
@@ -223,42 +233,50 @@ export default {
 .modalLeft {
   flex: 2;
   padding: 20px 38px 0 20px;
+
+  .divider {
+    padding: 16px;
+    color: @subsidiary-color;
+  }
+  .moreOptions {
+    display: flex;
+    justify-content: space-around;
+
+    i {
+      color: @subsidiary-color;
+      transition: 0.5s;
+      cursor: pointer;
+
+      &:hover {
+        color: @secondary-color;
+      }
+    }
+  }
 }
-.modalLeft .divider {
-  padding: 16px;
-  color: #b0b0b0;
-}
-.modalLeft .moreOptions {
-  display: flex;
-  justify-content: space-around;
-}
-.modalLeft .moreOptions i {
-  color: #b0b0b0;
-  transition: 0.5s;
-  cursor: pointer;
-}
-.modalLeft .moreOptions i:hover {
-  color: #515a6e;
-}
+
 /* modalRight */
 .modalRight {
   flex: 1;
   padding: 20px 20px 0 38px;
-}
-.modalRight a {
-  font-size: 14px;
-}
-.modalRight .test {
-  color: #b0b0b0;
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-.modalRight p {
-  color: #515a6e;
-  font-size: 14px;
-}
-.modalRight span {
-  float: right;
+
+  a {
+    font-size: 14px;
+  }
+
+  .test {
+    color: @disabled-color;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #515a6e;
+    font-size: 14px;
+
+    span {
+      float: right;
+    }
+  }
 }
 </style>
 

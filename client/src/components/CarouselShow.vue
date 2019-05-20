@@ -16,12 +16,7 @@
               <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
             </transition>
             <transition appear enter-active-class="animated fadeInUp">
-              <!-- <router-link
-                :to="'/products/'+item.id"
-                class="learnMore"
-                v-if="currentCarouselIndex === index"
-              >LEARN MORE</router-link> -->
-              <MainBtn size="small" @click="learnMore(item.id)">LEARN MORE</MainBtn>
+              <MainBtn v-if="currentCarouselIndex === index" size="small" @click="learnMore(item.id)">LEARN MORE</MainBtn>
             </transition>
           </div>
         </div>
@@ -34,7 +29,7 @@
 import bg1 from "./../../static/carousel/bg_1.jpg";
 import bg2 from "./../../static/carousel/bg_2.jpg";
 import bg4 from "./../../static/carousel/bg_4.jpg";
-import MainBtn from './MainBtn.vue';
+import MainBtn from "./MainBtn.vue";
 
 export default {
   components: {
@@ -75,28 +70,50 @@ export default {
       this.currentCarouselIndex = newIndex;
     },
     learnMore(id) {
-       this.$router.push("/products/" + id);
+      this.$router.push("/products/" + id);
     }
   }
 };
 </script>
 
-<style>
+<style lang="less">
+@import "../assets/css/variables";
+
 .carousel .imgBox {
   position: relative;
-}
-.carousel .imgBox a {
-  position: relative;
-  display: block;
-  width: 100%;
-  text-align: center;
+
+  a {
+    position: relative;
+    display: block;
+    width: 100%;
+    text-align: center;
+
+    img {
+      width: 100%;
+      height: auto;
+      min-height: 600px;
+    }
+  }
+
+  .carouselIntro {
+    position: absolute;
+    z-index: 10;
+    top: 35%;
+    left: 18%;
+
+    h4 {
+      font-size: 36px;
+      color: @title-color;
+    }
+    .desc {
+      margin-bottom: 30px;
+    }
+    p {
+      font-size: 16px;
+    }
+  }
 }
 
-.carousel img {
-  width: 100%;
-  height: auto;
-  min-height: 550px;
-}
 .scaleUp-enter-active {
   animation: scaleUp 5s;
 }
@@ -107,22 +124,5 @@ export default {
   100% {
     transform: scale(1.1);
   }
-}
-
-.carousel .carouselIntro {
-  position: absolute;
-  z-index: 10;
-  top: 35%;
-  left: 18%;
-}
-.carousel h4 {
-  font-size: 36px;
-  color: #212121;
-}
-.carousel .desc {
-  margin-bottom: 30px;
-}
-.carousel p {
-  font-size: 16px;
 }
 </style>

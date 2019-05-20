@@ -161,7 +161,7 @@ export default {
     // }
   },
   mounted() {
-    if(this.id) {
+    if (this.id) {
       this.getAddresses(this.id);
     }
   },
@@ -226,7 +226,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .layoutBox {
   margin: 0 40px 40px;
   padding: 30px 40px;
@@ -238,7 +240,7 @@ export default {
   flex-wrap: wrap;
 }
 .title {
-  color: #333;
+  color: @title-color;
   font-size: 18px;
   line-height: 20px;
   font-weight: normal;
@@ -278,11 +280,11 @@ export default {
   color: #757575;
 }
 .selected {
-  border: 1px solid #ff6700;
+  border: 1px solid @primary-color;
 }
 
 .selected:hover {
-  border-color: #ff6700 !important;
+  border-color: @primary-color !important;
 }
 .trash {
   position: absolute;
@@ -348,7 +350,7 @@ export default {
   text-align: right;
 }
 .goods span.subTotal {
-  color: #ff6700;
+  color: @price-color;
 }
 .shipping .title,
 .discount .title {
@@ -358,7 +360,7 @@ export default {
 }
 .shipping span {
   font-size: 16px;
-  color: #ff6700;
+  color: @secondary-color;
 }
 .count {
   display: flex;

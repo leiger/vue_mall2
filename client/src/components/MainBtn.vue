@@ -45,7 +45,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+@import "../assets/css/variables";
+
 .btn {
   width: 300px;
   height: 48px;
@@ -63,10 +65,10 @@ export default {
 }
 .btnDefault {
   color: #fff;
-  background-color: #212121;
+  background-color: @primary-color;
 }
 .btnDefault:hover {
-  background-color: #141414;
+  background-color: @secondary-color;
 }
 .btnPrimary {
   color: #111;

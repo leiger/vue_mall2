@@ -2,19 +2,24 @@
   <Layout>
     <div class="layoutBox">
       <Row class="mainBox" type="flex" justify="center">
-        <Col :lg="8" :sm="12" :xs="24">
-          <Card class="cardBox" :dis-hover="true">
+        <Col :sm="16" :xs="24">
+          <div class="cardBox" :dis-hover="true">
             <Icon class="suc" type="ios-checkmark-circle-outline" size="70"/>
             <div class="info">
               <p>CONGRATULATIONS!</p>
               <p>Your order is under processing!</p>
             </div>
-            <Divider :dashed="true"/>
             <div class="detail">
               <p>ORDER ID: {{ orderInfo._id }}</p>
               <p>ORDER TOTAL: {{ orderInfo.total | currency }}</p>
+              <Steps :current="2">
+                <Step title="Init Order" :content="orderInfo.date.start"></Step>
+                <Step title="Payment" :content="orderInfo.date.paid"></Step>
+                <Step title="Shipping"></Step>
+                <Step title="delivered"></Step>
+              </Steps>
             </div>
-          </Card>
+          </div>
         </Col>
       </Row>
     </div>
@@ -43,44 +48,42 @@ export default {
 };
 </script>
 
-<style scoped>
-.layoutBox {
-  width: 95%;
-  margin: 20px auto;
-}
+<style lang="less" scoped>
+@import "../assets/css/variables";
 
-.stepsBox {
+.layoutBox {
+  margin: 40px;
+  padding: 30px 40px;
   background-color: #fff;
 }
-
-.steps {
-  padding: 17px;
-  width: 95%;
-  margin: auto;
-}
-
-.suc {
-  display: block;
-  text-align: center;
-  color: #19be6b;
-  margin-bottom: 20px;
-}
-
-.cardBox {
-  padding: 20px;
-}
-
-.info {
-  text-align: center;
-  font-size: 16px;
-}
-
-.detail {
-  color: #c5c8ce;
-}
-
 .mainBox {
-  margin: 80px 0;
+  margin: 20px 0;
+
+  .cardBox {
+    padding: 20px;
+
+    .suc {
+      display: block;
+      text-align: center;
+      color: @success-color;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .detail {
+      margin-top: 20px;
+      // background-color: #f5f5f5;
+      padding: 20px;
+
+      p {
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
 </style>
 

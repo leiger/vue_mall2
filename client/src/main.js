@@ -7,7 +7,7 @@ import vuex from './vuex'
 
 import iView from 'iview';
 import locale from 'iview/dist/locale/en-US';
-import 'iview/dist/styles/iview.css';
+import './assets/css/index.less';
 import 'animate.css/animate.min.css';
 import Cookies from 'js-cookie';
 

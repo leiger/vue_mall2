@@ -36,7 +36,7 @@ const actions = {
   },
   async modifyOrderState({ dispatch }, { orderId, status }) {
     try {
-      const { data } = await modifyOrderState({ orderId, status });
+      const { data } = await modifyOrderState({ orderId, status, date: new Date() });
       await dispatch('getOrderById', data._id);
       return true;
     } catch (err) {

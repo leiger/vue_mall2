@@ -19,12 +19,14 @@ export function addOrder({ userId, total, addressId }) {
   })
 }
 
-export function modifyOrderState({ orderId, status }) {
+export function modifyOrderState({ orderId, status, date }) {
+  console.log(date);
   return request({
     url: `/api/orders/${orderId}`,
     method: 'put',
     data: {
-      status
+      status,
+      date
     }
   })
 }
