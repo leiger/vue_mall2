@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 let categorySchema = new Schema({
   name: {
@@ -22,6 +23,14 @@ function validateCategory(category) {
   return Joi.validate(category, schema);
 }
 
+function validateId(category) {
+  const schema = {
+    id: Joi.objectId()
+  };
+  return Joi.validate(category, schema);
+}
+
 exports.Category= mongoose.model('Category', categorySchema, "categories");
 exports.validate = validateCategory;
+exports.validateId = validateId;
 exports.categorySchema = categorySchema;

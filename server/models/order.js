@@ -1,6 +1,7 @@
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 let orderSchema = new Schema({
   user: {
@@ -48,6 +49,13 @@ function validateEmail(email) {
   return re.test(email)
 };
 
+function validateId(order) {
+  const schema = {
+    id: Joi.objectId()
+  };
+  return Joi.validate(order, schema);
+}
+
 function validateOrder(user) {
   const schema = {
     userId: Joi.string(),
@@ -58,4 +66,5 @@ function validateOrder(user) {
 }
 
 exports.validate = validateOrder;
+exports.validateId = validateId;
 exports.Order = mongoose.model('Order', orderSchema, "orders");

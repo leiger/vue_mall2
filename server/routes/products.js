@@ -1,14 +1,9 @@
 let express = require('express');
 let router = express.Router();
-let {
-  Product,
-  validate
-} = require('../models/product');
-let {
-  Category
-} = require('../models/category');
+let { Product, validate } = require('../models/product');
+let { Category } = require('../models/category');
 let Joi = require('@hapi/joi');
-
+Joi.objectId = require('joi-objectid')(Joi);
 
 // get all products
 router.get('/', async (req, res) => {
@@ -18,8 +13,10 @@ router.get('/', async (req, res) => {
 
 // get a product
 router.get('/:id', async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const { error } = validateId(req.params);
+  if (error) return res.status(404).send(error.details[0].message);
 
+  const product = await Product.findById(req.params.id);
   if (!product) return res.status(404).send('The product with the given ID was not found');
 
   res.send(product);
@@ -27,10 +24,11 @@ router.get('/:id', async (req, res) => {
 
 // new a product
 router.post('/', async (req, res) => {
-  const {
-    error
-  } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  const { error1 } = validateId(req.params);
+  if (error1) return res.status(404).send(error1.details[0].message);
+
+  const { error2 } = validate(req.body);
+  if (error2) return res.status(400).send(error2.details[0].message);
 
   const category = await Category.findById(req.body.categoryId);
   if (!category) return res.status(400).send('Invalid Category');
@@ -55,16 +53,17 @@ router.post('/', async (req, res) => {
 
 // update a product
 router.put('/:id', async (req, res) => {
-  const {
-    error
-  } = validateUpdateInfo(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  const { error1 } = validateId(req.params);
+  if (error1) return res.status(404).send(error1.details[0].message);
+
+  const { error2 } = validateUpdateInfo(req.body);
+  if (erro2) return res.status(400).send(error2.details[0].message);
 
   let product = await Product.updateOne({
     _id: req.params.id
   }, {
-    $set: req.body
-  });
+      $set: req.body
+    });
   if (!product) return res.status(404).send('The product with the given ID was not found');
 
   // return num of modified ...
@@ -73,12 +72,21 @@ router.put('/:id', async (req, res) => {
 
 // delete a product
 router.delete('/:id', async (req, res) => {
-  const product = await Product.findByIdAndRemove(req.params.id);
+  const { error } = validateId(req.params);
+  if (error) return res.status(404).send(error.details[0].message);
 
+  const product = await Product.findByIdAndRemove(req.params.id);
   if (!product) return res.status(404).send('The product with the given ID was not found');
 
   res.send(product);
 });
+
+function validateId(product) {
+  const schema = {
+    id: Joi.objectId()
+  };
+  return Joi.validate(product, schema);
+}
 
 function validateUpdateInfo(product) {
   const schema = {
@@ -93,108 +101,5 @@ function validateUpdateInfo(product) {
   };
   return Joi.validate(product, schema);
 }
-
-module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// find one goods
-router.get("/product", async (req, res) => {
-  try {
-    let productId = req.query.productId;
-
-    let doc = await Products.findOne({
-      productId
-    }).populate('categoryId').exec();
-    if (doc) {
-      Response(res, '0', result = {
-        productDetail: doc
-      });
-    }
-  } catch (err) {
-    Response(res, '1');
-  }
-});
-
-// search goods data
-router.get("/list", async (req, res) => {
-  let page = parseInt(req.query.page);
-  let pageSize = parseInt(req.query.pageSize);
-  let sortFlag = parseInt(req.query.sortFlag);
-  let sortWay = parseInt(req.query.sortWay);
-
-  let priceLevel = req.query.priceLevel;
-  let priceGt = '',
-    priceLte = '';
-  let params = {};
-  // 0 means all
-  if (priceLevel !== '0') {
-    switch (priceLevel) {
-      case '1':
-        priceGt = 0;
-        priceLte = 100;
-        break;
-      case '2':
-        priceGt = 100;
-        priceLte = 500;
-        break;
-      case '3':
-        priceGt = 500;
-        priceLte = 1000;
-        break;
-      case '4':
-        priceGt = 1000;
-        priceLte = 5000;
-        break;
-    }
-    params = {
-      salePrice: {
-        $gt: priceGt,
-        $lte: priceLte
-      }
-    }
-  }
-
-  try {
-    let skip = (page - 1) * pageSize;
-    let doc1 = await Products.find(params).skip(skip).limit(pageSize);
-    // sort by price
-    if (sortWay === 1) {
-      doc1.sort((a, b) => {
-        let temp = a.salePrice - b.salePrice;
-        return sortFlag === 1 ? temp : -temp;
-      });
-    }
-
-    if (doc1) {
-      Response(res, '0', result = {
-        count: doc1.length,
-        list: doc1
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    Response(res, '1');
-  }
-
-});
 
 module.exports = router;

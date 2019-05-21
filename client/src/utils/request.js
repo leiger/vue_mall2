@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {Notice} from 'iview';
+import { Notice } from 'iview';
+import Router from '../router';
 
 const service = axios.create({
   baseURL: "/", // url = base url + request url
@@ -28,7 +29,7 @@ service.interceptors.response.use(
     if (res.status !== 200) {
       return Promise.reject(res.message || 'error')
     } else {
-      return res
+      return res;
     }
   },
   error => {
@@ -38,6 +39,10 @@ service.interceptors.response.use(
       title: error.response.status,
       desc: error.response.data
     });
+    if (error.response.status === 404) {
+      Router.push('/404');
+    }
+
     return Promise.reject(error)
   }
 )

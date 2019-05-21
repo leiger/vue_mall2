@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const User = require('../models/user');
 const _ = require('lodash');
 const Joi = require('@hapi/joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 // get all address from a user
 router.get('/:id', async (req, res) => {
-  const addressList = await User.findById(req.params.id).select('addressList');
+  const { error } = validateId(req.params);
+  if (error) return res.status(404).send(error.details[0].message);
 
+  const addressList = await User.findById(req.params.id).select('addressList');
   if (!addressList) return res.status(404).send('The user was not found!');
 
   res.send(addressList);
@@ -16,6 +18,9 @@ router.get('/:id', async (req, res) => {
 
 // get a address
 router.get('/:id/:addressId', async (req, res) => {
+  const { error } = validateId(req.params);
+  if (error) return res.status(404).send(error.details[0].message);
+
   const user = await User.findById(req.params.id);
   const address = user.addressList.id(req.params.addressId);
   if (!address) return res.status(404).send('The address with the given ID was not found');
@@ -25,9 +30,7 @@ router.get('/:id/:addressId', async (req, res) => {
 
 //add a address
 router.post('/:id', async (req, res) => {
-  const {
-    error
-  } = validate(req.body);
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const user = await User.findById(req.params.id);
@@ -41,6 +44,8 @@ router.post('/:id', async (req, res) => {
 
 // delete a address
 router.delete('/:id/:addressId', async (req, res) => {
+    const { error } = validateId(req.params);
+  if (error) return res.status(404).send(error.details[0].message);
 
   const user = await User.findById(req.params.id);
   const address = user.addressList.id(req.params.addressId).remove();
@@ -49,6 +54,15 @@ router.delete('/:id/:addressId', async (req, res) => {
   await user.save();
   res.send(address);
 });
+
+function validateId(address) {
+  const schema = {
+    id: Joi.objectId(),
+    addressId: Joi.objectId(),
+  };
+  return Joi.validate(address, schema);
+}
+
 
 function validate(address) {
   const schema = {

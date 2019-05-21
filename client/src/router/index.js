@@ -18,87 +18,93 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-      path: '/',
-      component: Main,
-      children: [
-        {
-          path: '',
-          component: Index,
-          name: 'Index',
-          meta: {
-            index: 0
-          }
-        },
-        {
-          path: 'collections',
-          component: Collections,
-          meta: {
-            index: 1
-          }
-        },
-        {
-          path: 'about',
-          component: About,
-          meta: {
-            index: 2
-          }
-        },
-        // {
-        //   path: 'faq',
-        //   component: Faq
-        // },
-        // {
-        //   path: 'contact',
-        //   component: Contact
-        // },
-        {
-          path: 'products/:id',
-          component: Products,
-          meta: {
-            index: 3
-          }
-        },
-        {
-          path: 'checkout',
-          component: Checkout,
-          meta: {
-            login: true,
-            index: 4
-          }
-        },
-        {
-          path: 'payment/:id',
-          component: Payment,
-          meta: {
-            login: true,
-            index: 5
-          }
-        },
-        {
-          path: 'orderSuccess/:id',
-          name: 'OrderSuccess',
-          component: OrderSuccess,
-          meta: {
-            login: true,
-            index: 6
-          }
-        },{
-          path: 'myAccount',
-          component: MyAccount,
-          meta: {
-            login: true,
-            index: 7
-          }
-        },
-        {
-          path: '*',
-          component: NotFound,
-          meta: {
-            index: 8
-          }
+    path: '/',
+    component: Main,
+    children: [
+      {
+        path: '',
+        component: Index,
+        name: 'Index',
+        meta: {
+          index: 0
         }
-      ]
-    },
-  ],
+      },
+      {
+        path: 'collections',
+        component: Collections,
+        meta: {
+          index: 1
+        }
+      },
+      {
+        path: 'about',
+        component: About,
+        meta: {
+          index: 2
+        }
+      },
+      // {
+      //   path: 'faq',
+      //   component: Faq
+      // },
+      // {
+      //   path: 'contact',
+      //   component: Contact
+      // },
+      {
+        path: 'products/:id',
+        component: Products,
+        meta: {
+          index: 3
+        }
+      },
+      {
+        path: 'checkout',
+        component: Checkout,
+        meta: {
+          login: true,
+          index: 4
+        }
+      },
+      {
+        path: 'payment/:id',
+        component: Payment,
+        meta: {
+          login: true,
+          index: 5
+        }
+      },
+      {
+        path: 'orderSuccess/:id',
+        name: 'OrderSuccess',
+        component: OrderSuccess,
+        meta: {
+          login: true,
+          index: 6
+        }
+      }, {
+        path: 'myAccount',
+        component: MyAccount,
+        meta: {
+          login: true,
+          index: 7
+        }
+      },
+      {
+        path: '/404',
+        component: NotFound,
+        meta: {
+          index: 8
+        }
+      },
+      {
+        path: '*',
+        component: NotFound,
+        meta: {
+          index: 8
+        }
+      }
+    ]
+  }],
   mode: 'history'
 })

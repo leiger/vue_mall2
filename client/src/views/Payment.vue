@@ -56,6 +56,10 @@
                 <Tag v-else-if="orderInfo.status === 1" color="success">Payed</Tag>
               </span>
             </li>
+            <li>
+              <span class="name">Receiver:</span>
+              <span>{{orderInfo.address.firstname}} {{orderInfo.address.lastname}}</span>
+            </li>
             <li v-if="orderInfo.address">
               <span class="name">Order address:</span>
               <span>{{orderInfo.address.address}} - {{orderInfo.address.city}} - {{orderInfo.address.province}}</span>

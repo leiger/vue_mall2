@@ -1,38 +1,9 @@
 <template>
   <div>
-    <AddressModal/>
     <div class="layoutBox">
       <div class="section address">
         <h3 class="title">Shipping Address</h3>
-        <div class="addressList">
-          <template v-for="(address,index) in addressList">
-            <div
-              class="addressBox"
-              :class="{selected: selected === index}"
-              @click.stop.prevent="chooseAddress(index)"
-            >
-              <dl>
-                <dt class="uname">{{address.firstname}} {{address.lastname}}</dt>
-                <dd class="uaddress">
-                  <span>{{address.address}} -</span>
-                  <span>{{address.city}} -</span>
-                  <span>{{address.province}}</span>
-                </dd>
-                <dd class="ucode">{{address.postalCode}}</dd>
-              </dl>
-              <Icon
-                @click.stop.prevent="handleDeleteAddress(address._id)"
-                size="20"
-                class="trash"
-                type="ios-trash-outline"
-              />
-            </div>
-          </template>
-          <!-- addnew -->
-          <div class="addNew" @click="setAddressModalState(true)">
-            <Icon type="md-add-circle"/>Add New Address
-          </div>
-        </div>
+        <AddressList :selectable="true" @on-change="handleChange" @initAddress="initAddress"/>
       </div>
       <Divider/>
       <div class="section goods">
@@ -100,15 +71,15 @@
 </template>
 
 <script>
-import AddressModal from "./../components/AddressModal.vue";
 import MainBtn from "./../components/MainBtn.vue";
+import AddressList from "../components/AddressList.vue";
 import { currency } from "./../utils/currency.js";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      selected: 0,
+      selectAddress: "",
       discount: {
         code: "EXTRA10",
         typed: ""
@@ -116,8 +87,8 @@ export default {
     };
   },
   components: {
-    AddressModal,
-    MainBtn
+    MainBtn,
+    AddressList
   },
   filters: {
     currency
@@ -126,9 +97,6 @@ export default {
     ...mapGetters(["totalPrice"]),
     id() {
       return this.$store.state.user.userInfo.id;
-    },
-    addressList() {
-      return this.$store.state.addresses.addressList;
     },
     cartList() {
       return this.$store.state.cart.cartList;
@@ -160,38 +128,9 @@ export default {
     //   return this.$store.state.discount;
     // }
   },
-  mounted() {
-    if (this.id) {
-      this.getAddresses(this.id);
-    }
-  },
   methods: {
-    ...mapActions([
-      "getAddresses",
-      "setAddress",
-      "deleteAddress",
-      "addOrder",
-      "getCartList"
-    ]),
+    ...mapActions(["addOrder", "getCartList"]),
     ...mapMutations(["setAddressModalState"]),
-    chooseAddress(index) {
-      this.selected = index;
-    },
-    handleDeleteAddress(addressId) {
-      this.$Modal.warning({
-        title: "WARN",
-        content: "Are you sure to delete this address?",
-        okText: "OK",
-        cancelText: "CANCEL",
-        onOk: async () => {
-          let result = await this.deleteAddress({
-            id: this.id,
-            addressId
-          });
-          if (result) this.$Message.success("Delete Success!");
-        }
-      });
-    },
     useCode() {
       // if (this.discount.used === true) {
       //   this.$Message.warning("This code can only use once!");
@@ -205,11 +144,17 @@ export default {
       // }
       this.$Message.warning("Sorry, this function not support now!");
     },
+    initAddress(addressId) {
+      this.selectAddress = addressId;
+    },
+    handleChange(addressId) {
+      this.selectAddress = addressId;
+    },
     async nextStep() {
       const result = await this.addOrder({
         userId: this.id,
         totalPrice: this.finalPrice,
-        addressId: this.addressList[this.selected]._id
+        addressId: this.selectAddress
       });
       if (result) {
         this.$Message.success("Create Order Success!");
@@ -234,7 +179,6 @@ export default {
   padding: 30px 40px;
   background-color: #f5f5f5;
 }
-.addressList,
 .shippingMethods {
   display: flex;
   flex-wrap: wrap;
@@ -246,9 +190,8 @@ export default {
   font-weight: normal;
   margin-bottom: 20px;
 }
-.addressBox,
-.shippingBox,
-.addNew {
+
+.shippingBox {
   position: relative;
   width: 268px;
   height: 178px;
@@ -257,101 +200,44 @@ export default {
   cursor: pointer;
   font-size: 14px;
   transition: all 0.4s ease;
-}
-.addressBox,
-.shippingBox {
   padding: 15px 24px;
   margin: 0 15px 15px 0;
 }
-.addressBox:hover {
-  border-color: #b0b0b0;
-}
-.addressBox .uname {
-  margin: 0 0 10px;
-  line-height: 30px;
-  color: #333;
-  font-size: 14px;
-}
-.addressBox .uaddress {
-  max-height: 88px;
-  overflow: hidden;
-  margin: 0;
-  line-height: 22px;
-  color: #757575;
-}
-.selected {
-  border: 1px solid @primary-color;
-}
 
-.selected:hover {
-  border-color: @primary-color !important;
-}
-.trash {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  color: #b0b0b0;
-  cursor: pointer;
-}
-.trash:hover {
-  color: #757575;
-}
-
-/* addnew */
-.addNew {
-  text-align: center;
-  color: #b0b0b0;
-}
-.addNew i {
-  display: block;
-  width: 30px;
-  height: 30px;
-  margin: 63px auto 8px;
-  font-size: 30px;
-  line-height: 30px;
-  text-align: center;
-  color: #e0e0e0;
-  -webkit-transition: all 0.4s ease;
-  transition: all 0.4s ease;
-}
-.addNew:hover {
-  border-color: #b0b0b0;
-  color: #757575;
-}
-.addNew:hover i {
-  color: #757575;
-}
 .goods ul {
   list-style: none;
   padding: 5px 0;
+
+  li {
+    padding: 10px 0;
+    display: flex;
+
+    img {
+      width: 40px;
+      height: 30px;
+      margin-right: 10px;
+    }
+    span {
+      display: inline-block;
+      line-height: 30px;
+      color: #424242;
+      font-size: 14px;
+      vertical-align: top;
+      flex: 1;
+    }
+    .goodName {
+      flex: 3;
+    }
+    .goodPrice,
+    .subTotal {
+      text-align: right;
+    }
+    span.subTotal {
+      color: @price-color;
+    }
+  }
 }
-.goods li {
-  padding: 10px 0;
-  display: flex;
-}
-.goods li img {
-  width: 40px;
-  height: 30px;
-  margin-right: 10px;
-}
-.goods span {
-  display: inline-block;
-  line-height: 30px;
-  color: #424242;
-  font-size: 14px;
-  vertical-align: top;
-  flex: 1;
-}
-.goods span.goodName {
-  flex: 3;
-}
-.goods .goodPrice,
-.goods .subTotal {
-  text-align: right;
-}
-.goods span.subTotal {
-  color: @price-color;
-}
+
 .shipping .title,
 .discount .title {
   display: inline-block;
@@ -370,34 +256,36 @@ export default {
   display: inline-block;
   width: 200px;
 }
+
 .right {
   width: 300px;
-}
-.right ul {
-  list-style: none;
-}
-.right ul li {
-  display: flex;
-  line-height: 2;
-}
-.right ul li label {
-  flex: 1;
-  text-align: right;
-  margin-right: 20px;
-  color: #757575;
-  font-size: 14px;
-}
-.right ul li span {
-  font-size: 14px;
-  flex: 1;
-  color: #ff6700;
-  text-align: right;
-}
-.right ul li.finalLi {
-  align-items: baseline;
-}
-.right ul li span.finalPrice {
-  font-size: 30px;
+  ul {
+    list-style: none;
+    li {
+      display: flex;
+      line-height: 2;
+
+      label {
+        flex: 1;
+        text-align: right;
+        margin-right: 20px;
+        color: #757575;
+        font-size: 14px;
+      }
+      span {
+        font-size: 14px;
+        flex: 1;
+        color: #ff6700;
+        text-align: right;
+      }
+      span.finalPrice {
+        font-size: 30px;
+      }
+    }
+    .finalLi {
+      align-items: baseline;
+    }
+  }
 }
 .clearfix::after {
   content: ".";

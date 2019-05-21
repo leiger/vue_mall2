@@ -8,7 +8,11 @@
       </Anchor>
       <div class="contentBox">
         <div class="intro">
-          <Avatar v-if="userInfo.email" class="avatar" size="large">{{ userInfo.email[0].toUpperCase()}}</Avatar>
+          <Avatar
+            v-if="userInfo.email"
+            class="avatar"
+            size="large"
+          >{{ userInfo.email[0].toUpperCase()}}</Avatar>
           <div class="name">
             Hello,
             <span>{{userInfo.email}}</span>
@@ -35,16 +39,22 @@
 
         <Divider class="divider" id="order_history" orientation="left">Order History</Divider>
         <div id="order_history"></div>
-        <div id="address_book"></div>
+
+        <Divider class="divider" id="address_book" orientation="left">Address Book</Divider>
+        <AddressList :selectable="false" />
       </div>
     </div>
   </layout>
 </template>
 
 <script>
+import AddressList from "../components/AddressList.vue";
 export default {
   data() {
     return {};
+  },
+  components: {
+    AddressList
   },
   computed: {
     userInfo() {
@@ -111,7 +121,7 @@ export default {
 
 .personal {
   margin-bottom: 40px;
-  &>div {
+  & > div {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
