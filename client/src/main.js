@@ -26,7 +26,7 @@ router.beforeEach( async (to, from, next) => {
 
   try {
     let id = Cookies.get('id');
-    console.log(id);
+    // console.log(id);
     if(id || !to.meta.login) {
       next();
     }

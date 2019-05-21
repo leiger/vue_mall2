@@ -64,7 +64,7 @@ const actions = {
   async handleLogOut({ commit }) {
     try {
       await logOut();
-      commit('setUser', { id: '', email: '' });
+      commit('setUser', { _id: '', email: '' });
       commit('setLoginState', false);
       return true;
     } catch (err) {

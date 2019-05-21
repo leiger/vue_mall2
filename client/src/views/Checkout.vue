@@ -157,14 +157,10 @@ export default {
         addressId: this.selectAddress
       });
       if (result) {
-        this.$Message.success("Create Order Success!");
-        console.log(this.orderId);
-        setTimeout(() => {
-          this.$router.push({
-            path: `/payment/${this.orderId}`
-          });
-          this.getCartList(this.id);
-        }, 2000);
+        this.$router.push({
+          path: `/payment/${this.orderId}`
+        });
+        this.getCartList(this.id);
       }
     }
   }

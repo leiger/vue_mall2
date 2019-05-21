@@ -3,8 +3,8 @@
   <Modal
     class-name="loginModal"
     :value="modalState"
-    width="750"
-    @on-cancel="setModal({type: 0, open: false})"
+    width="550"
+    @on-cancel="setModal({type: modalType, open: false})"
     :footer-hide="true"
   >
     <div class="loginContent">
@@ -16,7 +16,7 @@
         <Divider v-else>Sign in to your Account</Divider>
       </div>
       <div class="loginBox">
-        <div class="modalLeft">
+        <div class="modalBox">
           <Form v-if="!modalType" ref="login" :model="login" :rules="loginRule" key="login">
             <!--email-->
             <FormItem prop="email">
@@ -38,6 +38,8 @@
             </FormItem>
             <!-- button -->
             <MainBtn long size="small" @click.prevent="handleSubmit('login')">Sign in</MainBtn>
+            <a @click="setModal({type: 1, open: true})">Create a account</a>
+
             <Divider class="divider" size="small">More options</Divider>
             <!-- more options -->
             <div class="moreOptions">
@@ -73,21 +75,8 @@
             </FormItem>
             <!-- button -->
             <MainBtn long size="small" @click.prevent="handleSubmit('signUp')">Sign Up</MainBtn>
+            <a @click="setModal({type: 0, open: true})">Sign in</a>
           </Form>
-        </div>
-        <div class="modalRight">
-          <a v-if="!modalType" @click="setModal({type: 1, open: true})">Create a account</a>
-          <a v-else @click="setModal({type: 0, open: true})">Sign in</a>
-          <Divider/>
-          <p class="test">create one OR using this:</p>
-          <p>
-            Email:
-            <span>admin</span>
-          </p>
-          <p>
-            Password:
-            <span>123456</span>
-          </p>
         </div>
       </div>
     </div>
@@ -214,7 +203,7 @@ export default {
 }
 
 .loginContent {
-  padding: 30px;
+  padding: 20px 20px 30px;
 
   .loginHead h2 {
     text-align: center;
@@ -226,17 +215,16 @@ export default {
   }
 }
 
-.loginBox {
-  display: flex;
-}
-/* modalLeft */
-.modalLeft {
-  flex: 2;
-  padding: 20px 38px 0 20px;
-
+/* modalBox */
+.modalBox {
   .divider {
-    padding: 16px;
+    padding: 10px;
     color: @subsidiary-color;
+  }
+  a {
+    float: right;
+    color: @disabled-color;
+    margin-top: 5px;
   }
   .moreOptions {
     display: flex;
@@ -250,31 +238,6 @@ export default {
       &:hover {
         color: @secondary-color;
       }
-    }
-  }
-}
-
-/* modalRight */
-.modalRight {
-  flex: 1;
-  padding: 20px 20px 0 38px;
-
-  a {
-    font-size: 14px;
-  }
-
-  .test {
-    color: @disabled-color;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-
-  p {
-    color: #515a6e;
-    font-size: 14px;
-
-    span {
-      float: right;
     }
   }
 }

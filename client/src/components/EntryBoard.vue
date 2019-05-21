@@ -55,7 +55,7 @@ export default {
   },
   async mounted() {
     let result = await this.checkState();
-    console.log(result);
+    // console.log(result);
     if (result) {
       this.getAddresses(this.id);
       this.getCartList(this.id);
@@ -96,32 +96,19 @@ export default {
       this.$Notice.destroy();
       if (result) {
         this.$Message.success("logout success");
-        this.$router.push('/');
+        this.$router.push("/");
       }
     },
     handleDropDown(name) {
       if (name === "account") {
         this.$router.push("/MyAccount");
       } else {
-        this.$Notice.warning({
+        this.$Modal.confirm({
           title: "Warning",
-          duration: 0,
-          name: "logout",
-          render: h => {
-            return h("span", [
-              "Confirm Logout?",
-              h(
-                "a",
-                {
-                  style: { display: "inline-block", paddingLeft: "10px" },
-                  on: {
-                    click: this.handleLogOutConfirm
-                  }
-                },
-                "OK"
-              )
-            ]);
-          }
+          content: "Are you sure to log out?",
+          okText: "OK",
+          cancelText: "Cancel",
+          onOk: this.handleLogOutConfirm
         });
       }
     }

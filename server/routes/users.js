@@ -17,7 +17,7 @@ router.get('/:id', async (req, res) => {
   const { error } = validateId(req.params);
   if (error) return res.status(404).send(error.details[0].message);
 
-  const user = await User.findById(req.params.id).select('-password');
+  const user = await User.findById(req.params.id).populate('orderList').select('-password');
   if (!user) return res.status(404).send('The user with the given ID was not found');
 
   res.send(user);

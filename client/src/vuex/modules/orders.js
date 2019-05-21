@@ -1,20 +1,33 @@
 import { getOrderById, addOrder, modifyOrderState } from '@/services/orders';
+import { getInfo } from '@/services/users';
 
 const state = {
   // id, email
   order: {
     _id: ''
   },
+  orderList: []
 }
 
 const mutations = {
   setCurrentOrder: (state, order) => {
-    console.log(order);
     state.order = { ...order };
+  },
+  setOrderList: (state, orderList) => {
+    state.orderList = [...orderList];
   }
 }
 
 const actions = {
+  async getOrderList({ commit }, userId) {
+    try {
+      const { data } = await getInfo(userId);
+      commit('setOrderList', data.orderList);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  },
   async getOrderById({ commit }, orderId) {
     try {
       const { data } = await getOrderById(orderId);

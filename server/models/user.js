@@ -27,7 +27,8 @@ let userSchema = new Schema({
     default: '../assets/avatar.png'
   },
   orderList: [{
-    type: Schema.Types.ObjectId
+    type: Schema.Types.ObjectId,
+    ref: 'Order'
   }],
   cartList: [{
     type: new mongoose.Schema({

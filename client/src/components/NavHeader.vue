@@ -19,8 +19,9 @@
           </li>
           <li class="fadeInDown wow" key="5" :data-wow-delay="menu.length*0.05">
             <a @click="openDrawer">
-              <Icon class="cartIcon" size="16" type="md-cart"/>
-              <span v-if="id">({{cartNum}})</span>
+              <Badge :count="cartNum" type="primary">
+                <Icon class="cartIcon" size="22" type="md-cart"/>
+              </Badge>
             </a>
           </li>
         </ul>
@@ -143,7 +144,7 @@ ul {
       &::before {
         content: "";
         position: absolute;
-        bottom: 0;
+        bottom: -4px;
         left: 0;
         width: 100%;
         height: 2px;
@@ -165,8 +166,11 @@ ul {
       }
     }
   }
-  .cartIcon {
-    vertical-align: text-bottom;
+  .badge {
+
+    .cartIcon {
+      vertical-align: text-bottom;
+    }
   }
 }
 </style>

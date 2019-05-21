@@ -33,8 +33,7 @@ export function signUp(data) {
 
 export function getInfo(id) {
   return request({
-    url: '/api/users',
-    method: 'get',
-    params: id
+    url: `/api/users/${id}`,
+    method: 'get'
   })
 }
