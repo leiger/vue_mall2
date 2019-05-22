@@ -9,21 +9,19 @@
         <!--main content-->
         <!--sort & filter-->
         <Col :lg="6" class="filterBox">
-          <Affix :offset-top="24">
-            <div class="cardBox">
-              <h4>CATEGORY</h4>
-              <ul>
-                <li v-for="(category, index) in categories">
-                  <a
-                    class="wow fadeInDown"
-                    @click="filterProducts(category, index)"
-                    :class="{tagSelected: category.name === mainTitle}"
-                    :data-wow-delay="index*0.05+'s'"
-                  >{{category.name}}</a>
-                </li>
-              </ul>
-            </div>
-          </Affix>
+          <div class="cardBox">
+            <h4>CATEGORY</h4>
+            <ul>
+              <li v-for="(category, index) in categories">
+                <a
+                  class="wow fadeInDown"
+                  @click="filterProducts(category, index)"
+                  :class="{tagSelected: category.name === mainTitle}"
+                  :data-wow-delay="index*0.05+'s'"
+                >{{category.name}}</a>
+              </li>
+            </ul>
+          </div>
         </Col>
         <!--products-->
         <Col :lg="18" class="products" v-if="products.length > 0">
@@ -51,7 +49,6 @@
                     </div>
                     <Button
                       class="addToCart"
-
                       type="primary"
                       @click.stop.prevent="addCart(product._id)"
                     >ADD TO CART +</Button>
@@ -132,18 +129,18 @@ export default {
 @import "../assets/css/variables";
 
 .bannerBox {
-  height: 420px;
+  height: 300px;
   overflow: hidden;
 
   .banner {
     width: 100%;
-    height: 420px;
+    height: 300px;
     background-position: center center;
-    background-image: url(../assets/images/banners/collectionBanner.jpg);
+    background-image: url(../assets/images/banners/collectionBanner.png);
     transition: all 4s ease-in-out;
 
     &:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
 }
@@ -203,7 +200,7 @@ export default {
     }
     img {
       width: 100%;
-      height: 260px;
+      height: 280px;
     }
   }
 }

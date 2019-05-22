@@ -12,7 +12,7 @@
           <router-link :to="product.link">
             <div class="cardContent">
               <p>{{product.name}}</p>
-              <p class="sub">{{product.sub}}</p>
+              <Rate disabled :value="5" />
               <img :src="product.src">
             </div>
           </router-link>
@@ -24,31 +24,28 @@
 
 <script>
 import Title from "./../components/Title.vue";
-import product1 from "./../../static/star-products/6.png";
-import product2 from "./../../static/star-products/2.png";
-import product3 from "./../../static/star-products/3.png";
+import product1 from "../assets/images/star-products/6.png";
+import product2 from "../assets/images/star-products/11.png";
+import product3 from "../assets/images/star-products/2.png";
 
 export default {
   data() {
     return {
       starProducts: [
         {
-          name: "LapTop i7",
-          sub: "High Performance",
+          name: "air fresher",
           src: product1,
-          link: "/products/201905007"
+          link: "/products/5ce49cf2fa33a1076c51a0af"
         },
         {
-          name: "Air Fresher",
-          sub: "First choice for healthy lifestyle",
+          name: "sphere camera",
           src: product2,
-          link: "/products/201905006"
+          link: "/products/5ce49d5cfa33a1076c51a0b7"
         },
         {
-          name: "Ceiling Light",
-          sub: "Warm light, Protect eyes",
+          name: " phone case",
           src: product3,
-          link: "/products/201905005"
+          link: "/products/5ce49b39fa33a1076c51a092"
         }
       ]
     };
@@ -68,7 +65,7 @@ export default {
   .startProductsContent {
     cursor: pointer;
     transition: all 0.2s linear;
-    background-color: rgb(219, 225, 228);
+    background-color: #fff;
 
     &:hover {
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
@@ -82,17 +79,12 @@ export default {
   text-align: center;
 
   img {
-    width: 50%;
+    width: 80%;
   }
 
   p {
     font-size: 22px;
     color: @title-color;
-  }
-
-  .sub {
-    font-size: 14px;
-    color: @secondary-color;
   }
 }
 </style>

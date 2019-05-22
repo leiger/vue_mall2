@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <layout>
     <CarouselShow class="carousel"/>
     <div class="content">
       <StarProducts/>
       <ImageGrid/>
     </div>
-  </div>
+  </layout>
 </template>
 
 <script>

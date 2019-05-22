@@ -34,7 +34,7 @@
         </div>
 
         <Divider class="divider" id="order_history" orientation="left">Order History</Divider>
-        <Timeline v-if="orderList" class="orderHistory">
+        <Timeline v-if="orderList.length !== 0" class="orderHistory">
           <TimelineItem :key="order._id" v-for="order in orderList">
             <Time class="time" :time="order.date.paid" type="datetime"/>
             <div>
@@ -82,7 +82,7 @@ export default {
       return this.$store.state.addresses.addressList;
     },
     orderList() {
-      return this.$store.state.orders.orderList;
+      return this.$store.state.orders.orderList.reverse();
     }
   },
   filters: {

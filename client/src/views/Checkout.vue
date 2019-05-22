@@ -209,7 +209,7 @@ export default {
     display: flex;
 
     img {
-      width: 40px;
+      width: 45px;
       height: 30px;
       margin-right: 10px;
     }

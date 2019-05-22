@@ -13,7 +13,7 @@
 
 <script>
 import MainBtn from "./../components/MainBtn.vue";
-import notFoundImg from "./../../static/exception/404.svg";
+import notFoundImg from "../assets/images/exception/404.svg";
 
 export default {
   data() {
@@ -36,7 +36,7 @@ export default {
 
 <style scoped>
 .exceptionBox {
-  margin: 100px 0;
+  margin: 150px 0;
   display: flex;
 }
 .left {

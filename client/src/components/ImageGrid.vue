@@ -3,7 +3,7 @@
     <Title postTitle="POPULAR COLLECTIONS"/>
     <div class="container">
       <div class="imgBox imgBox1 wow fadeIn" data-wow-delay="0.1s">
-        <router-link to="/all" class="firstLeft"/>
+        <router-link to="/collections" class="firstLeft"/>
         <h3 class="title">{{gridItems[0].title}}</h3>
       </div>
       <div class="firstRight wow fadeIn" data-wow-delay="0.3s">
@@ -14,11 +14,11 @@
     </div>
     <div class="container">
       <div class="imgBox imgBox2 wow fadeIn" data-wow-delay="0.5s">
-        <router-link to="/all" class="secondLeft"/>
+        <router-link to="/collections" class="secondLeft"/>
         <h3 class="title">{{gridItems[1].title}}</h3>
       </div>
       <div class="imgBox imgBox3 wow fadeIn" data-wow-delay="0.7s">
-        <router-link to="/all" class="secondRight"/>
+        <router-link to="/collections" class="secondRight"/>
         <h3 class="title">{{gridItems[2].title}}</h3>
       </div>
     </div>
@@ -28,24 +28,18 @@
 <script>
 import Title from "./../components/Title.vue";
 import MainBtn from "./../components/MainBtn.vue";
-import bg1 from "./../../static/imageGrid/1.jpg";
-import bg2 from "./../../static/imageGrid/2.jpg";
-import bg3 from "./../../static/imageGrid/3.jpg";
 
 export default {
   data() {
     return {
       gridItems: [
         {
-          src: bg1,
           title: "Smart Devices"
         },
         {
-          src: bg2,
           title: "Outdoor"
         },
         {
-          src: bg3,
           title: "Mobile Phone Accessories"
         }
       ]
@@ -57,7 +51,7 @@ export default {
   },
   methods: {
     shopNow() {
-      this.$router.push("/categories");
+      this.$router.push("/collections");
     }
   }
 };
@@ -116,16 +110,16 @@ export default {
   flex: 1;
 }
 .firstLeft {
-  background-image: url(./../../static/imageGrid/1.jpg);
+  background-image: url(../assets/images/imageGrid/1.jpg);
 }
 .firstRight {
   flex: 1;
 }
 .secondLeft {
-  background-image: url(./../../static/imageGrid/2.jpg);
+  background-image: url(../assets/images/imageGrid/2.jpg);
 }
 .secondRight {
-  background-image: url(./../../static/imageGrid/3.jpg);
+  background-image: url(../assets/images/imageGrid/3.jpg);
 }
 h3.title {
   position: absolute;

@@ -88,7 +88,7 @@ export default {
       const result = await this.handleSignUp({ email, password, rePassword });
       if (result) {
         this.$Message.success("sign up success");
-        setModal({ type: 0, open: true });
+        this.setModal({ type: 0, open: true });
       }
     },
     async handleLogOutConfirm() {

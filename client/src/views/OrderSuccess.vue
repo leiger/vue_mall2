@@ -52,7 +52,7 @@ export default {
 @import "../assets/css/variables";
 
 .layoutBox {
-  margin: 40px;
+  margin: 40px 40px 200px 40px;
   padding: 30px 40px;
   background-color: #fff;
 }

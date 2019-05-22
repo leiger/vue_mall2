@@ -59,7 +59,7 @@ export default {
   mounted() {
     if (this.id) {
       this.getAddresses(this.id);
-      if (this.select.selectable)
+      if (this.select.selectable && this.addressList.length !== 0)
         this.$emit("initAddress", this.addressList[0]._id);
     }
   },

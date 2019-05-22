@@ -26,9 +26,9 @@
 </template>
 
 <script>
-import bg1 from "./../../static/carousel/bg_1.jpg";
-import bg2 from "./../../static/carousel/bg_2.jpg";
-import bg4 from "./../../static/carousel/bg_4.jpg";
+import bg1 from "../assets/images/carousel/bg_1.jpg";
+import bg2 from "../assets/images/carousel/bg_2.jpg";
+import bg4 from "../assets/images/carousel/bg_4.jpg";
 import MainBtn from "./MainBtn.vue";
 
 export default {
@@ -40,18 +40,18 @@ export default {
       carouselItems: [
         {
           src: bg1,
-          title: "LED Desk Lamp",
+          title: "Desk Lamp",
           desc: `<p>Flicker-free</p>
                   <p>Intuitive brightness and color temperature adjustment</p>
                   <p>Works with the Google Assistant</p>`,
-          id: "201905008"
+          id: "5ce49d0dfa33a1076c51a0b1"
         },
         {
           src: bg2,
           title: "Laser Projector",
           desc: `<p>Ultra-short throw distance</p>
                   <p>A massive screen for your home</p>`,
-          id: "201905010"
+          id: "5ce49d45fa33a1076c51a0b5"
         },
         {
           src: bg4,
@@ -59,7 +59,7 @@ export default {
           desc: `<p>Intuitive and easy-to-learn</p>
                   <p>18.6 miles long-range battery life</p>
                   <p>Double braking system</p>`,
-          id: "201905009"
+          id: "5ce49d27fa33a1076c51a0b3"
         }
       ],
       currentCarouselIndex: 0
