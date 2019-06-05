@@ -49,6 +49,7 @@ export default {
 @import "../assets/css/variables";
 
 .btn {
+  position: relative;
   width: 300px;
   height: 48px;
   padding: 9px 30px;

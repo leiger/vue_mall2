@@ -42,15 +42,15 @@ export default {
       logoImg,
       menu: [
         {
-          name: "HOME",
+          name: "Home",
           link: "/"
         },
         {
-          name: "STORE",
+          name: "Store",
           link: "/collections"
         },
         {
-          name: "ABOUT",
+          name: "About",
           link: "/about"
         }
       ]

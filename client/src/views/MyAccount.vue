@@ -36,11 +36,12 @@
         <Divider class="divider" id="order_history" orientation="left">Order History</Divider>
         <Timeline v-if="orderList.length !== 0" class="orderHistory">
           <TimelineItem :key="order._id" v-for="order in orderList">
-            <Time class="time" :time="order.date.paid" type="datetime"/>
+            <Time v-if="order.date.paid" class="time" :time="order.date.paid" type="datetime"/>
+            <Tag v-else @onChange="payOrder(order._id)" color="warning">Not Pay</Tag>
             <div>
               <img
                 v-for="product in order.products"
-                :src="'http://localhost:3000/images/products/'+product.images[0]"
+                :src="'http://images.leiger.tech/vmall2/products/'+product.images[0]"
                 alt
               >
             </div>
@@ -100,6 +101,10 @@ export default {
       this.activeMenu = name;
       if (name === "0") {
       }
+    },
+    payOrder(id) {
+      console.log(id);
+      this.$router.push(`/payment/${id}`);
     }
   }
 };

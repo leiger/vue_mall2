@@ -11,7 +11,7 @@
         <div class="products">
           <ul>
             <li v-for="item in cartList">
-              <img :src="'http://localhost:3000/images/products/'+item.images[0]" alt="img">
+              <img :src="'http://images.leiger.tech/vmall2/products/'+item.images[0]" alt="img">
               <span class="goodName">{{item.name}}</span>
               <span class="goodPrice">{{item.newPrice|currency}} x {{item.numInCart}}</span>
               <span class="subTotal">{{item.newPrice * item.numInCart | currency}}</span>

@@ -3,7 +3,7 @@
     <div class="entry">
       <div class="entryLeft">
         <a @click="toGithubAddress">
-          <Icon class="entryLeftIcon" type="logo-github" size="14"/>Github
+          <Icon class="entryLeftIcon" type="logo-github" size="14"/>
         </a>
       </div>
       <div class="entryRight">
@@ -129,6 +129,10 @@ export default {
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+
+    .entryLeft a {
+      font-size: 0;
+    }
   }
 }
 
@@ -143,7 +147,7 @@ a:hover {
   color: #fff;
 }
 i {
-  vertical-align: text-bottom;
+  vertical-align: middle;
   padding-right: 5px;
 }
 </style>

@@ -10,7 +10,7 @@
         <Col :sm="24" :lg="12" class="productLeft wow fadeIn" data-wow-delay="0.2s">
           <Carousel class="productCarousel" v-if="product.images">
             <CarouselItem v-for="image of product.images" :key="image">
-              <img :src="'http://localhost:3000/images/products/'+image" :alt="product.name">
+              <img :src="'http://images.leiger.tech/vmall2/products/'+image" :alt="product.name">
             </CarouselItem>
           </Carousel>
         </Col>

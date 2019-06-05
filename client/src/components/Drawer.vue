@@ -8,7 +8,7 @@
     <div v-else class="cartListBox">
       <div class="itemBox" v-for="item in cartList">
         <div class="imgBox">
-          <img :src="'http://localhost:3000/images/products/'+item.images[0]" alt="img">
+          <img :src="'http://images.leiger.tech/vmall2/products/'+item.images[0]" alt="img">
         </div>
         <a @click="selectItem(item._id)">
           <h5 class="itemName">{{item.name}}</h5>

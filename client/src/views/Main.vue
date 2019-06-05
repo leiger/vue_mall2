@@ -3,7 +3,11 @@
     <EntryBoard/>
     <NavHeader class="header"/>
 
-    <transition mode="out-in" :name="transitionName">
+    <transition
+      mode="out-in"
+      :enter-active-class="activeClass"
+      :leave-active-class="leaveClass"
+    >
       <router-view/>
     </transition>
 
@@ -20,7 +24,9 @@ import WOW from "wow.js";
 export default {
   data() {
     return {
-      transitionName: ""
+      // transitionName: ""
+      activeClass: "",
+      leaveClass: ""
     };
   },
   mounted() {
@@ -34,9 +40,13 @@ export default {
   watch: {
     $route(to, from) {
       if (to.meta.index > from.meta.index) {
-        this.transitionName = "fold-left";
+        // this.transitionName = "fold-left";
+        this.activeClass = "animated fadeIn";
+        this.leaveClass = "animated fadeOutLeft";
       } else {
-        this.transitionName = "fold-right";
+        // this.transitionName = "fold-right";
+        this.activeClass = "animated fadeIn";
+        this.leaveClass = "animated fadeOutRight";
       }
     }
   }
@@ -44,6 +54,10 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  width: 100%;
+  overflow: hidden;
+}
 .header {
   position: relative;
   z-index: 100;

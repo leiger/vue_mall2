@@ -35,7 +35,7 @@
             >
               <router-link :to="'/products/'+product._id" class="imgBox">
                 <img
-                  :src="'http://localhost:3000/images/products/'+product.images[0]"
+                  :src="'http://images.leiger.tech/vmall2/products/'+product.images[0]"
                   :alt="product.name"
                 >
                 <div class="productsDetail">

@@ -30,7 +30,6 @@
                 type="password"
                 v-model="login.password"
                 placeholder="Password"
-                @on-enter="handleSubmit('login')"
                 size="large"
               >
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
@@ -67,14 +66,13 @@
                 type="password"
                 v-model="signUp.rePassword"
                 placeholder="Confirm Password"
-                @on-enter="handleSubmit('register')"
                 size="large"
               >
                 <Icon type="ios-lock-outline" slot="prepend"></Icon>
               </Input>
             </FormItem>
             <!-- button -->
-            <MainBtn long size="small" @click.prevent="handleSubmit('signUp')">Sign Up</MainBtn>
+            <MainBtn long size="small" @click.stop.prevent="handleSubmit('signUp')">Sign Up</MainBtn>
             <a @click="setModal({type: 0, open: true})">Sign in</a>
           </Form>
         </div>

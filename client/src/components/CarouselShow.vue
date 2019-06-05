@@ -15,7 +15,7 @@
             <transition appear enter-active-class="animated fadeInLeft">
               <div v-if="currentCarouselIndex === index" class="desc" v-html="item.desc"></div>
             </transition>
-            <transition appear enter-active-class="animated fadeInUp">
+            <transition appear enter-active-class="animated fadeInUp" leave-active-class="animated fadeOut">
               <MainBtn v-if="currentCarouselIndex === index" size="small" @click="learnMore(item.id)">LEARN MORE</MainBtn>
             </transition>
           </div>
@@ -91,7 +91,7 @@ export default {
     img {
       width: 100%;
       height: auto;
-      min-height: 600px;
+      min-height: 80vh;
     }
   }
 
